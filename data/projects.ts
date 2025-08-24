@@ -12,7 +12,7 @@ export const projects: Project[] = [
     description:
       'Discover creative websites and developers. A portal for you to share your projects.',
     logo: '/logos/driwwwle.svg',
-    link: 'https://github.com/itsnitinr/driwwwle',
+    link: 'https://github.com/sejoonkimmm/driwwwle',
     slug: 'driwwwle',
   },
   {
@@ -20,7 +20,7 @@ export const projects: Project[] = [
     description:
       'A Visual Studio Code themed developer portfolio built with Next.js and CSS Modules.',
     logo: '/logos/vsc.svg',
-    link: 'https://github.com/itsnitinr/vscode-portfolio',
+    link: 'https://github.com/sejoonkimmm/vscode-portfolio',
     slug: 'vscode-portfolio',
   },
   {
@@ -28,7 +28,7 @@ export const projects: Project[] = [
     description:
       'A simple and elegant way to track your subscriptions and save money.',
     logo: '/logos/subtrackt.svg',
-    link: 'https://github.com/itsnitinr/subtrackt',
+    link: 'https://github.com/sejoonkimmm/subtrackt',
     slug: 'subtrackt',
   },
   {
@@ -36,7 +36,7 @@ export const projects: Project[] = [
     description:
       'VSCode extension to track and deploy your Coolify applications.',
     logo: '/logos/coolify.svg',
-    link: 'https://github.com/itsnitinr/coolify-vscode-extension',
+    link: 'https://github.com/sejoonkimmm/coolify-vscode-extension',
     slug: 'coolify-vscode-extension',
   },
 ];

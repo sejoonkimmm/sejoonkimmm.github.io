@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { VscCalendar, VscVerified, VscClock } from 'react-icons/vsc';
+import { VscCalendar, VscVerified, VscWatch } from 'react-icons/vsc';
 
 import { Certification } from '@/types';
 
@@ -47,7 +47,7 @@ const CertificationCard = ({ certification }: CertificationCardProps) => {
           
           {certification.expiryDate && (
             <div className={`${styles.detail} ${isExpired ? styles.expired : isExpiringSoon ? styles.expiringSoon : ''}`}>
-              <VscClock className={styles.icon} />
+              <VscWatch className={styles.icon} />
               <span>
                 {isExpired ? 'Expired: ' : 'Expires: '}
                 {new Date(certification.expiryDate).toLocaleDateString()}
