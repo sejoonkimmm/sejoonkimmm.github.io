@@ -44,8 +44,8 @@
 
 .logoWrapper {
   background: rgba(255, 255, 255, 0.05);
-  width: 36px;
-  height: 36px;
+  width: 48px;
+  height: 48px;
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -55,8 +55,8 @@
 }
 
 .logo {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   object-fit: contain;
 }
 

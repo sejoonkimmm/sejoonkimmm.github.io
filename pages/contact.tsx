@@ -8,7 +8,7 @@ const ContactPage = () => {
       <h1 className={styles.pageTitle}>Contact Me</h1>
       <p className={styles.pageSubtitle}>
         Infrastructure automation specialist and cloud architect.
-        Always open to DevOps opportunities and innovative projects.
+        Always open to discuss DevOps, Site Reliability, and Platform Engineering.
       </p>
       <div className={styles.container}>
         <div className={styles.contactContainer}>

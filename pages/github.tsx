@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import GitHubCalendar from 'react-github-calendar';
 import { VscRepo, VscPerson } from 'react-icons/vsc';
 
 import RepoCard from '@/components/RepoCard';
@@ -59,21 +58,6 @@ const GithubPage = ({ repos, user }: GithubPageProps) => {
             <RepoCard key={repo.id} repo={repo} />
           ))}
         </div>
-        <div className={styles.contributions}>
-          <GitHubCalendar
-            username={process.env.NEXT_PUBLIC_GITHUB_USERNAME!}
-            hideColorLegend
-            hideMonthLabels
-            colorScheme="dark"
-            theme={{
-              dark: ['#161B22', '#0e4429', '#006d32', '#26a641', '#39d353'],
-              light: ['#161B22', '#0e4429', '#006d32', '#26a641', '#39d353'],
-            }}
-            style={{
-              width: '100%',
-            }}
-          />
-        </div>
       </div>
     </div>
   );
@@ -88,12 +72,11 @@ export async function getStaticProps() {
 
     // Manually specify the repositories you want to show
     const repoNames = [
-      'Myperfectstay',
       'car-instrument', 
       'Inception-of-things',
       'ft_transcendence',
-      'sejoonkimmm.github.io',
-      'vscode-portfolio'
+      'infrastructure-repository',
+      'ft_irc'
     ];
 
     const repos = [];

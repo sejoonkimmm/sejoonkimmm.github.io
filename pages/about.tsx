@@ -24,9 +24,8 @@ const AboutPage = () => {
               DevOps Engineer
             </p>
             <p className={styles.paragraph}>
-              I&apos;ve been leading the development efforts for bringing
-              collaborative video reviewing and editing to the platform. I also
-              maintain our in-house component library, icon library and website.
+              Currently participating in B2C service projects as a DevOps engineer,
+              implementing GitOps deployment methods using ArgoCD in Kubernetes environments.
             </p>
           </section>
 
