@@ -36,7 +36,7 @@ const ContactYaml = () => {
         {value}
       </a>
     ) : (
-      <span className={styles.string}>"{value}"</span>
+      <span className={styles.string}>&quot;{value}&quot;</span>
     );
 
     return (

@@ -1,14 +1,8 @@
-import CertificationCard from '@/components/CertificationCard';
-import { getCertifications } from '@/lib/certifications';
-import { Certification } from '@/types';
+import CertificationsJson from '@/components/CertificationsJson';
 
 import styles from '@/styles/CertificationsPage.module.css';
 
-interface CertificationsPageProps {
-  certifications: Certification[];
-}
-
-const CertificationsPage = ({ certifications }: CertificationsPageProps) => {
+const CertificationsPage = () => {
   return (
     <div className={styles.layout}>
       <h1 className={styles.pageTitle}>DevOps Certifications</h1>
@@ -17,21 +11,16 @@ const CertificationsPage = ({ certifications }: CertificationsPageProps) => {
         infrastructure automation, and DevOps practices.
       </p>
       <div className={styles.container}>
-        {certifications.map((certification) => (
-          <CertificationCard key={certification.id} certification={certification} />
-        ))}
+        <CertificationsJson />
       </div>
     </div>
   );
 };
 
 export async function getStaticProps() {
-  const certifications = getCertifications();
-
   return {
     props: { 
-      title: 'Certifications', 
-      certifications 
+      title: 'Certifications'
     },
   };
 }

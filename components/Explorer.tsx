@@ -7,9 +7,9 @@ import styles from '@/styles/Explorer.module.css';
 
 const explorerItems = [
   {
-    name: 'home.tsx',
+    name: 'home.tf',
     path: '/',
-    icon: '/logos/react_icon.svg',
+    icon: '/logos/terraform_icon.svg',
   },
   {
     name: 'about.html',
@@ -17,18 +17,23 @@ const explorerItems = [
     icon: '/logos/html_icon.svg',
   },
   {
-    name: 'contact.css',
+    name: 'contact.yaml',
     path: '/contact',
-    icon: '/logos/css_icon.svg',
+    icon: '/logos/yaml_icon.svg',
   },
   {
-    name: 'projects.js',
+    name: 'projects.go',
     path: '/projects',
-    icon: '/logos/js_icon.svg',
+    icon: '/logos/go_icon.svg',
   },
   {
     name: 'articles.json',
     path: '/articles',
+    icon: '/logos/json_icon.svg',
+  },
+  {
+    name: 'certifications.json',
+    path: '/certifications',
     icon: '/logos/json_icon.svg',
   },
   {

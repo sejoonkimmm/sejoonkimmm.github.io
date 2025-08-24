@@ -1,0 +1,202 @@
+.container {
+  background: #1e1e1e;
+  border-radius: 12px;
+  border: 1px solid #333;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+}
+
+.editorHeader {
+  background: #2d2d30;
+  border-bottom: 1px solid #3e3e42;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filename {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #d4d4d4;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.fileIcon {
+  font-size: 1rem;
+}
+
+.editorButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #5a5a5a;
+}
+
+.button:nth-child(1) {
+  background: #ff5f57;
+}
+
+.button:nth-child(2) {
+  background: #ffbd2e;
+}
+
+.button:nth-child(3) {
+  background: #28ca42;
+}
+
+.editorContent {
+  display: flex;
+  background: #1e1e1e;
+  min-height: 600px;
+  max-height: 800px;
+  overflow: auto;
+}
+
+.lineNumbers {
+  background: #252526;
+  color: #858585;
+  padding: 1rem 0.5rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  text-align: right;
+  min-width: 3rem;
+  border-right: 1px solid #3e3e42;
+  user-select: none;
+}
+
+.lineNumber {
+  height: 1.4em;
+}
+
+.codeEditor {
+  flex: 1;
+  padding: 1rem;
+  color: #d4d4d4;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  overflow-x: auto;
+}
+
+.codeLine {
+  height: 1.4em;
+  white-space: pre;
+}
+
+/* Go syntax highlighting */
+.keyword {
+  color: #569cd6;
+  font-weight: bold;
+}
+
+.comment {
+  color: #6a9955;
+  font-style: italic;
+}
+
+.declaration {
+  color: #c586c0;
+  font-weight: bold;
+}
+
+.string {
+  color: #ce9178;
+}
+
+.function-call {
+  color: #dcdcaa;
+}
+
+.bracket {
+  color: #d7ba7d;
+}
+
+.field {
+  color: #9cdcfe;
+}
+
+.type {
+  color: #4ec9b0;
+}
+
+.default {
+  color: #d4d4d4;
+}
+
+/* Scrollbar styling */
+.editorContent::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.editorContent::-webkit-scrollbar-track {
+  background: #252526;
+}
+
+.editorContent::-webkit-scrollbar-thumb {
+  background: #424242;
+  border-radius: 3px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .container {
+    font-size: 0.8rem;
+    max-width: 100%;
+    border-radius: 8px;
+  }
+
+  .editorContent {
+    min-height: 400px;
+    max-height: 600px;
+  }
+
+  .lineNumbers {
+    padding: 0.75rem 0.25rem;
+    min-width: 2.5rem;
+  }
+
+  .codeEditor {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .editorHeader {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .filename {
+    font-size: 0.8rem;
+  }
+
+  .button {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .codeEditor {
+    font-size: 0.7rem;
+  }
+
+  .lineNumbers {
+    font-size: 0.7rem;
+  }
+
+  .editorContent {
+    min-height: 300px;
+    max-height: 500px;
+  }
+}
