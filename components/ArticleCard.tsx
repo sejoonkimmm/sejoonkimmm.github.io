@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { VscCalendar, VscClock } from 'react-icons/vsc';
+import { VscCalendar, VscWatch } from 'react-icons/vsc';
 
 import { Article } from '@/types';
 
@@ -32,7 +32,7 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
         <div className={styles.footer}>
           <div className={styles.stats}>
             <div className={styles.stat}>
-              <VscClock className={styles.icon} /> {article.readTime}
+              <VscWatch className={styles.icon} /> {article.readTime}
             </div>
           </div>
           <div className={styles.tags}>
