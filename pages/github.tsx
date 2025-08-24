@@ -80,20 +80,57 @@ const GithubPage = ({ repos, user }: GithubPageProps) => {
 };
 
 export async function getStaticProps() {
-  const userRes = await fetch(
-    `https://api.github.com/users/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}`
-  );
-  const user = await userRes.json();
+  try {
+    const username = process.env.NEXT_PUBLIC_GITHUB_USERNAME || 'sejoonkimmm';
+    
+    const userRes = await fetch(`https://api.github.com/users/${username}`);
+    const user = await userRes.json();
 
-  const repoRes = await fetch(
-    `https://api.github.com/users/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}/repos?sort=pushed&per_page=6`
-  );
-  const repos = await repoRes.json();
+    // Manually specify the repositories you want to show
+    const repoNames = [
+      'Myperfectstay',
+      'car-instrument', 
+      'Inception-of-things',
+      'ft_transcendence',
+      'sejoonkimmm.github.io',
+      'vscode-portfolio'
+    ];
 
-  return {
-    props: { title: 'GitHub', repos, user },
-    revalidate: 600,
-  };
+    const repos = [];
+    for (const repoName of repoNames) {
+      try {
+        const repoRes = await fetch(`https://api.github.com/repos/${username}/${repoName}`);
+        if (repoRes.ok) {
+          const repo = await repoRes.json();
+          repos.push(repo);
+        }
+      } catch (error) {
+        console.error(`Failed to fetch repo ${repoName}:`, error);
+      }
+    }
+
+    return {
+      props: { title: 'GitHub', repos, user },
+      revalidate: 600,
+    };
+  } catch (error) {
+    console.error('Failed to fetch GitHub data:', error);
+    
+    // Return fallback data
+    return {
+      props: {
+        title: 'GitHub',
+        repos: [],
+        user: {
+          login: 'sejoonkimmm',
+          avatar_url: '/images/avatar.png',
+          public_repos: 0,
+          followers: 0,
+        },
+      },
+      revalidate: 600,
+    };
+  }
 }
 
 export default GithubPage;

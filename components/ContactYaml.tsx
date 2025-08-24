@@ -14,13 +14,8 @@ const contactData = {
     website: 'https://kimsejoon.dev',
   },
   social: {
-    github: 'github.com/sejoonkimmm',
-    linkedin: 'https://www.linkedin.com/in/sejokimde/',
-  },
-  platforms: {
-    aws: 'certified-devops-professional',
-    azure: 'certified-administrator',
-    kubernetes: 'certified-administrator',
+    github: 'sejoonkimmm',
+    linkedin: 'sejokimde',
   },
   availability: {
     status: 'work-with-cloudcops',
@@ -41,7 +36,7 @@ const ContactYaml = () => {
 
     return (
       <div className={styles.line} key={key}>
-        <span className={styles.indent}>  </span>
+        <span className={styles.indent}>    </span>
         <span className={styles.key}>{key}</span>
         <span className={styles.colon}>: </span>
         {content}
@@ -55,6 +50,7 @@ const ContactYaml = () => {
     return (
       <div key={sectionName}>
         <div className={styles.line}>
+          <span className={styles.indent}>  </span>
           <span className={styles.key}>{sectionName}</span>
           <span className={styles.colon}>:</span>
         </div>
@@ -117,7 +113,6 @@ const ContactYaml = () => {
         {renderSection('metadata', contactData.metadata)}
         {renderSection('contact', contactData.contact)}
         {renderSection('social', contactData.social)}
-        {renderSection('platforms', contactData.platforms)}
         {renderSection('availability', contactData.availability, true)}
       </div>
     </div>

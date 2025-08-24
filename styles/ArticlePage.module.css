@@ -1,8 +1,9 @@
 .layout {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 2rem 1rem;
-  min-height: 100vh;
+  padding: 2rem;
+  min-height: calc(100vh - 60px); /* 헤더 높이 고려 */
+  overflow-y: auto;
 }
 
 .article {

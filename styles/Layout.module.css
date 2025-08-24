@@ -7,16 +7,14 @@
 }
 
 .content {
-  padding: 2rem;
+  padding: 1rem;
   color: var(--text-color);
   font-family: 'JetBrains Mono', monospace;
   flex: 1;
-  height: 85vh;
+  height: calc(100vh - 60px); /* 탭바 높이 고려 */
   overflow-y: auto;
   scroll-behavior: smooth;
   overflow-x: hidden;
-  display: flex;
-  align-items: center;
 }
 
 .content {

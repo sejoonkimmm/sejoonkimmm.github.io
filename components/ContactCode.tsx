@@ -14,12 +14,12 @@ const contactItems = [
   {
     social: 'github',
     link: 'sejoonkimmm',
-    href: 'https://github.com/sejoonkimmm',
+    href: 'sejoonkimmm',
   },
   {
     social: 'linkedin',
     link: 'sejokimde',
-    href: 'https://www.linkedin.com/in/sejokimde/',
+    href: 'sejokimde',
   },
 ];
 
@@ -33,6 +33,7 @@ const ContactCode = () => {
         <p className={styles.line} key={index}>
           &nbsp;&nbsp;&nbsp;{item.social}:{' '}
           <a href={item.href} target="_blank" rel="noopener">
+
             {item.link}
           </a>
           ;

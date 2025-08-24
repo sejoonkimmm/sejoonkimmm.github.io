@@ -15,17 +15,17 @@ export default function HomePage() {
 
         <div className={styles.infoSection}>
           <h1 className={styles.developerName}>
-            Kim <span className={styles.accentText}>Sejoon</span>
+            <span className={styles.accentText}>Sejoon</span> Kim
           </h1>
 
           <div className={styles.developerRole}>
             <VscCloud className={styles.roleIcon} />
-            DevOps Engineer & Cloud Architect
+            DevOps & Site Reliability Engineer
           </div>
 
           <p className={styles.bio}>
             Infrastructure as Code specialist building scalable, automated cloud solutions.
-            Expert in AWS, Kubernetes, and modern DevOps practices with multiple certifications.
+            Passionate about Kubernetes, AWS, and modern DevOps practices with industry certifications.
           </p>
 
           <div className={styles.stats}>
@@ -34,7 +34,7 @@ export default function HomePage() {
               <span className={styles.statLabel}>Certifications</span>
             </div>
             <div className={styles.stat}>
-              <span className={styles.statNumber}>3+</span>
+              <span className={styles.statNumber}>1+</span>
               <span className={styles.statLabel}>Years Experience</span>
             </div>
             <div className={styles.stat}>

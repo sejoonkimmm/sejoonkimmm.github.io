@@ -1,3 +1,4 @@
+import React from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -33,44 +34,45 @@ const ArticlePage = ({ article }: ArticlePageProps) => {
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
-              code({ inline, children, ...props }) {
+              code: (props: any) => {
+                const { inline, children, ...rest } = props;
                 return (
                   <code
                     className={inline ? styles.inlineCode : styles.codeBlock}
-                    {...props}
+                    {...rest}
                   >
                     {children}
                   </code>
                 );
               },
-              pre({ children }) {
-                return <pre className={styles.pre}>{children}</pre>;
+              pre: (props: any) => {
+                return <pre className={styles.pre}>{props.children}</pre>;
               },
-              h1({ children }) {
-                return <h1 className={styles.h1}>{children}</h1>;
+              h1: (props: any) => {
+                return <h1 className={styles.h1}>{props.children}</h1>;
               },
-              h2({ children }) {
-                return <h2 className={styles.h2}>{children}</h2>;
+              h2: (props: any) => {
+                return <h2 className={styles.h2}>{props.children}</h2>;
               },
-              h3({ children }) {
-                return <h3 className={styles.h3}>{children}</h3>;
+              h3: (props: any) => {
+                return <h3 className={styles.h3}>{props.children}</h3>;
               },
-              blockquote({ children }) {
-                return <blockquote className={styles.blockquote}>{children}</blockquote>;
+              blockquote: (props: any) => {
+                return <blockquote className={styles.blockquote}>{props.children}</blockquote>;
               },
-              ul({ children }) {
-                return <ul className={styles.ul}>{children}</ul>;
+              ul: (props: any) => {
+                return <ul className={styles.ul}>{props.children}</ul>;
               },
-              ol({ children }) {
-                return <ol className={styles.ol}>{children}</ol>;
+              ol: (props: any) => {
+                return <ol className={styles.ol}>{props.children}</ol>;
               },
-              li({ children }) {
-                return <li className={styles.li}>{children}</li>;
+              li: (props: any) => {
+                return <li className={styles.li}>{props.children}</li>;
               },
-              a({ href, children }) {
+              a: (props: any) => {
                 return (
-                  <a href={href} className={styles.link} target="_blank" rel="noopener noreferrer">
-                    {children}
+                  <a href={props.href} className={styles.link} target="_blank" rel="noopener noreferrer">
+                    {props.children}
                   </a>
                 );
               },

@@ -13,7 +13,7 @@ const ArticlesPage = ({ articles }: ArticlesPageProps) => {
     <div className={styles.layout}>
       <h1 className={styles.pageTitle}>My Articles</h1>
       <p className={styles.pageSubtitle}>
-        Insights and tutorials about web development, React, TypeScript, and modern JavaScript practices.
+        Technical insights and tutorials about DevOps, Kubernetes, AWS, and infrastructure automation practices.
       </p>
       <div className={styles.container}>
         {articles.map((article) => (

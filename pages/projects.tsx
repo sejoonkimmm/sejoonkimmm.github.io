@@ -1,18 +1,23 @@
-import ProjectsGo from '@/components/ProjectsGo';
+import ProjectCard from '@/components/ProjectCard';
+import { projects } from '@/data/projects';
 
 import styles from '@/styles/ProjectsPage.module.css';
 
 const ProjectsPage = () => {
   return (
     <div className={styles.layout}>
-      <h1 className={styles.pageTitle}>DevOps Infrastructure Projects</h1>
-      <p className={styles.pageSubtitle}>
-        Infrastructure as Code projects showcasing cloud automation, 
-        Kubernetes orchestration, and DevOps best practices.
-      </p>
+      <div className={styles.header}>
+        <h1 className={styles.title}>My Projects</h1>
+        <p className={styles.subtitle}>
+          Here's a collection of my recent infrastructure and DevOps projects. These showcase
+          my skills in cloud automation, Kubernetes, and modern DevOps practices.
+        </p>
+      </div>
 
-      <div className={styles.container}>
-        <ProjectsGo />
+      <div className={styles.projectsGrid}>
+        {projects.map((project) => (
+          <ProjectCard key={project.slug} project={project} />
+        ))}
       </div>
     </div>
   );

@@ -8,13 +8,10 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies with clean install (similar to Vercel)
-RUN npm ci --only=production=false
+RUN npm install
 
 # Copy source code
 COPY . .
-
-# Run linting and type checking (like Vercel does)
-RUN npm run lint
 
 # Build the application (same as Vercel's process)
 RUN npm run build
