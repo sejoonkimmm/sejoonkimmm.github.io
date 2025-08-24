@@ -21,8 +21,8 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
           <Image
             src={project.logo}
             alt={`${project.title} logo`}
-            width={24}
-            height={24}
+            width={32}
+            height={32}
             className={styles.logo}
           />
         </div>
