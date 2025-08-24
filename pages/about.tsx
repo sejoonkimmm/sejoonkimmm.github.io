@@ -1,3 +1,4 @@
+import TypeWriter from '@/components/TypeWriter';
 import styles from '@/styles/AboutPage.module.css';
 
 const AboutPage = () => {
@@ -5,7 +6,19 @@ const AboutPage = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <h1 className={styles.title}>Sejoon Kim</h1>
-        <div className={styles.subtitle}>DevOps Engineer</div>
+        <div className={styles.subtitle}>
+          <TypeWriter 
+            texts={[
+              "DevOps Engineer",
+              "Site Reliability Engineer", 
+              "Platform Engineer",
+              "Cloud Engineer"
+            ]}
+            typingSpeed={80}
+            deletingSpeed={40}
+            pauseDuration={2000}
+          />
+        </div>
 
         <div className={styles.aboutContent}>
           <section className={styles.section}>

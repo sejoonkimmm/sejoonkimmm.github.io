@@ -5,7 +5,7 @@ const contactData = {
   metadata: {
     name: 'Sejoon Kim',
     role: 'DevOps Engineer',
-    location: 'Berlin, Germany',
+    location: 'Wolfsburg, Germany',
     timezone: 'Europe/Berlin',
   },
   contact: {
@@ -18,9 +18,9 @@ const contactData = {
     linkedin: 'sejokimde',
   },
   availability: {
-    status: 'work-with-cloudcops',
+    status: 'CloudCops',
     preferred_contact: 'email',
-    response_time: '24-48 hours',
+    response_time: '24hours',
   }
 };
 

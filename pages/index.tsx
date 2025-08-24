@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { VscArrowRight, VscTerminalBash, VscCloud } from 'react-icons/vsc';
 import TerraformCode from '@/components/TerraformCode';
+import TypeWriter from '@/components/TypeWriter';
 
 import styles from '@/styles/HomePage.module.css';
 
@@ -20,7 +21,17 @@ export default function HomePage() {
 
           <div className={styles.developerRole}>
             <VscCloud className={styles.roleIcon} />
-            DevOps & Site Reliability Engineer
+            <TypeWriter 
+              texts={[
+                "DevOps Engineer",
+                "Site Reliability Engineer", 
+                "Platform Engineer",
+                "Cloud Engineer"
+              ]}
+              typingSpeed={80}
+              deletingSpeed={40}
+              pauseDuration={2000}
+            />
           </div>
 
           <p className={styles.bio}>
