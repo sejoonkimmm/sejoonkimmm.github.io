@@ -1,0 +1,142 @@
+.container {
+  background: var(--background-color);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.header {
+  background: var(--background-secondary);
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.yamlContent {
+  padding: 1.5rem;
+  font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.line {
+  margin-bottom: 0.2rem;
+  display: flex;
+  align-items: center;
+}
+
+.line:empty {
+  margin-bottom: 0.8rem;
+}
+
+.comment {
+  color: #6a737d;
+  font-style: italic;
+}
+
+.key {
+  color: #005cc5;
+  font-weight: 600;
+}
+
+.colon {
+  color: var(--text-primary);
+  margin: 0 0.25rem 0 0;
+}
+
+.string {
+  color: #032f62;
+  font-weight: 500;
+}
+
+.link {
+  color: #0366d6;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  position: relative;
+}
+
+.link:hover {
+  color: var(--accent-color);
+  text-decoration: underline;
+}
+
+.link:before {
+  content: '"';
+  color: #032f62;
+}
+
+.link:after {
+  content: '"';
+  color: #032f62;
+}
+
+.indent {
+  color: transparent;
+  user-select: none;
+}
+
+.comma {
+  color: var(--text-primary);
+  margin-left: 0.1rem;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .comment {
+    color: #8b949e;
+  }
+  
+  .key {
+    color: #79c0ff;
+  }
+  
+  .string {
+    color: #a5d6ff;
+  }
+  
+  .link {
+    color: #58a6ff;
+  }
+  
+  .link:hover {
+    color: var(--accent-color);
+  }
+  
+  .link:before,
+  .link:after {
+    color: #a5d6ff;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .container {
+    margin: 0;
+    border-radius: 8px;
+  }
+  
+  .yamlContent {
+    padding: 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .header {
+    padding: 0.75rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .yamlContent {
+    font-size: 0.75rem;
+    padding: 0.75rem;
+  }
+  
+  .line {
+    flex-wrap: wrap;
+  }
+}

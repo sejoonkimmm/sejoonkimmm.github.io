@@ -1,4 +1,4 @@
-import ContactCode from '@/components/ContactCode';
+import ContactYaml from '@/components/ContactYaml';
 
 import styles from '@/styles/ContactPage.module.css';
 
@@ -7,12 +7,12 @@ const ContactPage = () => {
     <div className={styles.layout}>
       <h1 className={styles.pageTitle}>Contact Me</h1>
       <p className={styles.pageSubtitle}>
-        Feel free to reach out to me through any of the social platforms below.
-        I&apos;m always open to new opportunities and connections.
+        Infrastructure automation specialist and cloud architect.
+        Always open to DevOps opportunities and innovative projects.
       </p>
       <div className={styles.container}>
         <div className={styles.contactContainer}>
-          <ContactCode />
+          <ContactYaml />
         </div>
       </div>
     </div>

@@ -226,9 +226,68 @@
 }
 
 .developerRole {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   font-size: 1.25rem;
   color: rgba(255, 255, 255, 0.8);
   margin-top: -0.5rem;
+}
+
+.roleIcon {
+  color: var(--accent-color);
+  font-size: 1.4rem;
+}
+
+.stats {
+  display: flex;
+  gap: 2rem;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.statNumber {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.statLabel {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+  text-align: center;
+}
+
+.secondaryLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--accent-color);
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--accent-color);
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+.secondaryLink:hover {
+  background: var(--accent-color);
+  color: white;
+  transform: translateY(-2px);
 }
 
 .bio {
@@ -357,14 +416,14 @@
   opacity: 0.3;
 }
 
-.codeBlock1,
-.codeBlock2,
-.codeBlock3,
-.codeBlock4 {
+.terraformBlock1,
+.terraformBlock2,
+.terraformBlock3,
+.terraformBlock4 {
   position: absolute;
   font-family: 'JetBrains Mono', monospace;
   color: rgba(var(--accent-color-rgb), 0.08);
-  font-size: 180px;
+  font-size: 120px;
   font-weight: 700;
   line-height: 1;
   user-select: none;
@@ -372,7 +431,7 @@
   animation: float 20s infinite ease-in-out;
 }
 
-.codeBlock1 {
+.terraformBlock1 {
   top: 10%;
   left: 0;
   opacity: 0.15;
@@ -380,7 +439,7 @@
   animation-delay: 0s;
 }
 
-.codeBlock2 {
+.terraformBlock2 {
   bottom: 10%;
   right: 15%;
   opacity: 0.1;
@@ -388,19 +447,19 @@
   animation-delay: -7s;
 }
 
-.codeBlock3 {
+.terraformBlock3 {
   top: 30%;
   right: 5%;
   opacity: 0.05;
-  font-size: 150px;
+  font-size: 100px;
   animation-delay: -3s;
 }
 
-.codeBlock4 {
+.terraformBlock4 {
   bottom: 10%;
   left: 20%;
   opacity: 0.08;
-  font-size: 160px;
+  font-size: 110px;
   animation-delay: -10s;
 }
 

@@ -33,7 +33,7 @@ const ArticlePage = ({ article }: ArticlePageProps) => {
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
-              code({ node, inline, className, children, ...props }) {
+              code({ inline, children, ...props }) {
                 return (
                   <code
                     className={inline ? styles.inlineCode : styles.codeBlock}

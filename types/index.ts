@@ -36,3 +36,17 @@ export interface User {
   public_repos: number;
   followers: number;
 }
+
+export interface Certification {
+  id: string;
+  name: string;
+  provider: string;
+  description: string;
+  logo: string;
+  issueDate: string;
+  expiryDate?: string;
+  credentialId: string;
+  verificationUrl?: string;
+  skills: string[];
+  level: 'Foundational' | 'Associate' | 'Professional' | 'Expert';
+}
