@@ -1,5 +1,5 @@
 import ArticleCard from '@/components/ArticleCard';
-
+import { getAllArticles } from '@/lib/articles';
 import { Article } from '@/types';
 
 import styles from '@/styles/ArticlesPage.module.css';
@@ -13,16 +13,7 @@ const ArticlesPage = ({ articles }: ArticlesPageProps) => {
     <div className={styles.layout}>
       <h1 className={styles.pageTitle}>My Articles</h1>
       <p className={styles.pageSubtitle}>
-        Recent posts from{' '}
-        <a
-          href="https://dev.to/itsnitinr"
-          target="_blank"
-          rel="noopener"
-          className={styles.underline}
-        >
-          dev.to
-        </a>{' '}
-        where I share insights and tutorials about web development.
+        Insights and tutorials about web development, React, TypeScript, and modern JavaScript practices.
       </p>
       <div className={styles.container}>
         {articles.map((article) => (
@@ -34,20 +25,14 @@ const ArticlesPage = ({ articles }: ArticlesPageProps) => {
 };
 
 export async function getStaticProps() {
-  const res = await fetch(
-    'https://dev.to/api/articles/me/published?per_page=6',
-    {
-      headers: {
-        'api-key': process.env.DEV_TO_API_KEY!,
-      },
-    }
-  );
-
-  const data = await res.json();
+  const articles = getAllArticles();
 
   return {
-    props: { title: 'Articles', articles: data },
-    revalidate: 60,
+    props: { 
+      title: 'Articles', 
+      articles 
+    },
+    revalidate: false, // Static content, no need to revalidate
   };
 }
 

@@ -1,5 +1,6 @@
+import Link from 'next/link';
 import Image from 'next/image';
-import { VscEye, VscHeart, VscComment } from 'react-icons/vsc';
+import { VscCalendar, VscClock } from 'react-icons/vsc';
 
 import { Article } from '@/types';
 
@@ -11,12 +12,7 @@ interface ArticleCardProps {
 
 const ArticleCard = ({ article }: ArticleCardProps) => {
   return (
-    <a
-      href={article.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={styles.container}
-    >
+    <Link href={`/articles/${article.slug}`} className={styles.container}>
       <div className={styles.imageWrapper}>
         <Image
           src={article.cover_image}
@@ -25,8 +21,8 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
           sizes="(max-width: 768px) 100vw, 300px"
           className={styles.image}
         />
-        <div className={styles.viewsBadge}>
-          <VscEye /> {article.page_views_count}
+        <div className={styles.dateBadge}>
+          <VscCalendar /> {new Date(article.date).toLocaleDateString()}
         </div>
       </div>
       <div className={styles.content}>
@@ -36,16 +32,19 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
         <div className={styles.footer}>
           <div className={styles.stats}>
             <div className={styles.stat}>
-              <VscHeart className={styles.icon} />{' '}
-              {article.public_reactions_count}
+              <VscClock className={styles.icon} /> {article.readTime}
             </div>
-            <div className={styles.stat}>
-              <VscComment className={styles.icon} /> {article.comments_count}
-            </div>
+          </div>
+          <div className={styles.tags}>
+            {article.tags.slice(0, 2).map((tag) => (
+              <span key={tag} className={styles.tag}>
+                {tag}
+              </span>
+            ))}
           </div>
         </div>
       </div>
-    </a>
+    </Link>
   );
 };
 

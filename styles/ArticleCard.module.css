@@ -29,7 +29,7 @@
   transform: scale(1.08);
 }
 
-.viewsBadge {
+.dateBadge {
   position: absolute;
   top: 12px;
   right: 12px;
@@ -77,6 +77,8 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .stats {
@@ -84,6 +86,22 @@
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.75);
   gap: 1.25rem;
+}
+
+.tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background: var(--accent-color);
+  color: var(--article-bg);
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .stat {
