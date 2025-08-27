@@ -18,7 +18,13 @@ const ArticlePage = ({ article }: ArticlePageProps) => {
         <header className={styles.header}>
           <h1 className={styles.title}>{article.title}</h1>
           <div className={styles.meta}>
-            <span className={styles.date}>{new Date(article.date).toLocaleDateString()}</span>
+            <span className={styles.date}>
+              {new Date(article.date).toLocaleDateString('de-DE', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+              })}
+            </span>
             <span className={styles.readTime}>{article.readTime}</span>
           </div>
           <div className={styles.tags}>

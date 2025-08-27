@@ -22,7 +22,11 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
           className={styles.image}
         />
         <div className={styles.dateBadge}>
-          <VscCalendar /> {new Date(article.date).toLocaleDateString()}
+          <VscCalendar /> {new Date(article.date).toLocaleDateString('de-DE', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+          })}
         </div>
       </div>
       <div className={styles.content}>

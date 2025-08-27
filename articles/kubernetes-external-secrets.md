@@ -1,9 +1,10 @@
 ---
 title: "Managing Secrets in Kubernetes with External Secrets Operator"
-date: "2025-08-24"
+date: "24.08.2025"
 description: "A comprehensive guide to implementing External Secrets Operator for secure secret management in Kubernetes clusters"
 tags: ["Kubernetes", "DevOps", "Security", "External Secrets", "AWS", "Secret Management"]
 readTime: "8 min read"
+image: "/images/external_secret.jpg"
 ---
 
 # Managing Secrets in Kubernetes with External Secrets Operator
