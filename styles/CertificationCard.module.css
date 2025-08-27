@@ -1,3 +1,9 @@
+.linkWrapper {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
 .container {
   background: var(--background-color);
   border-radius: 16px;

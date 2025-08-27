@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { VscCalendar, VscVerified, VscWatch } from 'react-icons/vsc';
 
 import { Certification } from '@/types';
@@ -16,7 +17,8 @@ const CertificationCard = ({ certification }: CertificationCardProps) => {
     new Date(certification.expiryDate).getTime() - new Date().getTime() < 90 * 24 * 60 * 60 * 1000; // 90 days
 
   return (
-    <div className={`${styles.container} ${isExpired ? styles.expired : ''}`}>
+    <Link href={`/certifications/${certification.id}`} className={styles.linkWrapper}>
+      <div className={`${styles.container} ${isExpired ? styles.expired : ''}`}>
       <div className={styles.header}>
         <div className={styles.logoWrapper}>
           <Image
@@ -86,6 +88,7 @@ const CertificationCard = ({ certification }: CertificationCardProps) => {
         )}
       </div>
     </div>
+    </Link>
   );
 };
 
