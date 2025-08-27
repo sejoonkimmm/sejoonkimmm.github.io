@@ -26,6 +26,8 @@ Traditional Kubernetes secrets have several drawbacks:
 
 External Secrets Operator (ESO) is a Kubernetes operator that integrates external secret management systems with Kubernetes. It fetches secrets from external APIs and creates Kubernetes secrets automatically.
 
+![External Secrets Architecture](/images/external_secret.jpg)
+
 ### Key Benefits
 
 1. **Centralized secret management**: Use external systems like AWS Secrets Manager, HashiCorp Vault, or Azure Key Vault

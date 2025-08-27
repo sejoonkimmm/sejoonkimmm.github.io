@@ -7,6 +7,16 @@ const articlesDirectory = path.join(process.cwd(), 'articles');
 
 export function getAllArticles(): Article[] {
   const fileNames = fs.readdirSync(articlesDirectory);
+  
+  // Helper function to parse German date format
+  const parseDate = (dateString: string): Date => {
+    if (dateString.includes('.')) {
+      const [day, month, year] = dateString.split('.');
+      return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    }
+    return new Date(dateString);
+  };
+
   const articles = fileNames
     .filter((name: string) => name.endsWith('.md'))
     .map((name: string) => {
@@ -20,13 +30,13 @@ export function getAllArticles(): Article[] {
         slug,
         title: data.title,
         description: data.description,
-        cover_image: data.cover_image || null,
+        cover_image: data.image || data.cover_image || '/images/default-article.jpg',
         date: data.date,
         readTime: data.readTime,
         tags: data.tags || [],
       } as Article;
     })
-    .sort((a: Article, b: Article) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    .sort((a: Article, b: Article) => parseDate(b.date).getTime() - parseDate(a.date).getTime());
 
   return articles;
 }
@@ -41,7 +51,7 @@ export function getArticleBySlug(slug: string): Article & { content: string } {
     slug,
     title: data.title,
     description: data.description,
-    cover_image: data.cover_image || null,
+    cover_image: data.image || data.cover_image || '/images/default-article.jpg',
     date: data.date,
     readTime: data.readTime,
     tags: data.tags || [],

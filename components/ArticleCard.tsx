@@ -11,6 +11,18 @@ interface ArticleCardProps {
 }
 
 const ArticleCard = ({ article }: ArticleCardProps) => {
+  // Parse German date format (DD.MM.YYYY) or ISO format
+  const formatDate = (dateString: string) => {
+    if (dateString.includes('.')) {
+      return dateString; // Already in German format
+    }
+    return new Date(dateString).toLocaleDateString('de-DE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
+
   return (
     <Link href={`/articles/${article.slug}`} className={styles.container}>
       <div className={styles.imageWrapper}>
@@ -22,11 +34,7 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
           className={styles.image}
         />
         <div className={styles.dateBadge}>
-          <VscCalendar /> {new Date(article.date).toLocaleDateString('de-DE', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-          })}
+          <VscCalendar /> {formatDate(article.date)}
         </div>
       </div>
       <div className={styles.content}>

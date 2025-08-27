@@ -1,5 +1,6 @@
 import React from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
+import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { getProjectBySlug, getAllProjectSlugs } from '@/lib/projects';
@@ -12,6 +13,29 @@ interface ProjectPageProps {
 }
 
 const ProjectPage = ({ project }: ProjectPageProps) => {
+  // For projects, we display the date as is (month range format)
+  const formatProjectDate = (dateString: string) => {
+    // If it's already in month range format (contains English month names), return as is
+    if (dateString.includes('July') || dateString.includes('June') || 
+        dateString.includes('March') || dateString.includes('January') ||
+        dateString.includes('February') || dateString.includes('April') ||
+        dateString.includes('May') || dateString.includes('August') ||
+        dateString.includes('September') || dateString.includes('October') ||
+        dateString.includes('November') || dateString.includes('December')) {
+      return dateString;
+    }
+    
+    // Otherwise, parse and format
+    if (dateString.includes('.')) {
+      return dateString; // Already in German format
+    }
+    return new Date(dateString).toLocaleDateString('de-DE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
+
   return (
     <div className={styles.layout}>
       <article className={styles.article}>
@@ -19,11 +43,7 @@ const ProjectPage = ({ project }: ProjectPageProps) => {
           <h1 className={styles.title}>{project.title}</h1>
           <div className={styles.meta}>
             <span className={styles.date}>
-              {new Date(project.date).toLocaleDateString('de-DE', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-              })}
+              {formatProjectDate(project.date)}
             </span>
             <span className={styles.readTime}>{project.readTime}</span>
           </div>

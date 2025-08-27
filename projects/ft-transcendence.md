@@ -1,6 +1,6 @@
 ---
 title: "ft_transcendence"
-date: "01.08.2025"
+date: "January 2024 - March 2024"
 description: "A full-stack web application featuring real-time gaming, chat system, and user management."
 tags: ["Full-Stack", "Real-time", "WebSockets", "Gaming"]
 readTime: "6 min read"
@@ -14,6 +14,8 @@ A comprehensive full-stack web application featuring real-time gaming capabiliti
 ## Project Overview
 
 ft_transcendence is an ambitious full-stack project that combines real-time gaming, chat systems, and comprehensive user management into a single cohesive platform.
+
+![Project Architecture](/images/myperfectstay_concept.png)
 
 ## Core Features
 

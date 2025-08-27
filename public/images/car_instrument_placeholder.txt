@@ -1,0 +1,2 @@
+# This is a placeholder for car-instrument project image
+# The actual image should be placed here: /Users/kimsejoon/pofol/public/images/car_instrument.png

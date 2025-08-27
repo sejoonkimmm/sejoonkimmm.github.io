@@ -1,6 +1,6 @@
 ---
 title: "Myperfectstay"
-date: "15.08.2025"
+date: "July 2024 - October 2024"
 description: "Discover creative websites and developers. A portal for you to share your projects."
 tags: ["Web Development", "Next.js", "React", "TypeScript"]
 readTime: "5 min read"
@@ -14,6 +14,8 @@ This is a test project showcasing web development skills.
 ## Overview
 
 Myperfectstay is a creative platform designed to help developers showcase their projects and discover inspiring work from other developers in the community.
+
+![Myperfectstay Concept](/images/myperfectstay_concept.png)
 
 ## Technologies Used
 

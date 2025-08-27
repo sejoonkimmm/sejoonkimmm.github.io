@@ -1,6 +1,6 @@
 ---
 title: "Inception of Things"
-date: "05.08.2025"
+date: "March 2024 - May 2024"
 description: "A comprehensive DevOps project showcasing Kubernetes, Infrastructure as Code, and container orchestration."
 tags: ["DevOps", "Kubernetes", "Docker", "Infrastructure"]
 readTime: "7 min read"
@@ -14,6 +14,8 @@ A comprehensive DevOps infrastructure project demonstrating modern cloud-native 
 ## Project Summary
 
 Inception of Things is an advanced DevOps project that showcases the implementation of modern infrastructure practices using Kubernetes, Docker, and Infrastructure as Code principles.
+
+![Kubernetes Architecture](/images/external_secret.jpg)
 
 ## Architecture Overview
 

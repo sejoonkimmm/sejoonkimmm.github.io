@@ -1,5 +1,6 @@
 import React from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
+import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { getArticleBySlug, getAllArticleSlugs } from '@/lib/articles';
@@ -12,6 +13,26 @@ interface ArticlePageProps {
 }
 
 const ArticlePage = ({ article }: ArticlePageProps) => {
+  // Parse German date format (DD.MM.YYYY) or ISO format
+  const parseDate = (dateString: string) => {
+    if (dateString.includes('.')) {
+      const [day, month, year] = dateString.split('.');
+      return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    }
+    return new Date(dateString);
+  };
+
+  const formatDate = (dateString: string) => {
+    if (dateString.includes('.')) {
+      return dateString; // Already in German format
+    }
+    return parseDate(dateString).toLocaleDateString('de-DE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
+
   return (
     <div className={styles.layout}>
       <article className={styles.article}>
@@ -19,11 +40,7 @@ const ArticlePage = ({ article }: ArticlePageProps) => {
           <h1 className={styles.title}>{article.title}</h1>
           <div className={styles.meta}>
             <span className={styles.date}>
-              {new Date(article.date).toLocaleDateString('de-DE', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-              })}
+              {formatDate(article.date)}
             </span>
             <span className={styles.readTime}>{article.readTime}</span>
           </div>

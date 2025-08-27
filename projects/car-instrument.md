@@ -1,6 +1,6 @@
 ---
 title: "Car Instrument"
-date: "10.08.2025"
+date: "June 2024 - September 2024"
 description: "A Visual Studio Code themed developer portfolio built with Next.js and CSS Modules."
 tags: ["Portfolio", "Next.js", "CSS Modules", "VSCode Theme"]
 readTime: "4 min read"
@@ -14,6 +14,8 @@ A Visual Studio Code themed developer portfolio project.
 ## Project Overview
 
 Car Instrument is an innovative portfolio website that mimics the familiar interface of Visual Studio Code, providing developers with a unique way to showcase their skills and projects.
+
+![External Secret Implementation](/images/external_secret.jpg)
 
 ## Key Features
 
