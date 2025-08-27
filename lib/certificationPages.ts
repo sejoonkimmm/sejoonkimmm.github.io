@@ -11,8 +11,8 @@ export interface CertificationWithContent {
   provider: string;
   description: string;
   credentialId: string;
-  expiryDate?: string;
-  verificationUrl?: string;
+  expiryDate?: string | null;
+  verificationUrl?: string | null;
   skills: string[];
   level: string;
   logo: string;
@@ -26,8 +26,8 @@ export interface CertificationMetadata {
   provider: string;
   description: string;
   credentialId: string;
-  expiryDate?: string;
-  verificationUrl?: string;
+  expiryDate?: string | null;
+  verificationUrl?: string | null;
   skills: string[];
   level: string;
   logo: string;
@@ -62,8 +62,8 @@ export function getCertificationBySlug(slug: string): CertificationWithContent |
       provider: data.provider || '',
       description: data.description || '',
       credentialId: data.credentialId || '',
-      expiryDate: data.expiryDate,
-      verificationUrl: data.verificationUrl,
+      expiryDate: data.expiryDate || null,
+      verificationUrl: data.verificationUrl || null,
       skills: data.skills || [],
       level: data.level || '',
       logo: data.logo || '',
@@ -96,7 +96,13 @@ export function getAllCertificationsFromMarkdown(): CertificationMetadata[] {
       if (!certification) return null;
       
       const { content, ...metadata } = certification;
-      return metadata;
+      // Ensure undefined values are converted to null for proper typing
+      const processedMetadata: CertificationMetadata = {
+        ...metadata,
+        expiryDate: metadata.expiryDate || null,
+        verificationUrl: metadata.verificationUrl || null,
+      };
+      return processedMetadata;
     })
     .filter((certification): certification is CertificationMetadata => certification !== null)
     .sort((a, b) => {

@@ -131,9 +131,16 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     };
   }
 
+  // Convert undefined values to null for JSON serialization
+  const serializedCertification = {
+    ...certification,
+    expiryDate: certification.expiryDate || null,
+    verificationUrl: certification.verificationUrl || null,
+  };
+
   return {
     props: {
-      certification,
+      certification: serializedCertification,
       title: certification.title,
     },
   };
