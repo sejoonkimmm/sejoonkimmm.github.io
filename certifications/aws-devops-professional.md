@@ -19,7 +19,7 @@ Advanced certification demonstrating expertise in AWS DevOps practices and imple
 
 The AWS Certified DevOps Engineer - Professional certification validates technical expertise in provisioning, operating, and managing distributed application systems on the AWS platform. This certification covers advanced DevOps practices and AWS services.
 
-![AWS DevOps Architecture](/images/myperfectstay_concept.png)
+![AWS DevOps Architecture](/images/external_secret.jpg)
 
 ## Certification Details
 

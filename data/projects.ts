@@ -8,14 +8,6 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    title: 'Myperfectstay',
-    description:
-      'Discover creative websites and developers. A portal for you to share your projects.',
-    logo: '/logos/driwwwle.svg',
-    link: 'https://github.com/sejoonkimmm/Myperfectstay',
-    slug: 'myperfectstay',
-  },
-  {
     title: 'car-instrument',
     description:
       'A Visual Studio Code themed developer portfolio built with Next.js and CSS Modules.',

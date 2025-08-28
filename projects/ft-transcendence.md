@@ -15,7 +15,7 @@ A comprehensive full-stack web application featuring real-time gaming capabiliti
 
 ft_transcendence is an ambitious full-stack project that combines real-time gaming, chat systems, and comprehensive user management into a single cohesive platform.
 
-![Project Architecture](/images/myperfectstay_concept.png)
+![Project Architecture](/images/external_secret.jpg)
 
 ## Core Features
 
