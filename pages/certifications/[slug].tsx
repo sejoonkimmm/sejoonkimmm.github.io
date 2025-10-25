@@ -13,14 +13,11 @@ interface CertificationPageProps {
 }
 
 const CertificationPage = ({ certification }: CertificationPageProps) => {
-  // Parse German date format or display as-is
+  // Format date as "Month Year"
   const formatDate = (dateString: string) => {
-    if (dateString.includes('.')) {
-      return dateString; // Already in German format
-    }
-    return new Date(dateString).toLocaleDateString('de-DE', {
-      day: '2-digit',
-      month: '2-digit',
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      month: 'long',
       year: 'numeric'
     });
   };
@@ -32,11 +29,11 @@ const CertificationPage = ({ certification }: CertificationPageProps) => {
           <h1 className={styles.title}>{certification.title}</h1>
           <div className={styles.meta}>
             <span className={styles.date}>
-              Issued: {formatDate(certification.date)}
+              {formatDate(certification.date)}
             </span>
             {certification.expiryDate && (
               <span className={styles.date}>
-                Expires: {formatDate(certification.expiryDate)}
+                Expires {formatDate(certification.expiryDate)}
               </span>
             )}
             <span className={styles.readTime}>{certification.provider}</span>

@@ -16,6 +16,15 @@ const CertificationCard = ({ certification }: CertificationCardProps) => {
     new Date(certification.expiryDate) > new Date() && 
     new Date(certification.expiryDate).getTime() - new Date().getTime() < 90 * 24 * 60 * 60 * 1000; // 90 days
 
+  // Format date as "Month Year"
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      month: 'long',
+      year: 'numeric'
+    });
+  };
+
   return (
     <Link href={`/certifications/${certification.id}`} className={styles.linkWrapper}>
       <div className={`${styles.container} ${isExpired ? styles.expired : ''}`}>
@@ -45,15 +54,15 @@ const CertificationCard = ({ certification }: CertificationCardProps) => {
         <div className={styles.details}>
           <div className={styles.detail}>
             <VscCalendar className={styles.icon} />
-            <span>Issued: {new Date(certification.issueDate).toLocaleDateString()}</span>
+            <span>{formatDate(certification.issueDate)}</span>
           </div>
           
           {certification.expiryDate && (
             <div className={`${styles.detail} ${isExpired ? styles.expired : isExpiringSoon ? styles.expiringSoon : ''}`}>
               <VscWatch className={styles.icon} />
               <span>
-                {isExpired ? 'Expired: ' : 'Expires: '}
-                {new Date(certification.expiryDate).toLocaleDateString()}
+                {isExpired ? 'Expired: ' : 'Expires '}
+                {formatDate(certification.expiryDate)}
               </span>
             </div>
           )}
