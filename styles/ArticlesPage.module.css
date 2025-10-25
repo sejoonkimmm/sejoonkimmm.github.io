@@ -1,10 +1,18 @@
 .layout {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 1.5rem;
   height: calc(100vh - 60px); /* 헤더 높이 고려 */
   width: 100%;
   overflow-y: auto;
+}
+
+/* 큰 모니터 최적화 */
+@media (min-width: 1600px) {
+  .layout {
+    max-width: 1400px;
+    padding: 2rem;
+  }
 }
 
 .container {
@@ -12,6 +20,14 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
+}
+
+/* 큰 모니터에서 카드 최대 3열 */
+@media (min-width: 1200px) {
+  .container {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+  }
 }
 
 .pageTitle {
@@ -53,7 +69,8 @@
 
 @media screen and (max-width: 900px) {
   .container {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
   }
 
   .pageTitle {
@@ -61,7 +78,43 @@
   }
 
   .pageSubtitle {
-    font-size: 1rem;
+    font-size: 0.95rem;
     margin-bottom: 2rem;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .layout {
+    padding: 1rem;
+  }
+
+  .container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .pageTitle {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .pageSubtitle {
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .layout {
+    padding: 0.75rem;
+  }
+
+  .pageTitle {
+    font-size: 1.25rem;
+  }
+
+  .pageSubtitle {
+    font-size: 0.8rem;
   }
 }

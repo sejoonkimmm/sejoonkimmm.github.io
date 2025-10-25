@@ -23,6 +23,7 @@ const ThemeInfo = ({ icon, name, publisher, theme }: ThemeInfoProps) => {
           alt={name}
           height={80}
           width={80}
+          sizes="(max-width: 480px) 60px, (max-width: 768px) 70px, 80px"
           className={styles.themeImage}
         />
       </div>

@@ -47,6 +47,22 @@
   margin-right: auto;
 }
 
+/* 큰 모니터 */
+@media screen and (min-width: 1600px) {
+  .layout {
+    max-width: 1000px;
+  }
+  
+  .pageTitle {
+    font-size: 2.25rem;
+  }
+  
+  .pageSubtitle {
+    font-size: 1.1rem;
+  }
+}
+
+/* 태블릿 */
 @media screen and (max-width: 1200px) {
   .container {
     display: block;
@@ -56,6 +72,22 @@
   .container > div:first-child {
     border-right: none;
     margin-bottom: 2rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .pageTitle {
+    font-size: 1.75rem;
+    padding-top: 2rem;
+  }
+  
+  .pageSubtitle {
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+  }
+  
+  .container {
+    padding: 1.5rem 1rem;
   }
 }
 
@@ -69,15 +101,31 @@
   }
 
   .container {
-    padding: 1.5rem 0.75rem;
+    padding: 1.25rem 0.75rem;
   }
 
   .pageTitle {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
+    padding-top: 1.5rem;
   }
 
   .pageSubtitle {
-    font-size: 1rem;
+    font-size: 0.9rem;
     margin-bottom: 2rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .container {
+    padding: 1rem 0.5rem;
+  }
+
+  .pageTitle {
+    font-size: 1.25rem;
+  }
+
+  .pageSubtitle {
+    font-size: 0.8rem;
+    margin-bottom: 1.5rem;
   }
 }

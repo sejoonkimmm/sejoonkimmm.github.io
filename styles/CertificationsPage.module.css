@@ -5,6 +5,14 @@
   margin: 0 auto;
 }
 
+/* 큰 모니터 */
+@media (min-width: 1600px) {
+  .layout {
+    max-width: 1400px;
+    padding: 3rem;
+  }
+}
+
 .header {
   text-align: center;
   margin-bottom: 3rem;
@@ -32,32 +40,61 @@
 }
 
 /* Responsive design */
+@media (max-width: 1024px) {
+  .certificationsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.75rem;
+  }
+}
+
 @media (max-width: 768px) {
   .layout {
-    padding: 1rem;
+    padding: 1.5rem 1rem;
   }
 
-  .pageTitle {
+  .title {
     font-size: 2.5rem;
   }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
 
-  .container {
+  .certificationsGrid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
 }
 
+@media (max-width: 600px) {
+  .layout {
+    padding: 1rem 0.75rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .certificationsGrid {
+    gap: 1.25rem;
+  }
+}
+
 @media (max-width: 480px) {
-  .container {
+  .layout {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .certificationsGrid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
 
-  .pageTitle {
-    font-size: 2rem;
+  .title {
+    font-size: 1.75rem;
   }
 
-  .pageSubtitle {
-    font-size: 1rem;
+  .subtitle {
+    font-size: 0.9rem;
   }
 }

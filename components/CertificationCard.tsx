@@ -26,6 +26,7 @@ const CertificationCard = ({ certification }: CertificationCardProps) => {
             alt={`${certification.provider} logo`}
             width={60}
             height={60}
+            sizes="(max-width: 480px) 50px, (max-width: 768px) 55px, 60px"
             className={styles.logo}
           />
         </div>

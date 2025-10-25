@@ -60,13 +60,47 @@
 
 @media screen and (min-width: 2000px) {
   .explorer {
-    width: 10vw;
+    width: 12vw;
+  }
+  
+  .title, .file {
+    font-size: 0.95rem;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .explorer {
+    width: 22vw;
   }
 }
 
 @media screen and (max-width: 900px) {
   .explorer {
-    width: 20vw;
+    width: 25vw;
+  }
+  
+  .title {
+    font-size: 0.85rem;
+  }
+  
+  .file {
+    font-size: 0.8rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .explorer {
+    width: 30vw;
+  }
+  
+  .title {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .file {
+    padding: 0.15rem 0.75rem;
+    font-size: 0.75rem;
   }
 }
 

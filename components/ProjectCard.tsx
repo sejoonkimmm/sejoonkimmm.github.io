@@ -22,6 +22,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
             alt={`${project.title} logo`}
             width={32}
             height={32}
+            sizes="(max-width: 480px) 22px, (max-width: 768px) 26px, 32px"
             className={styles.logo}
           />
         </div>

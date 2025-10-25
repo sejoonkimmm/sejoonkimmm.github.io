@@ -17,6 +17,27 @@
   overflow-x: hidden;
 }
 
+/* 큰 모니터 최적화 */
+@media screen and (min-width: 1600px) {
+  .content {
+    padding: 1.5rem 2rem;
+  }
+}
+
+/* 태블릿 */
+@media screen and (max-width: 1024px) {
+  .content {
+    padding: 1rem;
+  }
+}
+
+/* 모바일 */
+@media screen and (max-width: 600px) {
+  .content {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
 .content {
   scrollbar-width: 10px;
   scrollbar-color: var(--accent-color);
@@ -36,8 +57,4 @@
   border-left: 1px solid #1e1f29;
 }
 
-@media screen and (max-width: 600px) {
-  .content {
-    padding: 2rem 1rem;
-  }
-}
+/* 기존 모바일 미디어 쿼리 제거 - 위에서 통합함 */

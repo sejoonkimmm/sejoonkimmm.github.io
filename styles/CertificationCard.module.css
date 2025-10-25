@@ -175,20 +175,102 @@
 }
 
 /* Responsive design */
+@media (max-width: 768px) {
+  .container {
+    min-height: 420px;
+  }
+  
+  .header {
+    padding: 1.25rem;
+  }
+  
+  .content {
+    padding: 1.25rem;
+  }
+  
+  .logoWrapper {
+    width: 55px;
+    height: 55px;
+  }
+  
+  .logo {
+    width: 55px !important;
+    height: 55px !important;
+  }
+  
+  .title {
+    font-size: 1.1rem;
+  }
+  
+  .provider {
+    font-size: 0.85rem;
+  }
+  
+  .description {
+    font-size: 0.8rem;
+  }
+  
+  .detail {
+    font-size: 0.75rem;
+  }
+  
+  .skill {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.45rem;
+  }
+}
+
 @media (max-width: 480px) {
+  .container {
+    min-height: 400px;
+  }
+  
   .header,
   .content {
     padding-left: 1rem;
     padding-right: 1rem;
   }
+  
+  .header {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
 
   .title {
     font-size: 1rem;
+  }
+  
+  .provider {
+    font-size: 0.75rem;
+  }
+  
+  .description {
+    font-size: 0.75rem;
+    line-height: 1.4;
   }
 
   .logoWrapper {
     width: 50px;
     height: 50px;
+  }
+  
+  .logo {
+    width: 50px !important;
+    height: 50px !important;
+  }
+  
+  .levelBadge {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .detail {
+    font-size: 0.7rem;
+  }
+  
+  .icon {
+    width: 12px;
+    height: 12px;
   }
 
   .skills {
@@ -196,6 +278,12 @@
   }
 
   .skill {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.4rem;
+  }
+  
+  .verifyButton {
     font-size: 0.7rem;
+    padding: 0.4rem 0.8rem;
   }
 }

@@ -135,3 +135,88 @@
 .underline:hover {
   background-size: 100% 88%;
 }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .card {
+    height: 150px;
+  }
+  
+  .content {
+    padding: 1rem;
+  }
+  
+  .logoWrapper {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 1rem;
+  }
+  
+  .logo {
+    width: 26px;
+    height: 26px;
+  }
+  
+  .title {
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .description {
+    font-size: 0.85rem;
+  }
+  
+  .link {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.75rem;
+  }
+  
+  .tags span {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    height: 140px;
+  }
+  
+  .content {
+    padding: 0.85rem;
+  }
+  
+  .logoWrapper {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 0.75rem;
+  }
+  
+  .logo {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .title {
+    font-size: 1rem;
+  }
+  
+  .description {
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .link {
+    font-size: 0.7rem;
+    padding: 0.35rem 0.65rem;
+  }
+  
+  .tags span {
+    font-size: 0.65rem;
+    margin: 0.3rem 0.3rem 0 0;
+  }
+  
+  .underline {
+    font-size: 0.8rem;
+  }
+}
