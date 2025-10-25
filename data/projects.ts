@@ -12,7 +12,7 @@ export const projects: Project[] = [
     description:
       'A Visual Studio Code themed developer portfolio built with Next.js and CSS Modules.',
     logo: '/logos/vsc.svg',
-    link: 'https://github.com/sejoonkimmm/car-instrument',
+    link: '/projects/car-instrument',
     slug: 'car-instrument',
   },
   {
