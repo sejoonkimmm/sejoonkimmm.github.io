@@ -11,7 +11,7 @@ const contactData = {
   contact: {
     email: 'skim.devops@gmail.com',
     phone: '+49 171 2742820',
-    website: 'https://kimsejoon.dev',
+    website: 'www.sejoonkim.me',
   },
   social: {
     github: 'sejoonkimmm',

@@ -27,7 +27,7 @@ const TerraformCode = () => {
     { code: '    Certifications = [', type: 'list' },
     { code: '      "AWS DevOps Professional (DOP-C02)",', type: 'list-item' },
     { code: '      "Azure Solution Architect Expert (AZ-305)",', type: 'list-item' },
-    { code: '      "Final winner of Porsche Digital Campus Challenge 2025",', type: 'list-item' },
+    { code: '      "Final winner of Porsche Digital Campus Challenge",', type: 'list-item' },
     { code: '      "Certified Kubernetes Administrator (CKA)",', type: 'list-item' },
     { code: '      "Azure Administrator Associate (AZ-104)"', type: 'list-item' },
     { code: '    ]', type: 'close' },

@@ -45,7 +45,7 @@ export default function HomePage() {
               <span className={styles.statLabel}>Certifications</span>
             </div>
             <div className={styles.stat}>
-              <span className={styles.statNumber}>1+</span>
+              <span className={styles.statNumber}>2+</span>
               <span className={styles.statLabel}>Years Experience</span>
             </div>
             <div className={styles.stat}>

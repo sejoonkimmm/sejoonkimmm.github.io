@@ -90,9 +90,7 @@ const CertificationPage = ({ certification }: CertificationPageProps) => {
                   {...props}
                 />
               ),
-              img: (props: any) => (
-                <img className={styles.image} {...props} alt={props.alt || ''} />
-              ),
+              img: () => null, // 이미지 제거
             }}
           >
             {certification.content}

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { VscCalendar, VscVerified, VscWatch } from 'react-icons/vsc';
+import { VscCalendar, VscWatch } from 'react-icons/vsc';
 
 import { Certification } from '@/types';
 
@@ -57,11 +57,6 @@ const CertificationCard = ({ certification }: CertificationCardProps) => {
               </span>
             </div>
           )}
-
-          <div className={styles.detail}>
-            <VscVerified className={styles.icon} />
-            <span>ID: {certification.credentialId}</span>
-          </div>
         </div>
 
         <div className={styles.skills}>

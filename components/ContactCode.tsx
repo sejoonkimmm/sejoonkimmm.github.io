@@ -3,8 +3,8 @@ import styles from '@/styles/ContactCode.module.css';
 const contactItems = [
   {
     social: 'website',
-    link: 'kimsejoon.dev',
-    href: 'https://kimsejoon.dev',
+    link: 'www.sejoonkim.me',
+    href: 'www.sejoonkim.me',
   },
   {
     social: 'email',

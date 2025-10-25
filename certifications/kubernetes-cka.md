@@ -25,7 +25,7 @@ The Certified Kubernetes Administrator (CKA) program provides assurance that CKA
 
 - **Certifying Body**: Cloud Native Computing Foundation (CNCF)
 - **Certification Level**: Associate
-- **Validity Period**: 3 years (2024-2027)
+- **Validity Period**: 3 years (2024-2026)
 - **Exam Format**: Performance-based, hands-on exam
 
 ## Core Competencies
