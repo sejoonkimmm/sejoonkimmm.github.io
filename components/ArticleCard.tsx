@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { VscCalendar, VscWatch } from 'react-icons/vsc';
 
 import { Article } from '@/types';
@@ -25,19 +24,12 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
 
   return (
     <Link href={`/articles/${article.slug}`} className={styles.container}>
-      <div className={styles.imageWrapper}>
-        <Image
-          src={article.cover_image}
-          alt={article.title}
-          fill
-          sizes="(max-width: 768px) 100vw, 300px"
-          className={styles.image}
-        />
-        <div className={styles.dateBadge}>
-          <VscCalendar /> {formatDate(article.date)}
-        </div>
-      </div>
       <div className={styles.content}>
+        <div className={styles.header}>
+          <div className={styles.dateBadge}>
+            <VscCalendar /> {formatDate(article.date)}
+          </div>
+        </div>
         <h3 className={styles.title}>{article.title}</h3>
         <p className={styles.description}>{article.description}</p>
 
