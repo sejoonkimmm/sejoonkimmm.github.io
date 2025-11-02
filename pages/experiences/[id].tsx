@@ -38,9 +38,10 @@ const ExperiencePage = ({ experience }: ExperiencePageProps) => {
             <Image
               src={experience.image}
               alt={experience.title}
-              width={1200}
-              height={630}
+              fill
+              style={{ objectFit: 'cover' }}
               className={styles.image}
+              priority
             />
           </div>
         )}

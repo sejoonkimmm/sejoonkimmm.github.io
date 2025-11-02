@@ -6,7 +6,6 @@
   cursor: pointer;
   overflow: hidden;
   position: relative;
-  height: 180px;
   width: 100%;
   border: 1px solid rgba(255, 255, 255, 0.08);
   transition: all 0.25s ease;
@@ -16,87 +15,56 @@
 
 .card:hover {
   border-color: var(--accent-color);
-  transform: translateY(-2px);
+  transform: translateX(4px);
 }
 
 .content {
-  padding: 1.25rem;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  height: 100%;
-}
-
-.logoWrapper {
-  background: rgba(255, 255, 255, 0.05);
-  width: 48px;
-  height: 48px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  margin-bottom: 0.75rem;
-}
-
-.logo {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
 }
 
 .title {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 600;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
   color: var(--accent-color);
   line-height: 1.3;
 }
 
 .organization {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 0.15rem;
-}
-
-.role {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.7);
   margin-bottom: 0.25rem;
-  font-style: italic;
 }
 
 .period {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.75rem;
 }
 
 .description {
-  font-size: 0.85rem;
-  line-height: 1.5;
+  font-size: 0.9rem;
+  line-height: 1.6;
   color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 0.75rem;
-  flex: 1;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  margin-bottom: 1rem;
 }
 
 .tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
+  gap: 0.5rem;
   margin-top: auto;
 }
 
 .tag {
-  padding: 0.2rem 0.5rem;
+  padding: 0.3rem 0.6rem;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 4px;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.75);
   transition: all 0.2s;
 }
@@ -108,23 +76,35 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .card {
-    height: 170px;
+  .content {
+    padding: 1.25rem;
   }
 
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .organization {
+    font-size: 0.85rem;
+  }
+
+  .period {
+    font-size: 0.75rem;
+  }
+
+  .description {
+    font-size: 0.85rem;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
   .content {
     padding: 1rem;
-  }
-
-  .logoWrapper {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 0.6rem;
-  }
-
-  .logo {
-    width: 26px;
-    height: 26px;
   }
 
   .title {
@@ -135,67 +115,21 @@
     font-size: 0.8rem;
   }
 
-  .role {
-    font-size: 0.75rem;
-  }
-
   .period {
     font-size: 0.7rem;
   }
 
   .description {
     font-size: 0.8rem;
+    margin-bottom: 0.75rem;
   }
 
   .tag {
     font-size: 0.65rem;
-    padding: 0.15rem 0.4rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .card {
-    height: 160px;
+    padding: 0.2rem 0.4rem;
   }
 
-  .content {
-    padding: 0.85rem;
-  }
-
-  .logoWrapper {
-    width: 36px;
-    height: 36px;
-    margin-bottom: 0.5rem;
-  }
-
-  .logo {
-    width: 22px;
-    height: 22px;
-  }
-
-  .title {
-    font-size: 0.95rem;
-  }
-
-  .organization {
-    font-size: 0.75rem;
-  }
-
-  .role {
-    font-size: 0.7rem;
-  }
-
-  .period {
-    font-size: 0.65rem;
-  }
-
-  .description {
-    font-size: 0.75rem;
-    -webkit-line-clamp: 1;
-  }
-
-  .tag {
-    font-size: 0.6rem;
-    padding: 0.12rem 0.35rem;
+  .tags {
+    gap: 0.35rem;
   }
 }

@@ -18,6 +18,17 @@
   border-bottom: 1px solid var(--border-color);
 }
 
+.coverImage {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+}
+
+.image {
+  object-fit: cover;
+}
+
 .imageWrapper {
   margin-bottom: 2rem;
   border-radius: 8px;
@@ -180,6 +191,10 @@
     padding: 1.5rem;
   }
 
+  .coverImage {
+    height: 300px;
+  }
+
   .title {
     font-size: 2rem;
   }
@@ -207,5 +222,11 @@
   .pre {
     padding: 1rem;
     font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .coverImage {
+    height: 250px;
   }
 }
