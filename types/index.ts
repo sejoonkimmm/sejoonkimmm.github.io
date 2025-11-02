@@ -50,3 +50,15 @@ export interface Certification {
   skills: string[];
   level: 'Foundational' | 'Associate' | 'Professional' | 'Expert';
 }
+
+export interface Experience {
+  id: string;
+  title: string;
+  organization: string;
+  role: string;
+  period: string;
+  description: string;
+  image: string;
+  logo: string;
+  tags: string[];
+}

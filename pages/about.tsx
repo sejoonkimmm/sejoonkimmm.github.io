@@ -1,4 +1,6 @@
 import TypeWriter from '@/components/TypeWriter';
+import ExperienceCard from '@/components/ExperienceCard';
+import { experiences } from '@/data/experiences';
 import styles from '@/styles/AboutPage.module.css';
 
 const AboutPage = () => {
@@ -7,10 +9,10 @@ const AboutPage = () => {
       <div className={styles.content}>
         <h1 className={styles.title}>Sejoon Kim</h1>
         <div className={styles.subtitle}>
-          <TypeWriter 
+          <TypeWriter
             texts={[
               "DevOps Engineer",
-              "Site Reliability Engineer", 
+              "Site Reliability Engineer",
               "Platform Engineer",
               "Cloud Engineer"
             ]}
@@ -31,7 +33,7 @@ const AboutPage = () => {
           </section>
 
           <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>Experience</h2>
+            <h2 className={styles.sectionTitle}>Current Role</h2>
             <p className={styles.paragraph}>
               Currently at <span className={styles.highlight}>CloudCops</span> as
               DevOps Engineer
@@ -40,6 +42,15 @@ const AboutPage = () => {
               Currently participating in B2C service projects as a DevOps engineer,
               implementing GitOps deployment methods using ArgoCD in Kubernetes environments.
             </p>
+          </section>
+
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>My Journey</h2>
+            <div className={styles.experiencesGrid}>
+              {experiences.map((experience) => (
+                <ExperienceCard key={experience.id} experience={experience} />
+              ))}
+            </div>
           </section>
         </div>
       </div>

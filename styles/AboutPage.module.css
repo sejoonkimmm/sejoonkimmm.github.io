@@ -61,6 +61,13 @@
   font-weight: 500;
 }
 
+.experiencesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
 /* 큰 모니터 */
 @media screen and (min-width: 1600px) {
   .container {
@@ -147,5 +154,10 @@
 
   .paragraph {
     font-size: 0.85rem;
+  }
+
+  .experiencesGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 }
