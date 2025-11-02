@@ -1,6 +1,6 @@
 ---
 title: "Why I'm Obsessed with Uptime: The Real Cost of Downtime"
-date: "02.11.2025"
+date: "29.10.2025"
 description: "My journey into understanding why every millisecond matters in DevOps, and what the research taught me about building reliable systems"
 tags: ["DevOps", "Site Reliability", "Performance", "Cloud Infrastructure", "Observability"]
 readTime: "10 min read"
