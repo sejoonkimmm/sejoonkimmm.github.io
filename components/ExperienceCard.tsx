@@ -18,7 +18,10 @@ const ExperienceCard = ({ experience }: ExperienceCardProps) => {
       <div className={styles.content}>
         <h3 className={styles.title}>{experience.title}</h3>
         <p className={styles.organization}>{experience.organization}</p>
-        <p className={styles.period}>{experience.period}</p>
+        <div className={styles.metadata}>
+          <p className={styles.period}>{experience.period}</p>
+          <p className={styles.location}>{experience.location}</p>
+        </div>
         <p className={styles.description}>{experience.description}</p>
         <div className={styles.tags}>
           {experience.tags.map((tag) => (

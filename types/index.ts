@@ -57,6 +57,7 @@ export interface Experience {
   organization: string;
   role: string;
   period: string;
+  location: string;
   description: string;
   image: string;
   logo: string;

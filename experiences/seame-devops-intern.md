@@ -1,25 +1,26 @@
 ---
-title: "Working Student"
-organization: "VolksWagen SEA:ME"
-role: "Automotive Software Developer"
-period: "2023 - 2024"
-description: "Worked as a working student on automotive software development projects at VolksWagen SEA:ME program."
+title: "Sejoon Kim as a DevOps Engineer Intern"
+organization: "SEA:ME"
+role: "DevOps Engineer Intern"
+period: "July 2024 - January 2025"
+location: "Wolfsburg, Germany"
+description: "Worked as a DevOps Engineer Intern on automotive software development projects at SEA:ME program."
 image: "/images/experiences/volkswagen.jpg"
 logo: "/logos/volkswagen.svg"
-tags: ["Automotive", "Software Development", "Innovation"]
+tags: ["Automotive", "DevOps", "Infrastructure"]
 ---
 
-# Working Student - VolksWagen SEA:ME
+# Sejoon Kim as a DevOps Engineer Intern - SEA:ME
 
-Developing next-generation automotive software solutions as part of VolksWagen's innovative SEA:ME program.
+Developing next-generation automotive software solutions as part of SEA:ME's innovative program.
 
 ## About SEA:ME
 
-SEA:ME (Software Engineering in Automotive and Mobility Ecosystems) is VolksWagen's innovative program designed to train the next generation of automotive software engineers. The program combines hands-on project work with cutting-edge automotive technologies.
+SEA:ME (Software Engineering in Automotive and Mobility Ecosystems) is an innovative program designed to train the next generation of automotive software engineers. The program combines hands-on project work with cutting-edge automotive technologies.
 
 ## Role Overview
 
-As a Working Student in the SEA:ME program from 2023 to 2024, I contributed to automotive software development projects, focusing on embedded systems, vehicle networking, and software architecture for modern vehicles.
+As a DevOps Engineer Intern in the SEA:ME program from July 2024 to January 2025, I contributed to automotive software development projects, focusing on infrastructure, deployment automation, and DevOps practices for modern vehicles.
 
 ## Key Projects
 

@@ -36,13 +36,24 @@
   font-size: 0.9rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.metadata {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .period {
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 0.75rem;
+}
+
+.location {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .description {
