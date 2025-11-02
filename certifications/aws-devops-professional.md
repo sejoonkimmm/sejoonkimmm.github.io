@@ -3,7 +3,7 @@ title: "AWS Certified DevOps Engineer - Professional"
 date: "15.08.2024"
 provider: "Amazon Web Services"
 description: "Validates technical expertise in provisioning, operating, and managing distributed application systems on the AWS platform (DOP-C02)"
-credentialId: "DOP-C02-789456"
+credentialId: "DOP-C02"
 expiryDate: "15.08.2027"
 verificationUrl: "https://www.credly.com/badges/example"
 skills: ["AWS", "DevOps", "CI/CD", "Infrastructure as Code", "Monitoring", "Security"]

@@ -6,12 +6,14 @@ description: "Participated as the German representative team in the Brand Experi
 credentialId: "PDCC-2025-WINNER"
 skills: ["Innovation", "Digital Transformation", "Problem Solving", "Technology Leadership"]
 level: "Expert"
-logo: "/logos/porsche-digital.svg"
+logo: "/logos/porsche.webp"
 ---
 
 # Porsche Digital Campus Challenge 2025 Final Winner
 
 A prestigious achievement representing Germany in the global Porsche Digital Campus Challenge.
+
+I participated as a DevOps member of Team 9th of September, and you can find a summary of our winning project [here](https://campus.porsche.digital/projects/digital-campus).
 
 ## Achievement Overview
 
