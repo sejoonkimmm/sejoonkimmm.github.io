@@ -87,7 +87,23 @@ const CertificationPage = ({ certification }: CertificationPageProps) => {
                   {...props}
                 />
               ),
-              img: () => null, // 이미지 제거
+              img: (props: any) => {
+                const { src, alt } = props;
+                return (
+                  <span className={styles.imageWrapper}>
+                    <Image
+                      src={src || ''}
+                      alt={alt || ''}
+                      width={800}
+                      height={600}
+                      className={styles.certificationImage}
+                      style={{ width: '100%', height: 'auto' }}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 800px"
+                      priority={false}
+                    />
+                  </span>
+                );
+              },
             }}
           >
             {certification.content}
@@ -100,7 +116,7 @@ const CertificationPage = ({ certification }: CertificationPageProps) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const slugs = getAllCertificationSlugs();
-  
+
   const paths = slugs.map((slug) => ({
     params: { slug },
   }));
@@ -111,7 +127,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps<CertificationPageProps> = async ({ params }) => {
   if (!params?.slug || typeof params.slug !== 'string') {
     return {
       notFound: true,

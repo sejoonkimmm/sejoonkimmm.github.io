@@ -19,7 +19,7 @@ I participated as a DevOps member of Team 9th of September, and you can find a s
 
 The Porsche Digital Campus Challenge 2025 was a global competition that brought together the brightest minds from universities worldwide to tackle real-world challenges in digital transformation and automotive innovation.
 
-![Porsche Digital Innovation](/images/external_secret.jpg)
+![Porsche Digital Campus Challenge Team Photo](/images/porschedigitalcampus.jpeg)
 
 ## Competition Details
 
