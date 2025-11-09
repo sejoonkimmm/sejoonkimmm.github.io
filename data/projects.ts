@@ -4,31 +4,39 @@ export interface Project {
   logo: string;
   link: string;
   slug: string;
+  role: string;
+  organization: string;
 }
 
 export const projects: Project[] = [
   {
     title: 'car-instrument',
     description:
-      'A Visual Studio Code themed developer portfolio built with Next.js and CSS Modules.',
+      'Automated CI/CD pipeline for vehicle instrument cluster deployment. Code changes automatically build and deploy to physical vehicle hardware.',
     logo: '/logos/vsc.svg',
-    link: '/projects/car-instrument',
+    link: 'https://github.com/sejoonkimmm/Car-instrument',
     slug: 'car-instrument',
+    role: 'DevOps Engineer',
+    organization: 'SEA:ME',
   },
   {
     title: 'Inception-of-things',
     description:
-      'A simple and elegant way to track your subscriptions and save money.',
+      'Kubernetes deployment and orchestration project using K3s and K3d for automated infrastructure setup.',
     logo: '/logos/subtrackt.svg',
     link: 'https://github.com/sejoonkimmm/Inception-of-things',
     slug: 'inception-of-things',
+    role: 'DevOps',
+    organization: '42Wolfsburg',
   },
   {
     title: 'ft_transcendence',
     description:
-      'VSCode extension to track and deploy your Coolify applications.',
+      'Real-time multiplayer Pong game with chat system, built with modern web technologies and containerized deployment.',
     logo: '/logos/coolify.svg',
     link: 'https://github.com/sejoonkimmm/ft_transcendence',
     slug: 'ft_transcendence',
+    role: 'DevOps & Team Leader',
+    organization: '42Wolfsburg',
   },
 ];
