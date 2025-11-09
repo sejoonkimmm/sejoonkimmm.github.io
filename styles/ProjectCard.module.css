@@ -6,7 +6,8 @@
   cursor: pointer;
   overflow: hidden;
   position: relative;
-  height: 160px;
+  min-height: 160px;
+  height: auto;
   width: 100%;
   border: 1px solid rgba(255, 255, 255, 0.08);
   transition: all 0.25s ease;
@@ -38,8 +39,6 @@
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
 }
 
 .logoWrapper {
@@ -161,7 +160,8 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .card {
-    height: 150px;
+    min-height: 150px;
+    height: auto;
   }
 
   .content {
@@ -207,7 +207,8 @@
 
 @media (max-width: 480px) {
   .card {
-    height: 140px;
+    min-height: 140px;
+    height: auto;
   }
 
   .content {
