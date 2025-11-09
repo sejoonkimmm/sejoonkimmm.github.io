@@ -1,6 +1,6 @@
 ---
 title: "Creating a Least-Privilege Monitoring User in Zalando Postgres Operator"
-date: "02.11.2025"
+date: "05.09.2025"
 description: "How I solved the challenge of creating a monitoring-only user with minimal permissions in a GitOps-managed Postgres cluster"
 tags: ["Kubernetes", "PostgreSQL", "GitOps", "Security", "Monitoring", "Zalando"]
 readTime: "9 min read"

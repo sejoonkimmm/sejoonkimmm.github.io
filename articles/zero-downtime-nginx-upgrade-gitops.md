@@ -1,6 +1,6 @@
 ---
 title: 'Zero-Downtime Helm App Upgrade in Production'
-date: '2025-10-25'
+date: '2025-09-03'
 description: 'How to upgrade a Helm-managed application in production with zero downtime using GitOps and Kubernetes RollingUpdate strategy'
 tags: ['Kubernetes', 'Helm', 'GitOps', 'ArgoCD', 'Production']
 readTime: '7 min read'
