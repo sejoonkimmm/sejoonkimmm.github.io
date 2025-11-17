@@ -1,10 +1,10 @@
 ---
 title: "Kubernetes StatefulSet: A Deep Dive"
-date: "17.11.2025"
+date: "17.09.2025"
 description: "Understanding StatefulSet internals, ordered pod management, persistent storage, and real-world use cases for stateful applications in Kubernetes"
 tags: ["Kubernetes", "StatefulSet", "DevOps", "Storage", "Database", "Architecture"]
 readTime: "12 min read"
-image: "/images/articles/statefulset_note.jpg"
+image: "/public/images/articles/statefulset_note.jpg"
 ---
 
 # Kubernetes StatefulSet: A Deep Dive
@@ -464,20 +464,6 @@ kubectl patch statefulset cassandra -p '{"spec":{"updateStrategy":{"rollingUpdat
 
 # Finally update cassandra-0
 kubectl patch statefulset cassandra -p '{"spec":{"updateStrategy":{"rollingUpdate":{"partition":0}}}}'
-```
-
-### Backup and Restore
-
-```bash
-# Backup cassandra-0 data
-kubectl exec cassandra-0 -- nodetool snapshot mybackup
-
-# Copy snapshot out
-kubectl cp cassandra-0:/var/lib/cassandra/snapshots ./backup
-
-# Restore to new StatefulSet
-kubectl cp ./backup cassandra-new-0:/var/lib/cassandra/
-kubectl exec cassandra-new-0 -- nodetool refresh
 ```
 
 ## Conclusion
