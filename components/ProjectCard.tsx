@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 
 import { Project } from '@/types';
@@ -22,16 +21,6 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
         className={styles.card}
       >
         <div className={styles.content}>
-          <div className={styles.logoWrapper}>
-            <Image
-              src={project.logo}
-              alt={`${project.title} logo`}
-              width={32}
-              height={32}
-              sizes="(max-width: 480px) 22px, (max-width: 768px) 26px, 32px"
-              className={styles.logo}
-            />
-          </div>
           <h3 className={styles.title}>{project.title}</h3>
           <div className={styles.metadata}>
             <span className={styles.role}>{project.role}</span>
@@ -50,16 +39,6 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
       className={styles.card}
     >
       <div className={styles.content}>
-        <div className={styles.logoWrapper}>
-          <Image
-            src={project.logo}
-            alt={`${project.title} logo`}
-            width={32}
-            height={32}
-            sizes="(max-width: 480px) 22px, (max-width: 768px) 26px, 32px"
-            className={styles.logo}
-          />
-        </div>
         <h3 className={styles.title}>{project.title}</h3>
         <div className={styles.metadata}>
           <span className={styles.role}>{project.role}</span>
