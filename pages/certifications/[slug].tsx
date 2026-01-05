@@ -88,15 +88,15 @@ const CertificationPage = ({ certification }: CertificationPageProps) => {
                 />
               ),
               img: (props: any) => {
-                const { src, alt } = props;
                 return (
                   <span className={styles.imageWrapper}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={src || ''}
-                      alt={alt || ''}
-                      className={styles.certificationImage}
-                      loading="lazy"
+                    <Image
+                      src={props.src || ''}
+                      alt={props.alt || ''}
+                      width={800}
+                      height={600}
+                      style={{ width: '100%', height: 'auto' }}
+                      className={styles.contentImage}
                     />
                   </span>
                 );

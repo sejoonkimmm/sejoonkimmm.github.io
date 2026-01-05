@@ -93,9 +93,20 @@ const ProjectPage = ({ project }: ProjectPageProps) => {
                   {...props}
                 />
               ),
-              img: (props: any) => (
-                <img className={styles.image} {...props} alt={props.alt || ''} />
-              ),
+              img: (props: any) => {
+                return (
+                  <span className={styles.imageWrapper}>
+                    <Image
+                      src={props.src || ''}
+                      alt={props.alt || ''}
+                      width={800}
+                      height={600}
+                      style={{ width: '100%', height: 'auto' }}
+                      className={styles.contentImage}
+                    />
+                  </span>
+                );
+              },
             }}
           >
             {project.content}
