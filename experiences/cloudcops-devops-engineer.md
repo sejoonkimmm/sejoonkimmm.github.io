@@ -5,7 +5,7 @@ role: "DevOps Engineer"
 period: "March 2025 - Present"
 location: "Bielefeld, Germany"
 description: "Building reliable, cost-effective infrastructure for B2C services. Achieved 90% cost reduction in monitoring, 98% CVE reduction, and 53% configuration overhead reduction through GitOps automation."
-image: "/images/experiences/cloudcops.jpg"
+image: ""
 logo: "/logos/cloudcops.svg"
 tags: ["Kubernetes", "ArgoCD", "Cost Optimization", "Security", "GitOps"]
 ---

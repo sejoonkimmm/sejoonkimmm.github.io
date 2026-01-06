@@ -4,7 +4,7 @@ date: "August 2025 - Present"
 description: "Secure DevSecOps infrastructure with automated vulnerability management. Achieved 98% CVE reduction and 90% cost savings on monitoring through Prometheus and Grafana self-hosting."
 tags: ["DevSecOps", "Kubernetes", "Trivy", "Grafana", "Prometheus", "Security", "GitLab", "ArgoCD"]
 readTime: "6 min read"
-image: "/images/projects/immonow.jpg"
+image: ""
 ---
 
 # app.immonow.at - DevSecOps Platform

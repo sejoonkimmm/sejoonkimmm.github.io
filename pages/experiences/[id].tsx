@@ -83,15 +83,23 @@ const ExperiencePage = ({ experience }: ExperiencePageProps) => {
                   {...props}
                 />
               ),
-              img: (props: any) => (
-                <Image
-                  src={props.src || ''}
-                  alt={props.alt || ''}
-                  width={800}
-                  height={400}
-                  className={styles.contentImage}
-                />
-              ),
+              img: (props: any) => {
+                if (!props.src) {
+                  return null;
+                }
+                return (
+                  <span className={styles.imageWrapper}>
+                    <Image
+                      src={props.src}
+                      alt={props.alt || ''}
+                      width={800}
+                      height={600}
+                      style={{ width: '100%', height: 'auto' }}
+                      className={styles.contentImage}
+                    />
+                  </span>
+                );
+              },
             }}
           >
             {experience.content}

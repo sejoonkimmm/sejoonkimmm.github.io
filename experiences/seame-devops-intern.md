@@ -5,7 +5,7 @@ role: "DevOps Engineer Intern"
 period: "July 2024 - January 2025"
 location: "Wolfsburg, Germany"
 description: "Worked as a DevOps Engineer Intern on automotive software development projects at SEA:ME program."
-image: "/images/experiences/volkswagen.jpg"
+image: ""
 logo: "/logos/volkswagen.svg"
 tags: ["Automotive", "DevOps", "Infrastructure"]
 ---

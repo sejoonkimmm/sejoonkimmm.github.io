@@ -4,7 +4,7 @@ date: "March 2025 - Present"
 description: "Enterprise Azure automation reducing App Registration deployment time by 85%. Modernized IaC practices with Helm-based Terraform modules and integrated Jira workflows."
 tags: ["Azure", "Terraform", "Helm", "ArgoCD", "Jira", "Automation", "Python"]
 readTime: "5 min read"
-image: "/images/projects/azure-automation.jpg"
+image: ""
 ---
 
 # Azure Infrastructure Automation
