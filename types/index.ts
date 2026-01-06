@@ -61,7 +61,7 @@ export interface Experience {
   period: string;
   location: string;
   description: string;
-  image: string;
+  image?: string;
   logo: string;
   tags: string[];
 }
