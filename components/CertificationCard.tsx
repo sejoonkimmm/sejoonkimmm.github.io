@@ -29,16 +29,18 @@ const CertificationCard = ({ certification }: CertificationCardProps) => {
     <Link href={`/certifications/${certification.id}`} className={styles.linkWrapper}>
       <div className={`${styles.container} ${isExpired ? styles.expired : ''}`}>
       <div className={styles.header}>
-        <div className={styles.logoWrapper}>
-          <Image
-            src={certification.logo}
-            alt={`${certification.provider} logo`}
-            width={60}
-            height={60}
-            sizes="(max-width: 480px) 50px, (max-width: 768px) 55px, 60px"
-            className={styles.logo}
-          />
-        </div>
+        {certification.logo && (
+          <div className={styles.logoWrapper}>
+            <Image
+              src={certification.logo}
+              alt={`${certification.provider} logo`}
+              width={60}
+              height={60}
+              sizes="(max-width: 480px) 50px, (max-width: 768px) 55px, 60px"
+              className={styles.logo}
+            />
+          </div>
+        )}
         <div className={styles.level}>
           <span className={`${styles.levelBadge} ${styles[certification.level.toLowerCase()]}`}>
             {certification.level}

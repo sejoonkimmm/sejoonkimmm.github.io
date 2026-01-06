@@ -94,10 +94,13 @@ const ProjectPage = ({ project }: ProjectPageProps) => {
                 />
               ),
               img: (props: any) => {
+                if (!props.src) {
+                  return null;
+                }
                 return (
                   <span className={styles.imageWrapper}>
                     <Image
-                      src={props.src || ''}
+                      src={props.src}
                       alt={props.alt || ''}
                       width={800}
                       height={600}
