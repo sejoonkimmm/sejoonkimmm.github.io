@@ -4,7 +4,6 @@ date: "07.09.2025"
 description: "Moving our monitoring from Grafana Cloud to self-hosted Prometheus and Grafana on Kubernetes. Turns out most apps already had metrics support, just needed to enable it."
 tags: ["Kubernetes", "Monitoring", "Prometheus", "Grafana", "ArgoCD", "GitOps", "Observability"]
 readTime: "9 min read"
-image: ""
 ---
 
 # Migration Diary Part 1: Moving Metrics from Grafana Cloud to Kubernetes

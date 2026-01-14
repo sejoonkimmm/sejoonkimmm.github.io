@@ -4,7 +4,6 @@ date: "08.10.2025"
 description: "Looked at actual CPU and memory usage across our Kubernetes nodes. Found we were paying for servers we barely used. Saved €120/month by switching to smaller machines."
 tags: ["Hetzner", "Cost Optimization", "Kubernetes", "Capacity Planning"]
 readTime: "7 min read"
-image: ""
 ---
 
 # Downsizing Hetzner Servers We Don't Need

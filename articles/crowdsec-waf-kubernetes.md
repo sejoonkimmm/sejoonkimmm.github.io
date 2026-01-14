@@ -4,7 +4,6 @@ date: "14.01.2026"
 description: "Needed a WAF for public APIs. Chose CrowdSec (open-source). Hit three integration issues: PostgreSQL namespace, client IP preservation, log collection. Documenting the fixes."
 tags: ["Kubernetes", "Security", "WAF", "CrowdSec", "PostgreSQL"]
 readTime: "10 min read"
-image: ""
 ---
 
 # CrowdSec WAF on Kubernetes

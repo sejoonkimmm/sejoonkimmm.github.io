@@ -4,7 +4,6 @@ date: "10.12.2025"
 description: "Applications occasionally failed DNS lookups with 5-second timeouts. Checked CoreDNS logs, CPU usage, network - everything looked fine. Turned out to be conntrack table exhaustion on worker nodes."
 tags: ["Kubernetes", "DNS", "CoreDNS", "Debugging", "Networking"]
 readTime: "7 min read"
-image: ""
 ---
 
 # DNS Lookups Were Timing Out Randomly in Kubernetes

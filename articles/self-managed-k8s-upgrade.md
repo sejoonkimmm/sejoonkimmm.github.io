@@ -4,7 +4,6 @@ date: "01.10.2025"
 description: "Moving from Kubernetes 1.28 to 1.29 on bare metal Hetzner servers. No managed control plane to click 'upgrade' - we had to do it manually. Notes on what actually happened."
 tags: ["Kubernetes", "Bare Metal", "Hetzner", "Cluster Management", "kubeadm"]
 readTime: "10 min read"
-image: ""
 ---
 
 # Upgrading a Self-Managed Kubernetes Cluster Without Managed Services

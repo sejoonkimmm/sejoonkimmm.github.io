@@ -4,7 +4,6 @@ date: "22.10.2025"
 description: "Secrets in Azure Key Vault were updated but pods kept using old values. Took 2 hours to figure out the sync interval setting and force a refresh. Notes on how external-secrets actually works."
 tags: ["Kubernetes", "Azure Key Vault", "external-secrets", "Secret Management"]
 readTime: "7 min read"
-image: ""
 ---
 
 # external-secrets Wasn't Syncing from Azure Key Vault

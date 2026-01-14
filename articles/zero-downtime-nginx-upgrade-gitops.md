@@ -5,7 +5,6 @@ description: 'How to upgrade a Helm-managed application in production with zero 
 tags: ['Kubernetes', 'Helm', 'GitOps', 'ArgoCD', 'Production']
 readTime: '7 min read'
 slug: 'zero-downtime-nginx-upgrade-gitops'
-image: ''
 ---
 
 # Zero-Downtime Helm App Upgrade in Production

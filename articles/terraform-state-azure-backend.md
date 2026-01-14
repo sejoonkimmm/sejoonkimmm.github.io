@@ -4,7 +4,6 @@ date: "19.11.2025"
 description: "We'd been storing Terraform state in Git (bad idea). Moved it to Azure Blob Storage with state locking. Migration took 30 minutes. Should have done this from the start."
 tags: ["Terraform", "Azure", "Infrastructure as Code", "State Management"]
 readTime: "6 min read"
-image: ""
 ---
 
 # Moving Terraform State from Local Files to Azure Storage

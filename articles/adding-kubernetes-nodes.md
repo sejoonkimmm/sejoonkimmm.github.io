@@ -4,7 +4,6 @@ date: "17.12.2025"
 description: "Traffic increased 40% over 3 months. Nodes were running at 75% CPU. Ordered 2 new Hetzner servers and added them to the cluster. Took about 4 hours from ordering to nodes serving traffic."
 tags: ["Kubernetes", "Scaling", "Capacity Planning", "Hetzner", "kubeadm"]
 readTime: "6 min read"
-image: ""
 ---
 
 # Adding Nodes to Kubernetes Cluster When Traffic Grew

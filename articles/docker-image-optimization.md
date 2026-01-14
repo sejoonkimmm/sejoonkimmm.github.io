@@ -4,7 +4,6 @@ date: "24.12.2025"
 description: "Our Docker images were 800MB+. Build times were slow, pulling images took forever. Spent a day optimizing - got images down to 200MB using multi-stage builds and Alpine base images."
 tags: ["Docker", "Containers", "Image Optimization", "CI/CD", "Build Performance"]
 readTime: "7 min read"
-image: ""
 ---
 
 # Reducing Docker Image Sizes by 70%

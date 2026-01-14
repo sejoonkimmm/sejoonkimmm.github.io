@@ -4,7 +4,6 @@ date: "12.11.2025"
 description: "Users reported occasional 502 errors. Logs showed NGINX couldn't reach backend pods. Took a day to find the issue - pod readiness probes were too aggressive and marking healthy pods as not ready."
 tags: ["Kubernetes", "NGINX", "Debugging", "Ingress", "502 Error"]
 readTime: "6 min read"
-image: ""
 ---
 
 # Debugging Random 502 Errors from NGINX Ingress

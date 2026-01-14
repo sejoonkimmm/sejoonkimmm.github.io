@@ -4,7 +4,6 @@ date: "03.12.2025"
 description: "Security audit said our SSH keys hadn't been rotated in 18 months. Wrote a script to rotate keys across all Hetzner servers and update them in Azure Key Vault. Took 3 hours to build, runs in 5 minutes."
 tags: ["SSH", "Security", "Automation", "Hetzner", "Key Rotation"]
 readTime: "6 min read"
-image: ""
 ---
 
 # Automating SSH Key Rotation on Hetzner Servers

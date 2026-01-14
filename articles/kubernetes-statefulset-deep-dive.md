@@ -4,7 +4,6 @@ date: "17.09.2025"
 description: "Understanding StatefulSet internals, ordered pod management, persistent storage, and real-world use cases for stateful applications in Kubernetes"
 tags: ["Kubernetes", "StatefulSet", "DevOps", "Storage", "Database", "Architecture"]
 readTime: "12 min read"
-image: "/images/articles/statefulset_note.jpeg"
 ---
 
 # Kubernetes StatefulSet: A Deep Dive

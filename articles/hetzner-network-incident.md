@@ -4,7 +4,6 @@ date: "24.09.2025"
 description: "Hetzner's network had problems in their Falkenstein datacenter. Our services stayed up because we split workloads across regions and keep critical data in Azure."
 tags: ["Hetzner", "High Availability", "Incident Response", "Azure", "Multi-Region"]
 readTime: "8 min read"
-image: ""
 ---
 
 # Hetzner Network Issues and Why We Keep Backups Elsewhere

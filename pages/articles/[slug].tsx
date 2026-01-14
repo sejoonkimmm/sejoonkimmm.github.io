@@ -53,18 +53,7 @@ const ArticlePage = ({ article }: ArticlePageProps) => {
           </div>
         </header>
 
-        {article.cover_image && (
-          <div className={styles.coverImage}>
-            <Image
-              src={article.cover_image}
-              alt={article.title}
-              fill
-              style={{ objectFit: 'cover' }}
-              className={styles.image}
-              priority
-            />
-          </div>
-        )}
+
 
         <div className={styles.content}>
           <ReactMarkdown

@@ -4,7 +4,6 @@ date: "29.10.2025"
 description: "Set up daily PostgreSQL backups from our Kubernetes cluster to Azure Blob Storage. Using pg_dump in a CronJob with lifecycle policies for retention. Cost is about €8/month for 30 days of backups."
 tags: ["PostgreSQL", "Azure", "Backup", "Kubernetes", "CronJob"]
 readTime: "8 min read"
-image: ""
 ---
 
 # Automating PostgreSQL Backups to Azure Blob Storage

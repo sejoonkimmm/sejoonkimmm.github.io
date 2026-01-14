@@ -4,7 +4,6 @@ date: "09.09.2025"
 description: "Setting up Loki and Alloy for log aggregation in our Kubernetes cluster. Learning what all those Loki components actually do."
 tags: ["Kubernetes", "Logging", "Loki", "Alloy", "Grafana", "Azure", "Observability"]
 readTime: "10 min read"
-image: ""
 ---
 
 # Migration Diary Part 2: Moving Logs from Grafana Cloud to Kubernetes

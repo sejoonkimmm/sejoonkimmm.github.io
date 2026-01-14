@@ -4,7 +4,6 @@ date: "29.08.2025"
 description: "My journey into understanding why every millisecond matters in DevOps, and what the research taught me about building reliable systems"
 tags: ["DevOps", "Site Reliability", "Performance", "Cloud Infrastructure", "Observability"]
 readTime: "10 min read"
-image: ""
 ---
 
 # Why I'm Obsessed with Uptime: The Real Cost of Downtime

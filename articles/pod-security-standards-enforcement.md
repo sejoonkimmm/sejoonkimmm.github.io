@@ -4,7 +4,6 @@ date: "26.11.2025"
 description: "Enabled Pod Security Standards in Kubernetes. Immediately broke 6 out of 12 applications because they were running as root or using privileged containers. Spent 2 days fixing them all."
 tags: ["Kubernetes", "Security", "Pod Security", "PSS", "Container Security"]
 readTime: "7 min read"
-image: ""
 ---
 
 # Enforcing Pod Security Standards Broke Half Our Deployments

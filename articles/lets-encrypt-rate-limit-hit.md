@@ -4,7 +4,6 @@ date: "15.10.2025"
 description: "Made a mistake while testing cert-manager configuration. Issued 20 certificates for the same domain in an hour. Got rate limited for a week. Notes on staging environment and rate limits."
 tags: ["cert-manager", "Let's Encrypt", "TLS", "Kubernetes", "Certificate Management"]
 readTime: "6 min read"
-image: ""
 ---
 
 # Hit Let's Encrypt Rate Limit While Testing cert-manager

@@ -4,7 +4,6 @@ date: "05.11.2025"
 description: "Integrated Trivy into GitLab CI to scan container images for vulnerabilities before deployment. Found 47 high-severity issues we didn't know about. Some were fixable, some weren't."
 tags: ["Security", "Trivy", "Container Scanning", "CI/CD", "GitLab"]
 readTime: "7 min read"
-image: ""
 ---
 
 # Adding Trivy Scans to Our CI Pipeline
