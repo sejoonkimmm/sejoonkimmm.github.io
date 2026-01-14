@@ -16,7 +16,7 @@ const CustomHead = ({ title }: CustomHeadProps) => {
         name="keywords"
         content="sejoon kim, sejoon, kim, devops engineer portfolio, sejoon devops engineer, sejoon engineer, aws, kubernetes, sejoon kim portfolio, vscode-portfolio"
       />
-      <meta property="og:title" content="Sejoon Kim's Portfolio" />
+      <meta property="og:title" content="Sejoon Kim's Blog" />
       <meta
         property="og:description"
         content="A DevOps engineer building infrastructure and applications that you'd like to use."
