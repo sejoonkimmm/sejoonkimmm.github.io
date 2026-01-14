@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant Attacker as 🔴 Attacker
+    participant NGINX as 🌐 NGINX
+    participant Bouncer as 📦 Lua Bouncer
+    participant AppSec as 🔥 AppSec
+    participant LAPI as 🛡️ LAPI
+
+    Attacker->>NGINX: SQL Injection
+    NGINX->>Bouncer: Process Request
+    Bouncer->>AppSec: Analyze Request
+    AppSec-->>Bouncer: 🚨 THREAT
+    AppSec->>LAPI: Report + Ban IP
+    Bouncer-->>NGINX: 🚫 Block
+    NGINX-->>Attacker: 403 Forbidden

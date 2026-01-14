@@ -1,0 +1,53 @@
+flowchart TB
+    subgraph Internet
+        USER[/"👤 Users"/]
+        ATTACKER[/"🔴 Attackers"/]
+    end
+
+    subgraph Cloud["Cloud Provider"]
+        LB["⚖️ Load Balancer<br/>(PROXY Protocol)"]
+    end
+
+    subgraph K8S["Kubernetes Cluster"]
+        
+        subgraph nginx-ns["namespace: nginx"]
+            NGINX["🌐 NGINX Ingress Controller"]
+            LUA["📦 Lua Bouncer Plugin"]
+        end
+
+        subgraph crowdsec-ns["namespace: crowdsec"]
+            LAPI["🛡️ CrowdSec LAPI<br/>(Local API)"]
+            AGENT["📊 CrowdSec Agent<br/>(Log Processor)"]
+            APPSEC["🔥 CrowdSec AppSec<br/>(WAF Engine)"]
+        end
+
+        subgraph postgres-ns["namespace: database"]
+            PG[("🗄️ PostgreSQL")]
+        end
+
+        subgraph monitoring-ns["namespace: monitoring"]
+            LOKI["📋 Loki"]
+        end
+
+        subgraph backend-ns["namespace: backend"]
+            CORE["⚙️ App Server"]
+        end
+    end
+
+    subgraph Console["CrowdSec Console"]
+        CLOUD["☁️ Threat Intelligence"]
+    end
+
+    USER --> LB
+    ATTACKER --> LB
+    LB -->|"HTTPS"| NGINX
+    NGINX --> LUA
+    LUA -->|"Check Ban"| LAPI
+    LUA -->|"WAF Analysis"| APPSEC
+    APPSEC --> LAPI
+    AGENT --> LAPI
+    AGENT -.->|"Query Logs"| LOKI
+    LAPI --> PG
+    LAPI <-.->|"Sync"| CLOUD
+    NGINX -->|"✅ Allowed"| CORE
+    LUA -->|"🚫 Blocked"| ATTACKER

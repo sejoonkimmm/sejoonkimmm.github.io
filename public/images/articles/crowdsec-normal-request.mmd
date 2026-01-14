@@ -1,0 +1,24 @@
+sequenceDiagram
+    participant User as 👤 User
+    participant LB as ⚖️ Load Balancer
+    participant NGINX as 🌐 NGINX
+    participant Bouncer as 📦 Lua Bouncer
+    participant LAPI as 🛡️ LAPI
+    participant AppSec as 🔥 AppSec
+    participant Backend as ⚙️ App Server
+
+    User->>LB: HTTPS Request
+    LB->>NGINX: + PROXY Protocol
+    NGINX->>Bouncer: Process Request
+    
+    par IP Check
+        Bouncer->>LAPI: Is IP banned?
+        LAPI-->>Bouncer: No
+    and WAF Check
+        Bouncer->>AppSec: Analyze Request
+        AppSec-->>Bouncer: Clean
+    end
+    
+    Bouncer-->>NGINX: ✅ Allow
+    NGINX->>Backend: Forward Request
+    Backend-->>User: Response
