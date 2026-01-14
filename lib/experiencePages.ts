@@ -11,7 +11,6 @@ export interface ExperienceWithContent {
   role: string;
   period: string;
   description: string;
-  image: string;
   logo: string;
   tags: string[];
   content: string;
@@ -30,7 +29,6 @@ export function getExperienceBySlug(id: string): ExperienceWithContent | null {
       role: data.role,
       period: data.period,
       description: data.description,
-      image: data.image,
       logo: data.logo,
       tags: data.tags || [],
       content,

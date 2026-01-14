@@ -4,7 +4,6 @@ date: "March 2025 - Present"
 description: "GitOps-based Kubernetes infrastructure automation. Reduced configuration overhead by 53% through ArgoCD restructuring and achieved zero-downtime deployments with preview environments."
 tags: ["Kubernetes", "ArgoCD", "GitOps", "GitHub Actions", "Terraform", "Helm"]
 readTime: "6 min read"
-image: ""
 ---
 
 # Myperfectstay - GitOps Infrastructure Automation

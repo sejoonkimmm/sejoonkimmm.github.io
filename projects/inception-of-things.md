@@ -4,7 +4,6 @@ date: "March 2024 - May 2024"
 description: "A comprehensive DevOps project showcasing Kubernetes, Infrastructure as Code, and container orchestration."
 tags: ["DevOps", "Kubernetes", "Docker", "Infrastructure"]
 readTime: "7 min read"
-image: "/logos/subtrackt.svg"
 ---
 
 # Inception of Things

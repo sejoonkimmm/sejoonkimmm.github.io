@@ -4,7 +4,6 @@ organization: "Army Aviation"
 role: "Flight Engineer & UH-60 Crew Chief"
 period: "2018 - 2020"
 description: "Served as a flight engineer in Army Aviation, responsible for aircraft maintenance and flight operations."
-image: "/images/experiences/blackhawk.jpg"
 logo: "/logos/army-aviation.svg"
 tags: ["Aviation", "Leadership", "Operations"]
 ---
@@ -12,6 +11,8 @@ tags: ["Aviation", "Leadership", "Operations"]
 # Flight Engineer - Army Aviation
 
 A transformative experience serving as a Flight Engineer and UH-60 Crew Chief in the Army Aviation.
+
+![UH-60 Black Hawk](/images/experiences/blackhawk.jpg)
 
 ## Role Overview
 

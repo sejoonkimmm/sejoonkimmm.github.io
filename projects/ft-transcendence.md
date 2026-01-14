@@ -4,7 +4,6 @@ date: "January 2024 - March 2024"
 description: "A full-stack web application featuring real-time gaming, chat system, and user management."
 tags: ["Full-Stack", "Real-time", "WebSockets", "Gaming"]
 readTime: "6 min read"
-image: "/logos/coolify.svg"
 ---
 
 # ft_transcendence

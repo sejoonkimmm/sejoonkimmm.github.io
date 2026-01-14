@@ -33,19 +33,6 @@ const ExperiencePage = ({ experience }: ExperiencePageProps) => {
           </div>
         </header>
 
-        {experience.image && (
-          <div className={styles.coverImage}>
-            <Image
-              src={experience.image}
-              alt={experience.title}
-              fill
-              style={{ objectFit: 'cover' }}
-              className={styles.image}
-              priority
-            />
-          </div>
-        )}
-
         <div className={styles.content}>
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}

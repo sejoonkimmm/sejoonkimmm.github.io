@@ -4,7 +4,6 @@ organization: "42 Seoul"
 role: "Student Council President"
 period: "2021 - 2022"
 description: "Led student council initiatives and community engagement at 42 Seoul programming school."
-image: ""
 logo: "/logos/42seoul.svg"
 tags: ["Leadership", "Community", "Education"]
 ---
