@@ -1,15 +1,30 @@
+import { useRouter } from 'next/router';
 import {
   VscBell,
   VscCheck,
   VscError,
   VscWarning,
   VscSourceControl,
+  VscFile,
 } from 'react-icons/vsc';
-import { SiNextdotjs } from 'react-icons/si';
 
 import styles from '@/styles/Bottombar.module.css';
 
+const fileNames: Record<string, string> = {
+  '/': 'home.tf',
+  '/about': 'about.html',
+  '/contact': 'contact.yaml',
+  '/projects': 'projects.go',
+  '/articles': 'articles.json',
+  '/certifications': 'certifications.json',
+  '/github': 'github.md',
+  '/settings': 'settings',
+};
+
 const Bottombar = () => {
+  const router = useRouter();
+  const currentFile = fileNames[router.pathname] ?? router.pathname;
+
   return (
     <footer className={styles.bottomBar}>
       <div className={styles.container}>
@@ -31,8 +46,8 @@ const Bottombar = () => {
       </div>
       <div className={styles.container}>
         <div className={styles.section}>
-          <SiNextdotjs className={styles.icon} />
-          <p>Powered by Next.js</p>
+          <VscFile className={styles.icon} />
+          <p>{currentFile}</p>
         </div>
         <div className={styles.section}>
           <VscCheck className={styles.icon} />

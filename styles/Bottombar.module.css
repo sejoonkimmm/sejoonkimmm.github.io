@@ -56,17 +56,6 @@
 
 @media screen and (max-width: 600px) {
   .bottomBar {
-    font-size: 0.65rem;
-    height: 22px;
-  }
-  
-  .section {
-    margin-right: 0.25rem;
-    padding: 0 0.1rem;
-  }
-  
-  .icon {
-    margin-right: 2px;
-    font-size: 0.6rem;
+    display: none;
   }
 }

@@ -4,6 +4,7 @@ import type { AppProps } from 'next/app';
 import Layout from '@/components/Layout';
 import Head from '@/components/Head';
 
+import '@/styles/tokens.css';
 import '@/styles/globals.css';
 import '@/styles/themes.css';
 

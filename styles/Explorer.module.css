@@ -62,7 +62,7 @@
   .explorer {
     width: 12vw;
   }
-  
+
   .title, .file {
     font-size: 0.95rem;
   }
@@ -76,31 +76,17 @@
 
 @media screen and (max-width: 900px) {
   .explorer {
-    width: 25vw;
+    width: 28vw;
   }
-  
-  .title {
-    font-size: 0.85rem;
-  }
-  
-  .file {
-    font-size: 0.8rem;
-  }
-}
 
-@media screen and (max-width: 768px) {
-  .explorer {
-    width: 30vw;
-  }
-  
   .title {
     padding: 0.4rem 0.5rem;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
   }
-  
+
   .file {
     padding: 0.15rem 0.75rem;
-    font-size: 0.75rem;
+    font-size: 0.78rem;
   }
 }
 

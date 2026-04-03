@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
@@ -13,6 +13,22 @@ interface ArticlePageProps {
 }
 
 const ArticlePage = ({ article }: ArticlePageProps) => {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const el = document.getElementById('main-editor');
+    if (!el) return;
+
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = el;
+      const percent = scrollHeight <= clientHeight ? 0 : (scrollTop / (scrollHeight - clientHeight)) * 100;
+      setProgress(percent);
+    };
+
+    el.addEventListener('scroll', handleScroll, { passive: true });
+    return () => el.removeEventListener('scroll', handleScroll);
+  }, []);
+
   // Parse German date format (DD.MM.YYYY) or ISO format
   const parseDate = (dateString: string) => {
     if (dateString.includes('.')) {
@@ -35,6 +51,7 @@ const ArticlePage = ({ article }: ArticlePageProps) => {
 
   return (
     <div className={styles.layout}>
+      <div className={styles.progressBar} style={{ width: `${progress}%` }} />
       <article className={styles.article}>
         <header className={styles.header}>
           <h1 className={styles.title}>{article.title}</h1>

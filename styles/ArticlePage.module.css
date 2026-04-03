@@ -6,6 +6,18 @@
   overflow-y: auto;
 }
 
+.progressBar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--accent-color);
+  z-index: 50;
+  transition: width 0.05s linear;
+  border-radius: 0 2px 2px 0;
+  margin: -2rem -3rem 0 -3rem;
+}
+
 @media (min-width: 1400px) {
   .layout {
     max-width: 80ch;
@@ -68,7 +80,7 @@
 }
 
 .title {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-display);
   font-size: 2.25rem;
   font-weight: 700;
   color: var(--text-primary);
@@ -81,7 +93,6 @@
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 0.875rem;
   color: var(--text-secondary);
 }
@@ -100,7 +111,6 @@
 }
 
 .tag {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   padding: 0.25rem 0.75rem;
   background: var(--accent-color);
   color: white;
@@ -111,13 +121,13 @@
 
 .content {
   padding: 2.5rem 2rem;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-body);
 }
 
 /* Markdown content styles - Typography optimized for readability */
 .content h1,
 .h1 {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-display);
   font-size: 1.875rem;
   font-weight: 700;
   color: var(--text-primary);
@@ -128,7 +138,7 @@
 
 .content h2,
 .h2 {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--text-primary);
@@ -141,7 +151,7 @@
 
 .content h3,
 .h3 {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-display);
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--text-primary);
@@ -205,7 +215,7 @@
 
 .codeBlock {
   color: #f8f8f2;
-  font-family: 'Fira Code', 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+  font-family: var(--font-mono);
   font-size: 0.875rem;
   line-height: 1.6;
 }
@@ -215,7 +225,7 @@
   color: var(--accent-color);
   padding: 0.15rem 0.4rem;
   border-radius: 4px;
-  font-family: 'Fira Code', 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+  font-family: var(--font-mono);
   font-size: 0.875em;
 }
 

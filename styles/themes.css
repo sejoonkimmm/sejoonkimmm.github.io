@@ -1,9 +1,11 @@
-/* GitHub Dark */
+/* GitHub Dark (default) */
 :root {
   --main-bg: #24292e;
   --bg-text: rgba(56, 58, 61, 0.35);
   --text-color: #efefef;
   --accent-color: #f9826c;
+  --accent-color-rgb: 249, 130, 108;
+  --accent-secondary: #58a6ff;
   --titlebar-bg: #1f2428;
   --sidebar-bg: #24292e;
   --sidebar-hover-bg: #1f2428;
@@ -22,6 +24,26 @@
   --scrollbar-track-bg: #24292e;
   --scrollbar-thumb-bg: #333536;
   --article-bg: #1f2428;
+
+  /* Semantic tokens */
+  --text-primary: #efefef;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.5);
+  --surface-primary: #24292e;
+  --surface-secondary: #1f2428;
+  --surface-elevated: #2d3238;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-default: rgba(255, 255, 255, 0.15);
+
+  /* Syntax highlighting */
+  --syntax-keyword: #ff7b72;
+  --syntax-string: #a5d6ff;
+  --syntax-comment: #8b949e;
+  --syntax-function: #d2a8ff;
+  --syntax-variable: #ffa657;
+  --syntax-type: #79c0ff;
+  --syntax-number: #79c0ff;
+  --syntax-operator: #ff7b72;
 }
 
 /* Dracula */
@@ -30,6 +52,8 @@
   --bg-text: #313340;
   --text-color: #efefef;
   --accent-color: #bd93f9;
+  --accent-color-rgb: 189, 147, 249;
+  --accent-secondary: #ff79c6;
   --titlebar-bg: #1e1f29;
   --sidebar-bg: #343746;
   --sidebar-hover-bg: #3c3d51;
@@ -48,6 +72,24 @@
   --scrollbar-track-bg: #282a36;
   --scrollbar-thumb-bg: #454647;
   --article-bg: #21222c;
+
+  --text-primary: #f8f8f2;
+  --text-secondary: rgba(248, 248, 242, 0.7);
+  --text-muted: rgba(248, 248, 242, 0.5);
+  --surface-primary: #282a36;
+  --surface-secondary: #21222c;
+  --surface-elevated: #343746;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-default: rgba(255, 255, 255, 0.15);
+
+  --syntax-keyword: #ff79c6;
+  --syntax-string: #f1fa8c;
+  --syntax-comment: #6272a4;
+  --syntax-function: #50fa7b;
+  --syntax-variable: #f8f8f2;
+  --syntax-type: #8be9fd;
+  --syntax-number: #bd93f9;
+  --syntax-operator: #ff79c6;
 }
 
 /* Ayu Dark */
@@ -56,6 +98,8 @@
   --bg-text: #101620;
   --text-color: #efefef;
   --accent-color: #e6b450;
+  --accent-color-rgb: 230, 180, 80;
+  --accent-secondary: #36b37e;
   --titlebar-bg: #1f2428;
   --sidebar-bg: #0a0e14;
   --sidebar-hover-bg: #00010a;
@@ -74,6 +118,24 @@
   --scrollbar-track-bg: #0a0e14;
   --scrollbar-thumb-bg: #454647;
   --article-bg: #10121a;
+
+  --text-primary: #bfbdb6;
+  --text-secondary: rgba(191, 189, 182, 0.7);
+  --text-muted: rgba(191, 189, 182, 0.5);
+  --surface-primary: #0a0e14;
+  --surface-secondary: #10121a;
+  --surface-elevated: #1a1e28;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.12);
+
+  --syntax-keyword: #ff8f40;
+  --syntax-string: #aad94c;
+  --syntax-comment: #636a72;
+  --syntax-function: #e6b450;
+  --syntax-variable: #bfbdb6;
+  --syntax-type: #59c2ff;
+  --syntax-number: #d2a6ff;
+  --syntax-operator: #f29668;
 }
 
 /* Ayu Mirage */
@@ -82,6 +144,8 @@
   --bg-text: #21242b;
   --text-color: #efefef;
   --accent-color: #e6b450;
+  --accent-color-rgb: 230, 180, 80;
+  --accent-secondary: #95e6cb;
   --titlebar-bg: #1f2428;
   --sidebar-bg: #1f2430;
   --sidebar-hover-bg: #191e2a;
@@ -100,6 +164,24 @@
   --scrollbar-track-bg: #1f2430;
   --scrollbar-thumb-bg: #454647;
   --article-bg: #252e3d;
+
+  --text-primary: #cccac2;
+  --text-secondary: rgba(204, 202, 194, 0.7);
+  --text-muted: rgba(204, 202, 194, 0.5);
+  --surface-primary: #1f2430;
+  --surface-secondary: #252e3d;
+  --surface-elevated: #2d3750;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.12);
+
+  --syntax-keyword: #ffa759;
+  --syntax-string: #bae67e;
+  --syntax-comment: #5c6773;
+  --syntax-function: #ffd580;
+  --syntax-variable: #cccac2;
+  --syntax-type: #73d0ff;
+  --syntax-number: #dfbfff;
+  --syntax-operator: #f29e74;
 }
 
 /* Nord */
@@ -108,6 +190,8 @@
   --bg-text: #3b414d;
   --text-color: #efefef;
   --accent-color: #88c0d0;
+  --accent-color-rgb: 136, 192, 208;
+  --accent-secondary: #b48ead;
   --titlebar-bg: #1f2428;
   --sidebar-bg: #2e3440;
   --sidebar-hover-bg: #434c5e;
@@ -126,14 +210,34 @@
   --scrollbar-track-bg: #2e3440;
   --scrollbar-thumb-bg: #454647;
   --article-bg: #363f50;
+
+  --text-primary: #eceff4;
+  --text-secondary: rgba(236, 239, 244, 0.7);
+  --text-muted: rgba(236, 239, 244, 0.5);
+  --surface-primary: #2e3440;
+  --surface-secondary: #363f50;
+  --surface-elevated: #434c5e;
+  --border-subtle: rgba(236, 239, 244, 0.08);
+  --border-default: rgba(236, 239, 244, 0.15);
+
+  --syntax-keyword: #81a1c1;
+  --syntax-string: #a3be8c;
+  --syntax-comment: #616e88;
+  --syntax-function: #88c0d0;
+  --syntax-variable: #d8dee9;
+  --syntax-type: #8fbcbb;
+  --syntax-number: #b48ead;
+  --syntax-operator: #81a1c1;
 }
 
 /* Night Owl */
 [data-theme='night-owl'] {
   --main-bg: #011627;
   --bg-text: #031d33;
-  --text-color: #89a4bb;
-  --accent-color: rgb(95, 126, 151);
+  --text-color: #d6deeb;
+  --accent-color: #7fdbca;
+  --accent-color-rgb: 127, 219, 202;
+  --accent-secondary: #c792ea;
   --titlebar-bg: #011627;
   --sidebar-bg: #011627;
   --sidebar-hover-bg: #0e293f;
@@ -146,10 +250,28 @@
   --tab-border: rgb(39, 43, 59);
   --bottombar-bg: #011627;
   --bottombar-border: #262a39;
-  --button-bg: rgb(95, 126, 151);
-  --button-text: #fff;
+  --button-bg: #7fdbca;
+  --button-text: #011627;
   --bottombar-hover-bg: #1b222f;
   --scrollbar-track-bg: #011627;
   --scrollbar-thumb-bg: #043254;
   --article-bg: #031d33;
+
+  --text-primary: #d6deeb;
+  --text-secondary: rgba(214, 222, 235, 0.7);
+  --text-muted: rgba(214, 222, 235, 0.5);
+  --surface-primary: #011627;
+  --surface-secondary: #031d33;
+  --surface-elevated: #0b2942;
+  --border-subtle: rgba(214, 222, 235, 0.08);
+  --border-default: rgba(214, 222, 235, 0.15);
+
+  --syntax-keyword: #c792ea;
+  --syntax-string: #ecc48d;
+  --syntax-comment: #637777;
+  --syntax-function: #82aaff;
+  --syntax-variable: #d6deeb;
+  --syntax-type: #7fdbca;
+  --syntax-number: #f78c6c;
+  --syntax-operator: #c792ea;
 }

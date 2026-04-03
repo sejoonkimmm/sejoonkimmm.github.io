@@ -5,7 +5,7 @@
   margin: 0 auto;
 }
 
-/* 큰 모니터 */
+/* Large monitors */
 @media (min-width: 1600px) {
   .layout {
     max-width: 1400px;
@@ -19,6 +19,7 @@
 }
 
 .title {
+  font-family: var(--font-display);
   font-size: 3rem;
   font-weight: 700;
   color: var(--accent-color);
@@ -38,6 +39,15 @@
   gap: 2rem;
   padding: 1rem 0;
 }
+
+.certificationsGrid > * {
+  animation: fadeInUp 0.4s ease-out both;
+}
+.certificationsGrid > *:nth-child(1) { animation-delay: 0s; }
+.certificationsGrid > *:nth-child(2) { animation-delay: 0.06s; }
+.certificationsGrid > *:nth-child(3) { animation-delay: 0.12s; }
+.certificationsGrid > *:nth-child(4) { animation-delay: 0.18s; }
+.certificationsGrid > *:nth-child(5) { animation-delay: 0.24s; }
 
 /* Responsive design */
 @media (max-width: 1024px) {

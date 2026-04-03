@@ -2,12 +2,12 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 1.5rem;
-  height: calc(100vh - 60px); /* 헤더 높이 고려 */
+  height: calc(100vh - 60px); /* account for header height */
   width: 100%;
   overflow-y: auto;
 }
 
-/* 큰 모니터 최적화 */
+/* Large monitors */
 @media (min-width: 1600px) {
   .layout {
     max-width: 1400px;
@@ -18,19 +18,26 @@
 .container {
   margin-top: 1.5rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
 }
 
-/* 큰 모니터에서 카드 최대 3열 */
-@media (min-width: 1200px) {
-  .container {
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2rem;
-  }
+.container > *:first-child {
+  grid-column: 1 / -1;
 }
 
+.container > * {
+  animation: fadeInUp 0.4s ease-out both;
+}
+.container > *:nth-child(1) { animation-delay: 0s; }
+.container > *:nth-child(2) { animation-delay: 0.05s; }
+.container > *:nth-child(3) { animation-delay: 0.1s; }
+.container > *:nth-child(4) { animation-delay: 0.15s; }
+.container > *:nth-child(5) { animation-delay: 0.2s; }
+.container > *:nth-child(6) { animation-delay: 0.25s; }
+
 .pageTitle {
+  font-family: var(--font-display);
   font-size: 2rem;
   font-weight: 700;
   color: var(--accent-color);
@@ -42,7 +49,7 @@
 .pageSubtitle {
   font-size: 1rem;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   margin-bottom: 3rem;
   max-width: 600px;
   line-height: 1.6;
@@ -69,8 +76,12 @@
 
 @media screen and (max-width: 900px) {
   .container {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: 1fr;
     gap: 1.25rem;
+  }
+
+  .container > *:first-child {
+    grid-column: 1;
   }
 
   .pageTitle {

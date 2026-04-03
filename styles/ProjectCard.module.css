@@ -9,10 +9,25 @@
   min-height: 160px;
   height: auto;
   width: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
   transition: all 0.25s ease;
   text-decoration: none;
   color: inherit;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(var(--accent-color-rgb), 0.08), transparent 60%);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  border-radius: var(--card-radius);
+  pointer-events: none;
+}
+
+.card:hover::after {
+  opacity: 1;
 }
 
 .card:hover {
@@ -64,6 +79,7 @@
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: var(--accent-color);
+  font-family: var(--font-display);
 }
 
 .metadata {
@@ -84,14 +100,14 @@
 }
 
 .organization {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   font-weight: 400;
 }
 
 .description {
   font-size: 0.9rem;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   margin-bottom: 1rem;
 }
 
@@ -128,6 +144,8 @@
   border-radius: 20px;
   font-size: 0.75rem;
   transition: all 0.2s;
+  background: var(--border-subtle);
+  color: var(--text-secondary);
 }
 
 .cta {

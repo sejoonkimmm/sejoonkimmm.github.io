@@ -56,8 +56,9 @@ const Explorer = () => {
           id="portfolio-checkbox"
           checked={portfolioOpen}
           onChange={() => setPortfolioOpen(!portfolioOpen)}
+          aria-expanded={portfolioOpen}
         />
-        <label htmlFor="portfolio-checkbox" className={styles.heading}>
+        <label htmlFor="portfolio-checkbox" className={styles.heading} role="button">
           <VscChevronRight
             className={styles.chevron}
             style={portfolioOpen ? { transform: 'rotate(90deg)' } : {}}

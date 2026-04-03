@@ -4,7 +4,7 @@ import styles from '@/styles/Tabsbar.module.css';
 
 const Tabsbar = () => {
   return (
-    <div className={styles.tabs}>
+    <div className={styles.tabs} role="tablist">
       <Tab icon="/logos/terraform_icon.svg" filename="home.tf" path="/" />
       <Tab icon="/logos/html_icon.svg" filename="about.html" path="/about" />
       <Tab icon="/logos/yaml_icon.svg" filename="contact.yaml" path="/contact" />

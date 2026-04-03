@@ -7,7 +7,7 @@
   overflow: hidden;
   position: relative;
   width: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
   transition: all 0.25s ease;
   text-decoration: none;
   color: inherit;
@@ -29,13 +29,14 @@
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: var(--accent-color);
+  font-family: var(--font-display);
   line-height: 1.3;
 }
 
 .organization {
   font-size: 0.9rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
@@ -48,18 +49,18 @@
 
 .period {
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-muted);
 }
 
 .location {
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-muted);
 }
 
 .description {
   font-size: 0.9rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   margin-bottom: 1rem;
 }
 
@@ -72,11 +73,11 @@
 
 .tag {
   padding: 0.3rem 0.6rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: var(--border-subtle);
+  border: 1px solid var(--border-default);
   border-radius: 4px;
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--text-secondary);
   transition: all 0.2s;
 }
 

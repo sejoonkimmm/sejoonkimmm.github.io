@@ -15,7 +15,7 @@
   padding: 1rem;
 }
 
-/* 큰 모니터 */
+/* Large monitors */
 @media screen and (min-width: 1600px) {
   .layout {
     max-width: 1400px;

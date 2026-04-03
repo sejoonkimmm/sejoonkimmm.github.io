@@ -5,7 +5,7 @@
   margin: 0 auto;
 }
 
-/* 큰 모니터 최적화 */
+/* Large monitors */
 @media (min-width: 1600px) {
   .layout {
     max-width: 1400px;
@@ -19,6 +19,7 @@
 }
 
 .title {
+  font-family: var(--font-display);
   font-size: 3rem;
   font-weight: 700;
   color: var(--accent-color);
@@ -33,24 +34,48 @@
 }
 
 .projectsGrid {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
   padding: 1rem 0;
 }
+
+.projectsGrid > *:first-child {
+  grid-column: 1 / -1;
+}
+
+.projectsGrid > * {
+  animation: fadeInUp 0.4s ease-out both;
+}
+.projectsGrid > *:nth-child(1) { animation-delay: 0s; }
+.projectsGrid > *:nth-child(2) { animation-delay: 0.05s; }
+.projectsGrid > *:nth-child(3) { animation-delay: 0.1s; }
+.projectsGrid > *:nth-child(4) { animation-delay: 0.15s; }
+.projectsGrid > *:nth-child(5) { animation-delay: 0.2s; }
+.projectsGrid > *:nth-child(6) { animation-delay: 0.25s; }
 
 /* Responsive design */
 @media (max-width: 1024px) {
   .layout {
     padding: 1.5rem;
   }
-  
+
   .title {
     font-size: 2.5rem;
   }
-  
+
   .subtitle {
     font-size: 1rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .projectsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .projectsGrid > *:first-child {
+    grid-column: 1;
   }
 }
 
@@ -62,7 +87,7 @@
   .title {
     font-size: 2rem;
   }
-  
+
   .subtitle {
     font-size: 0.95rem;
   }
@@ -85,7 +110,7 @@
     font-size: 0.85rem;
     margin-bottom: 1.5rem;
   }
-  
+
   .projectsGrid {
     gap: 0.75rem;
   }

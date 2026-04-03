@@ -4,7 +4,7 @@ import styles from '@/styles/Titlebar.module.css';
 
 const Titlebar = () => {
   return (
-    <section className={styles.titlebar}>
+    <section className={styles.titlebar} role="banner">
       <Image
         src="/logos/vscode_icon.svg"
         alt="VSCode Icon"
@@ -12,7 +12,7 @@ const Titlebar = () => {
         width={15}
         className={styles.icon}
       />
-      <div className={styles.items}>
+      <div className={styles.items} aria-hidden="true">
         <p>File</p>
         <p>Edit</p>
         <p>View</p>
