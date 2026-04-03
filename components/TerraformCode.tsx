@@ -57,7 +57,7 @@ const TerraformCode = () => {
     <div className={styles.codeContainer}>
       <div className={styles.editorHeader}>
         <div className={styles.filename}>
-          <span className={styles.fileIcon}>HCL</span>
+          <span className={styles.fileIcon}>📄</span>
           main.tf
         </div>
         <div className={styles.editorButtons}>

@@ -1,17 +1,17 @@
 .codeContainer {
-  background: var(--surface-primary);
+  background: #1e1e1e;
   border-radius: 12px;
-  border: 1px solid var(--border-default);
+  border: 1px solid #333;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   width: 100%;
   max-width: 600px;
-  font-family: var(--font-mono);
+  font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
 }
 
 .editorHeader {
-  background: var(--surface-elevated);
-  border-bottom: 1px solid var(--border-default);
+  background: #2d2d30;
+  border-bottom: 1px solid #3e3e42;
   padding: 0.75rem 1rem;
   display: flex;
   justify-content: space-between;
@@ -22,20 +22,13 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--text-primary);
+  color: #d4d4d4;
   font-size: 0.9rem;
   font-weight: 500;
 }
 
 .fileIcon {
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  background: var(--accent-color);
-  color: var(--surface-primary);
-  padding: 2px 5px;
-  border-radius: 3px;
-  text-transform: uppercase;
+  font-size: 1rem;
 }
 
 .editorButtons {
@@ -65,20 +58,20 @@
 .editorContent {
   position: relative;
   display: flex;
-  background: var(--surface-primary);
+  background: #1e1e1e;
   min-height: 400px;
   overflow: hidden;
 }
 
 .lineNumbers {
-  background: var(--surface-secondary);
-  color: var(--text-muted);
+  background: #252526;
+  color: #858585;
   padding: 1rem 0.5rem;
   font-size: 0.85rem;
   line-height: 1.6;
   text-align: right;
   min-width: 3rem;
-  border-right: 1px solid var(--border-default);
+  border-right: 1px solid #3e3e42;
   user-select: none;
 }
 
@@ -88,14 +81,14 @@
 }
 
 .activeLine {
-  color: var(--accent-color) !important;
+  color: #569cd6 !important;
   font-weight: bold;
 }
 
 .codeEditor {
   flex: 1;
   padding: 1rem;
-  color: var(--text-primary);
+  color: #d4d4d4;
   font-size: 0.85rem;
   line-height: 1.6;
   overflow-x: auto;
@@ -108,55 +101,55 @@
 }
 
 .highlightedLine {
-  background: rgba(var(--accent-color-rgb), 0.1);
-  border-left: 3px solid var(--accent-color);
+  background: rgba(86, 156, 214, 0.1);
+  border-left: 3px solid #569cd6;
   padding-left: 0.5rem;
   margin-left: -0.5rem;
   animation: pulse 0.5s ease-in-out;
 }
 
 @keyframes pulse {
-  0% { background: rgba(var(--accent-color-rgb), 0.2); }
-  100% { background: rgba(var(--accent-color-rgb), 0.1); }
+  0% { background: rgba(86, 156, 214, 0.2); }
+  100% { background: rgba(86, 156, 214, 0.1); }
 }
 
 /* Terraform syntax highlighting */
 .comment {
-  color: var(--syntax-comment);
+  color: #6a9955;
   font-style: italic;
 }
 
 .block {
-  color: var(--syntax-keyword);
+  color: #569cd6;
 }
 
 .resource {
-  color: var(--syntax-function);
+  color: #c586c0;
 }
 
 .output {
-  color: var(--syntax-variable);
+  color: #dcdcaa;
 }
 
 .nested-block {
-  color: var(--syntax-type);
+  color: #4ec9b0;
 }
 
 .attribute {
-  color: var(--syntax-variable);
+  color: #9cdcfe;
 }
 
 .list {
-  color: var(--syntax-string);
+  color: #ce9178;
 }
 
 .list-item {
-  color: var(--syntax-string);
+  color: #ce9178;
   padding-left: 1rem;
 }
 
 .close {
-  color: var(--syntax-keyword);
+  color: #569cd6;
 }
 
 .blank {
@@ -171,7 +164,7 @@
   bottom: 0;
   background: radial-gradient(
     circle at 50% 50%,
-    rgba(var(--accent-color-rgb), 0.05) 0%,
+    rgba(86, 156, 214, 0.05) 0%,
     transparent 70%
   );
   pointer-events: none;
@@ -214,14 +207,14 @@
 
 @media (max-width: 480px) {
   .codeEditor {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
   }
 
   .lineNumbers {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
   }
 
   .editorContent {
-    min-height: 280px;
+    min-height: 250px;
   }
 }
