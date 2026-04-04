@@ -36,14 +36,14 @@ export const experiences: Experience[] = [
   },
   {
     id: 'army-aviation-flight-engineer',
-    title: 'Sejoon Kim as a Flight Engineer',
-    organization: 'Army Aviation',
-    role: 'Flight Engineer & UH-60 Crew Chief',
-    period: 'July 2017 - September 2022',
-    location: 'Seoul, Korea',
-    description: 'Served as a flight engineer in Army Aviation, responsible for aircraft maintenance and flight operations.',
+    title: 'Sejoon Kim as a Military Officer (IT & Security Administrator)',
+    organization: 'Republic of Korea Army Aviation',
+    role: 'IT & Security Administrator (NCO)',
+    period: 'July 2017 - August 2022',
+    location: 'Chungcheong, Korea',
+    description: 'Ran IT admin and security compliance for an aviation battalion. Managed DELIS (military logistics system), handled equipment inventory, and kept things running on the security side.',
     logo: '/logos/army-aviation.svg',
-    tags: ['Aviation', 'Leadership', 'Operations'],
+    tags: ['IT Administration', 'Security', 'ERP Systems', 'Compliance'],
   },
 ];
 

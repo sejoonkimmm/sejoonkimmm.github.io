@@ -1,78 +1,37 @@
 ---
-title: "Flight Engineer"
-organization: "Army Aviation"
-role: "Flight Engineer & UH-60 Crew Chief"
-period: "2018 - 2020"
-description: "Served as a flight engineer in Army Aviation, responsible for aircraft maintenance and flight operations."
+title: "IT & Security Administrator (NCO)"
+organization: "Republic of Korea Army Aviation"
+role: "IT & Security Administrator (NCO)"
+period: "2017 - 2022"
+description: "Ran IT admin and security compliance for an aviation battalion. Managed DELIS (military logistics system), handled equipment inventory, and kept things running on the security side."
 logo: "/logos/army-aviation.svg"
-tags: ["Aviation", "Leadership", "Operations"]
+tags: ["IT Administration", "Security", "ERP Systems", "Compliance"]
 ---
 
-# Flight Engineer - Army Aviation
+# IT & Security Administrator — Republic of Korea Army Aviation
 
-A transformative experience serving as a Flight Engineer and UH-60 Crew Chief in the Army Aviation.
+I spent 5 years in the Korean Army Aviation as an NCO. My official title was Power Maintenance NCO, but honestly, I wasn't great at turning wrenches. I ended up doing most of the IT and admin work for the battalion instead — and it turned out I was actually good at it.
 
-![UH-60 Black Hawk](/images/experiences/blackhawk.jpg)
+## What I actually did
 
-## Role Overview
+Most of my day-to-day was running DELIS, the military's logistics system. Think of it as a clunky ERP that tracks every part, every maintenance record, every flight hour for UH-60P Black Hawk helicopters. If a part number was wrong or a record was missing, helicopters didn't fly. So accuracy mattered.
 
-During my service in Army Aviation from 2018 to 2020, I served as a Flight Engineer and UH-60 Black Hawk Crew Chief, responsible for critical aircraft maintenance and flight operations.
+I also handled the usual IT admin stuff: managing computers and equipment across the unit, setting up accounts, fixing things when they broke, and being the person everyone came to when "the system isn't working."
 
-## Key Responsibilities
+## Security side
 
-### Aircraft Maintenance
-- Conducted pre-flight and post-flight inspections
-- Performed routine maintenance and repairs on UH-60 Black Hawk helicopters
-- Ensured aircraft airworthiness and safety standards
-- Maintained detailed maintenance logs and documentation
+Military networks are closed — no internet, no external connections. My job was to make sure it stayed that way. Regular checks on USB ports and external devices, making sure nobody plugged in something they shouldn't. Workstation inspections before security audits. Shredding classified documents. Maintaining access logs.
 
-### Flight Operations
-- Served as crew chief on operational flights
-- Coordinated with pilots and ground crew for mission success
-- Managed cargo loading and passenger safety
-- Executed emergency procedures and protocols
+Not glamorous work, but if you messed it up, you'd hear about it fast.
 
-### Leadership & Training
-- Mentored junior engineers and crew members
-- Led maintenance teams in complex repair operations
-- Developed SOPs for improved operational efficiency
-- Conducted safety briefings and training sessions
+## The people part
 
-## Skills Developed
+I ran security training sessions and taught new soldiers how to use the systems. When people had complaints or issues with IT, I was the first stop. Somewhere between helpdesk and compliance officer.
 
-### Technical Skills
-- Aircraft systems knowledge (hydraulic, electrical, mechanical)
-- Troubleshooting and diagnostic techniques
-- Precision tool operation and maintenance
-- Technical documentation and reporting
+## Recognition
 
-### Operational Skills
-- Mission planning and execution
-- Risk assessment and mitigation
-- Emergency response and crisis management
-- Team coordination under pressure
+I received 9 commendations over 5 years, including a Division Commander Award at discharge. Got promoted to Sergeant First Class.
 
-### Leadership Skills
-- Personnel management and mentorship
-- Decision-making in critical situations
-- Communication with diverse teams
-- Process improvement and optimization
+## How this connects to what I do now
 
-## Impact & Achievements
-
-- Maintained 100% aircraft readiness for assigned helicopters
-- Completed over 200 successful flight missions
-- Zero safety incidents during tenure
-- Recognized for outstanding performance and dedication
-- Contributed to operational excellence of aviation unit
-
-## Lessons Learned
-
-This experience taught me:
-- The importance of attention to detail in high-stakes environments
-- How to work effectively under pressure and time constraints
-- The value of systematic problem-solving approaches
-- Leadership through example and mentorship
-- The critical nature of communication in team operations
-
-These lessons continue to influence my approach to DevOps engineering, where reliability, precision, and operational excellence are paramount.
+I didn't touch servers or write scripts in the military. But I spent 5 years keeping systems running, dealing with security compliance, and solving problems under pressure. When I started learning cloud infrastructure and DevOps after discharge, the mindset — keep things reliable, control access, document everything — already made sense.
