@@ -8,22 +8,25 @@ readTime: "10 min read"
 
 # CrowdSec WAF on Kubernetes
 
-Had a project where some APIs needed to be public - no authentication. Security risk. Needed a WAF.
+Had a project where some APIs needed to be public with no authentication. That's a security risk, so we needed a WAF.
 
-Evaluated options. CloudFlare and AWS WAF are expensive (per-request pricing). CrowdSec is open-source with community threat intelligence. Went with CrowdSec.
+I looked at a few options. CloudFlare and AWS WAF charge per request, which gets expensive fast. CrowdSec is open-source and comes with community threat intelligence. Went with CrowdSec.
 
-This documents the integration issues I hit and how I fixed them.
+This post documents the three integration issues I hit and how I fixed them.
 
 ## CrowdSec components
 
-CrowdSec has a distributed architecture. Four main pieces:
+CrowdSec has a distributed architecture with four pieces:
 
-- **LAPI**: Central brain. Stores ban decisions, provides API for queries, syncs with community threat feeds.
-- **Agent**: Detective. Reads logs, parses attack patterns, reports bad IPs to LAPI.
-- **AppSec**: Real-time inspector. Analyzes HTTP payloads for SQL injection, XSS, etc.
-- **Bouncer**: Security guard. Sits in front of your app (nginx in my case), checks every request against LAPI.
+LAPI is the central brain. It stores ban decisions, provides an API for queries, and syncs with community threat feeds.
 
-The separation is nice - detection and enforcement are independent. Can scale each part separately.
+The Agent is the detective. It reads logs, parses attack patterns, and reports bad IPs to LAPI.
+
+AppSec is the real-time inspector. It analyzes HTTP payloads looking for SQL injection, XSS, and similar attacks.
+
+The Bouncer is the security guard. It sits in front of your app (nginx in my case) and checks every request against LAPI before letting it through.
+
+I like the separation between detection and enforcement. You can scale each part independently.
 
 ![CrowdSec Architecture](/images/articles/crowdsec-architecture.png)
 
@@ -35,24 +38,24 @@ Normal request:
 
 1. Request hits nginx
 2. Lua bouncer checks LAPI: "is this IP banned?"
-3. AppSec checks request payload for attacks
-4. Both pass → forward to backend
+3. AppSec checks the request payload for attacks
+4. Both pass, request goes to the backend
 
 Blocked attack:
 
 ![Blocked Attack Flow](/images/articles/crowdsec-blocked-attack.png)
 
 1. Request hits nginx
-2. AppSec detects SQL injection in payload
+2. AppSec detects SQL injection in the payload
 3. Reports to LAPI, IP gets banned
-4. Returns 403 to attacker
-5. Future requests from that IP are blocked immediately
+4. Returns 403 to the attacker
+5. Future requests from that IP get blocked immediately
 
 ## Issue 1: PostgreSQL StatefulSet not created
 
-CrowdSec docs recommend PostgreSQL for production (instead of default SQLite). Used Zalando postgres-operator.
+CrowdSec docs recommend PostgreSQL for production instead of the default SQLite. I used Zalando postgres-operator.
 
-Created the PostgreSQL CR in `crowdsec` namespace. Nothing happened. Operator logs showed:
+Created the PostgreSQL CR in the `crowdsec` namespace. Nothing happened. Operator logs showed:
 
 ```
 {"cluster-name":"crowdsec/crowdsec-postgres","msg":"pod disruption budget ... created"}
@@ -61,14 +64,11 @@ Created the PostgreSQL CR in `crowdsec` namespace. Nothing happened. Operator lo
 
 Then silence. No StatefulSet, no pods.
 
-Tried:
-- Restart operator → no effect
-- Add resource limits → no effect
-- Add optional fields → no effect
+I tried restarting the operator, adding resource limits, adding optional fields. None of it helped.
 
 ### Fix
 
-Moved PostgreSQL to `postgres-operator` namespace:
+Moved PostgreSQL to the `postgres-operator` namespace:
 
 ```yaml
 apiVersion: "acid.zalan.do/v1"
@@ -85,13 +85,13 @@ spec:
 
 StatefulSet appeared immediately.
 
-Root cause unknown. Some namespace permission issue with the operator. Moving to operator's namespace fixed it.
+I still don't know the root cause. Some namespace permission issue with the operator. Moving to the operator's own namespace fixed it, so I moved on.
 
 ## Issue 2: Wrong IP in logs
 
-Ran pentests after deployment. CrowdSec Console showed all attacks from same IP - the load balancer's internal IP, not actual attacker IPs.
+Ran pentests after deployment. CrowdSec Console showed all attacks coming from the same IP, which was the load balancer's internal IP. Not the actual attacker IPs.
 
-Setup: Hetzner LB with PROXY Protocol enabled.
+Our setup: Hetzner LB with PROXY Protocol enabled.
 
 ```yaml
 controller:
@@ -102,17 +102,17 @@ controller:
       load-balancer.hetzner.cloud/uses-proxyprotocol: "true"
 ```
 
-PROXY Protocol was configured. But wrong IP appeared.
+PROXY Protocol was configured. But the wrong IP still appeared.
 
 ### Root cause
 
-Had `use-forwarded-headers: "true"` in nginx config. This trusts X-Forwarded-For headers.
+I had `use-forwarded-headers: "true"` in the nginx config. This tells nginx to trust X-Forwarded-For headers.
 
-Problem: Hetzner LB sets X-Forwarded-For to its internal IP. When both PROXY Protocol and use-forwarded-headers are enabled, nginx prioritizes X-Forwarded-For.
+The problem: Hetzner's LB sets X-Forwarded-For to its internal IP. When both PROXY Protocol and use-forwarded-headers are enabled, nginx prioritizes X-Forwarded-For over the PROXY Protocol header. So it was picking up the wrong one.
 
 ### Fix
 
-Remove `use-forwarded-headers`:
+Removed `use-forwarded-headers`:
 
 ```yaml
 controller:
@@ -122,19 +122,19 @@ controller:
     # use-forwarded-headers: removed
 ```
 
-Actual client IPs appeared after this.
+After this change, actual client IPs showed up correctly. This one was annoying to track down.
 
 ## Issue 3: Agent not collecting logs
 
-Default CrowdSec Agent runs as DaemonSet, mounts `/var/log` from host, reads container logs directly.
+The default CrowdSec Agent runs as a DaemonSet. It mounts `/var/log` from the host and reads container logs directly.
 
 Agent pods started fine but collected zero logs.
 
-Problem: containerd log paths are `/var/log/pods/<namespace>_<pod-name>_<uid>/<container>/`. The UID is dynamic. Pattern matching doesn't work reliably.
+The problem: containerd writes logs to `/var/log/pods/<namespace>_<pod-name>_<uid>/<container>/`. The UID is different every time a pod restarts. Pattern matching on those paths doesn't work reliably.
 
 ### Fix
 
-Already had Loki for centralized logging. Switched Agent to use Loki as datasource:
+We already had Loki for centralized logging. So I switched the Agent to pull logs from Loki instead:
 
 ```yaml
 agent:
@@ -150,13 +150,13 @@ agent:
         program: nginx
 ```
 
-Agent becomes a Deployment instead of DaemonSet. Queries Loki for logs instead of reading from disk.
+The Agent becomes a Deployment instead of a DaemonSet. It queries Loki for logs instead of reading from disk.
 
-Bonus: resource usage dropped ~67%. DaemonSet runs on every node. Deployment runs one pod.
+Nice bonus: resource usage dropped about 67%. A DaemonSet runs on every node. A Deployment runs one pod.
 
 ## PostgreSQL config
 
-LAPI config for PostgreSQL backend:
+LAPI config for the PostgreSQL backend:
 
 ```yaml
 config:
@@ -171,31 +171,31 @@ config:
       sslmode: require
 ```
 
-Password comes from Secret created by postgres-operator.
+Password comes from a Secret created by postgres-operator.
 
-Note: switching from SQLite to PostgreSQL requires re-registering machines and bouncers. With `auto_registration` enabled, just restart Agent and AppSec pods.
+One thing to note: switching from SQLite to PostgreSQL requires re-registering machines and bouncers. With `auto_registration` enabled, just restart the Agent and AppSec pods and they'll register themselves.
 
 ## Verification
 
-Ran pentests again after fixing all issues.
+Ran pentests again after fixing all three issues.
 
 This time:
 - Attacker IPs appeared correctly in Console
 - Attack requests got 403 responses
-- IPs appeared in LAPI decision list
-- Subsequent requests from banned IPs blocked immediately
+- IPs showed up in the LAPI decision list
+- Subsequent requests from banned IPs were blocked immediately
 
-WAF working as intended.
+WAF working as expected.
 
 ## What I learned
 
-1. **postgres-operator namespace quirks**: If StatefulSet creation silently fails, try deploying in `postgres-operator` namespace with `secretNamespace` pointing elsewhere.
+1. If postgres-operator silently fails to create a StatefulSet, try deploying in the `postgres-operator` namespace with `secretNamespace` pointing to wherever you actually need the credentials.
 
-2. **PROXY Protocol vs X-Forwarded-For**: They conflict. With PROXY Protocol, don't use `use-forwarded-headers: true`.
+2. PROXY Protocol and X-Forwarded-For conflict. If you're using PROXY Protocol, don't set `use-forwarded-headers: true`.
 
-3. **Loki as log source**: Simpler than hostPath mounts. If you have centralized logging, use it.
+3. If you already have centralized logging (Loki, etc.), use it as the CrowdSec Agent's log source. Simpler than hostPath mounts and uses fewer resources.
 
-4. **PostgreSQL for production**: SQLite is fine for testing. PostgreSQL gives persistence and horizontal scaling.
+4. SQLite is fine for testing. PostgreSQL gives you persistence and can scale horizontally.
 
 ## References
 

@@ -8,7 +8,7 @@ readTime: "6 min read"
 
 # Debugging Random 502 Errors from NGINX Ingress
 
-Started getting reports of random 502 errors from users. Not frequent - maybe 1 in every 500 requests. But annoying and unpredictable.
+Started getting reports of random 502 errors from users. Not frequent, maybe 1 in every 500 requests. But annoying and unpredictable.
 
 502 means NGINX Ingress couldn't connect to the backend pod. Either the pod is down, or NGINX thinks it's down, or there's a network issue.
 
@@ -41,13 +41,13 @@ kubectl get pods -l app=api
 
 All pods showing `Running` and `2/2` ready. No pods restarting, no obvious problems.
 
-Checked pod logs - no errors, just normal request handling.
+Checked pod logs too. Nothing unusual, just normal request handling.
 
-So pods are running and healthy, but NGINX occasionally can't connect to them.
+So pods are running and healthy, but NGINX occasionally can't connect to them. Weird.
 
 ## NGINX Ingress endpoint list
 
-NGINX Ingress maintains a list of backend pod IPs. Checked what NGINX thinks the backends are:
+NGINX Ingress maintains a list of backend pod IPs. I checked what NGINX thinks the backends are:
 
 ```bash
 kubectl exec -it -n ingress-nginx ingress-nginx-controller-xxx -- cat /etc/nginx/nginx.conf | grep upstream
@@ -83,7 +83,7 @@ readinessProbe:
 
 Readiness probe hits `/health` every 5 seconds. If 3 consecutive probes fail, the pod is marked not ready and removed from service endpoints.
 
-This looked fine. But I checked the `/health` endpoint response times:
+This looked fine at first glance. But then I checked the `/health` endpoint response times:
 
 ```bash
 kubectl exec -it api-pod -- curl -w "%{time_total}\n" -o /dev/null http://localhost:8080/health
@@ -133,16 +133,16 @@ def health():
 
 Under load, database connections could take 1-2 seconds to acquire from the pool. This made the health check slow.
 
-Better approach - separate liveness and readiness:
+Better approach: separate liveness and readiness.
 
-**Liveness**: Is the process alive?
+Liveness just answers "is the process alive?"
 ```python
 @app.route('/healthz')
 def liveness():
     return 'OK'  # just return immediately
 ```
 
-**Readiness**: Can it handle requests?
+Readiness answers "can it handle requests?"
 ```python
 @app.route('/ready')
 def readiness():
@@ -194,45 +194,47 @@ def readiness():
         return 'Not ready', 503
 ```
 
-Now we can graph health check failures in Grafana and see if pods are frequently becoming not ready.
+Now I can graph health check failures in Grafana and see if pods are frequently becoming not ready.
 
 ## Debugging tips
 
-**Check NGINX Ingress logs:**
+Check NGINX Ingress logs:
 ```bash
 kubectl logs -n ingress-nginx deployment/ingress-nginx-controller -f
 ```
 
-**Check Service endpoints:**
+Check Service endpoints:
 ```bash
 kubectl get endpoints service-name
 ```
 
-Shows which pod IPs are currently in the service. If a pod is not ready, it won't be listed.
+This shows which pod IPs are currently in the service. If a pod is not ready, it won't be listed.
 
-**Check pod events:**
+Check pod events:
 ```bash
 kubectl describe pod pod-name
 ```
 
 Look for `Readiness probe failed` events.
 
-**Test health endpoint manually:**
+Test health endpoint manually:
 ```bash
 kubectl exec -it pod-name -- curl -v http://localhost:8080/health
 ```
 
-**Check NGINX upstream config:**
+Check NGINX upstream config:
 ```bash
 kubectl exec -it -n ingress-nginx ingress-nginx-controller-xxx -- cat /etc/nginx/nginx.conf
 ```
 
-## Lessons
+## What I took away from this
 
-1. Readiness probes need generous timeouts - pods under load are slow to respond
-2. Health checks should be fast - don't do expensive operations
-3. Separate liveness (is process alive) from readiness (can handle traffic)
-4. Monitor probe failures to catch flapping pods
-5. 502 errors are usually about connectivity, not application errors
+Readiness probes need generous timeouts. Pods under load are slow to respond, and that doesn't mean they're broken.
 
-After fixing readiness probes, 502 errors dropped to zero. The issue wasn't that pods were unhealthy - it was that we were marking healthy pods as unhealthy because they were slow to respond to health checks.
+Health checks should be fast. Don't do expensive operations in them. Checking the database in a health endpoint seemed reasonable until it wasn't.
+
+Separate liveness from readiness. Liveness checks if the process is alive. Readiness checks if it can handle traffic. They're different questions.
+
+Monitor probe failures. If pods keep flapping between ready and not ready, you'll see it in the metrics before users report 502s.
+
+And honestly, most 502 errors are about connectivity, not application errors. The app was fine the whole time. We just kept telling NGINX it wasn't.

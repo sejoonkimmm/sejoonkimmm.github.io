@@ -10,7 +10,7 @@ readTime: "8 min read"
 
 Last Tuesday, Hetzner had network issues in their Falkenstein datacenter. Servers were up, but connectivity was intermittent. Some packets got through, most didn't. Our monitoring showed services timing out randomly.
 
-We run Kubernetes on Hetzner dedicated servers because it's cheap - €40/month for a decent 6-core machine with 64GB RAM. Compared to managed Kubernetes on Azure, we save about 60% on compute costs. But you get what you pay for, and sometimes that includes network problems.
+We run Kubernetes on Hetzner dedicated servers because it's cheap - about 40 euros a month for a decent 6-core machine with 64GB RAM. Compared to managed Kubernetes on Azure, we save about 60% on compute costs. But you get what you pay for, and sometimes that includes network problems.
 
 ## What broke
 
@@ -30,7 +30,7 @@ We deliberately split nodes across Hetzner datacenters. Not because we planned f
 
 Six months ago, Hetzner had a power issue in fsn1 that took down half our cluster for 2 hours. After that, we spread nodes across fsn1 and nbg1. Different physical locations, different network paths, different power infrastructure.
 
-**Pod topology constraints** ensure critical services run in both locations:
+Pod topology constraints make sure the important services run in both locations:
 
 ```yaml
 topologySpreadConstraints:
@@ -44,7 +44,7 @@ topologySpreadConstraints:
 
 This tells Kubernetes to spread pods evenly across zones. If one zone goes down, you still have pods running elsewhere.
 
-**Database replication** across datacenters using Zalando PostgreSQL operator:
+Database replication across datacenters using Zalando PostgreSQL operator:
 
 ```yaml
 apiVersion: acid.zalan.do/v1
@@ -73,25 +73,25 @@ Primary database in fsn1, standby replica in nbg1. If fsn1 becomes unreachable, 
 
 Even though services stayed up, our deployment pipeline broke. We use ArgoCD for GitOps, and it runs in fsn1. When fsn1 network was flaky, ArgoCD couldn't reliably sync from GitHub or apply changes to the cluster.
 
-This wasn't a crisis because we weren't deploying anything critical, but it was annoying. Had to wait 3 hours for Hetzner to fix their network before we could deploy a feature we'd finished.
+This wasn't a crisis because we weren't deploying anything critical, but it was annoying. We had to wait 3 hours for Hetzner to fix their network before we could deploy a feature we'd already finished.
 
-**Lesson**: Control plane services like ArgoCD should also be redundant. We've since configured ArgoCD with 2 replicas spread across datacenters.
+Lesson learned: control plane services like ArgoCD should also be redundant. We've since configured ArgoCD with 2 replicas spread across datacenters.
 
-Also, our monitoring in Grafana showed confusing results during the incident. Prometheus scraped metrics from both datacenters, but when fsn1 was flaky, it would sometimes succeed, sometimes fail. Graphs looked noisy with gaps.
+Our monitoring in Grafana also showed confusing results during the incident. Prometheus scraped metrics from both datacenters, but when fsn1 was flaky, it would sometimes succeed, sometimes fail. Graphs looked noisy with gaps everywhere.
 
 We now have separate Prometheus instances per datacenter that federate to a central Prometheus. This way we can see which specific datacenter has issues instead of getting averaged-out metrics.
 
 ## The Azure backup strategy
 
-We use Hetzner for compute because it's cheap. But we don't trust it for critical data storage. Database backups go to Azure Blob Storage every night.
+We use Hetzner for compute because it's cheap. But we don't trust it for long-term data storage. Database backups go to Azure Blob Storage every night.
 
 Why Azure and not Hetzner Storage Box?
 
-1. **Geographic diversity**: Our backups physically exist outside Hetzner infrastructure. If Hetzner has a major incident, we can restore from Azure.
+First, geographic diversity. Our backups physically exist outside Hetzner infrastructure. If Hetzner has a major incident, we can restore from Azure.
 
-2. **Reliability**: Azure Blob Storage has 99.999999999% durability. Hetzner is great for compute, but I trust Microsoft more for long-term data storage.
+Second, I trust Microsoft more for long-term data storage. Azure Blob Storage has 99.999999999% durability. Hetzner is great for compute, but storage is a different game.
 
-3. **Integration**: We already use Azure Key Vault for secrets. Having backups in the same cloud environment makes restore procedures simpler.
+Third, we already use Azure Key Vault for secrets. Having backups in the same cloud makes restore procedures simpler.
 
 Our backup script runs as a Kubernetes CronJob:
 
@@ -125,43 +125,43 @@ Backups are encrypted at rest in Azure, retained for 30 days, with lifecycle pol
 
 ## Cost comparison
 
-Running Kubernetes on Hetzner is significantly cheaper than managed solutions:
+Running Kubernetes on Hetzner is way cheaper than managed solutions.
 
-**Hetzner setup:**
-- 8 dedicated servers × €45/month = €360/month
-- Additional 100TB traffic = €10/month
-- **Total: ~€370/month**
+Hetzner setup:
+- 8 dedicated servers at 45 euros/month each = 360 euros/month
+- Additional 100TB traffic = 10 euros/month
+- Total: about 370 euros/month
 
-**Azure AKS equivalent:**
-- 8 D4s_v3 nodes (4 vCPU, 16GB) = ~€900/month
-- Load balancer = €20/month
-- Egress traffic = €150/month
-- **Total: ~€1,070/month**
+Azure AKS equivalent:
+- 8 D4s_v3 nodes (4 vCPU, 16GB) = roughly 900 euros/month
+- Load balancer = 20 euros/month
+- Egress traffic = 150 euros/month
+- Total: roughly 1,070 euros/month
 
-We save about €700/month by self-managing on Hetzner. That pays for a lot of operational overhead.
+We save about 700 euros a month by self-managing on Hetzner. That pays for a lot of operational overhead.
 
-**But** we spend about €50/month on Azure services:
-- Blob Storage for backups = €15/month
-- Key Vault = €5/month
-- Small VM for bastion/jumpbox = €30/month
+But we spend about 50 euros/month on Azure services:
+- Blob Storage for backups = 15 euros/month
+- Key Vault = 5 euros/month
+- Small VM for bastion/jumpbox = 30 euros/month
 
-So real savings are €650/month, or about €7,800/year.
+So real savings are 650 euros/month, or about 7,800 euros per year.
 
 ## Tradeoffs
 
-**What you give up with Hetzner:**
+What you give up with Hetzner:
 - No SLA. When something breaks, it's fixed when it's fixed.
 - Network quality is generally good but not guaranteed.
-- You manage everything - no managed control plane, no automatic upgrades.
+- You manage everything yourself. No managed control plane, no automatic upgrades.
 - Support is decent but not enterprise-level.
 
-**What you gain:**
+What you gain:
 - Much lower costs
 - Root access to physical servers if needed
 - Freedom to configure however you want
-- Learning experience (you actually understand Kubernetes because you built it)
+- You actually understand Kubernetes because you built it yourself
 
-For our scale and risk tolerance, it works. If we were handling financial transactions or healthcare data, we'd probably pay for managed services and enterprise SLAs. But for our use case, Hetzner's price/performance ratio makes sense.
+For our scale and risk tolerance, it works. If we were handling financial transactions or healthcare data, we'd probably pay for managed services and enterprise SLAs. But for our use case, Hetzner's price-to-performance ratio makes sense.
 
 ## Incident timeline
 
@@ -174,13 +174,13 @@ For our scale and risk tolerance, it works. If we were handling financial transa
 - 2:15 PM - Verify all metrics back to normal
 - 2:30 PM - Post-incident review meeting
 
-Total customer impact: Some users experienced slow requests for about 3 hours. No complete service outages. No data loss.
+Total customer impact: some users experienced slow requests for about 3 hours. No complete service outages. No data loss.
 
 ## What we improved after
 
-1. **ArgoCD redundancy**: Now runs 2 replicas in different datacenters
-2. **Monitoring clarity**: Separate Prometheus per datacenter
-3. **Runbooks**: Documented procedure for promoting database replicas
-4. **Alerting**: Tuned alerts to distinguish between "one datacenter slow" vs "everything down"
+1. ArgoCD redundancy - now runs 2 replicas in different datacenters
+2. Monitoring clarity - separate Prometheus per datacenter
+3. Runbooks - documented procedure for promoting database replicas
+4. Alerting - tuned alerts to distinguish between "one datacenter slow" vs "everything down"
 
 The incident validated our multi-datacenter approach. Spending a bit more for geographic redundancy within Hetzner was worth it.

@@ -10,9 +10,9 @@ readTime: "7 min read"
 
 Our Docker images were huge. The main API service image was 850MB. Build time: 6 minutes. Pull time on fresh nodes: 3 minutes.
 
-This was annoying during development (slow builds) and problematic in production (slow deployments when scaling up).
+This was annoying during development (slow builds) and a real problem in production (slow deployments when scaling up).
 
-Spent a day optimizing. Got the image down to 180MB. Build time: 2 minutes. Pull time: 30 seconds.
+I spent a day on this. Got the image down to 180MB. Build time: 2 minutes. Pull time: 30 seconds.
 
 ## The starting point
 
@@ -33,11 +33,7 @@ CMD ["python", "app.py"]
 
 Image size: 850MB
 
-Problems:
-- Uses full Python image with lots of unnecessary packages
-- Includes build tools (gcc, make) not needed at runtime
-- Contains pip cache
-- No layer optimization
+The problems were obvious once I looked. It uses the full Python image with a ton of packages we don't need. Build tools like gcc and make are in there even though we don't compile anything at runtime. The pip cache is still sitting in the image. No layer optimization at all.
 
 ## Optimization 1: Use slim base image
 
@@ -48,7 +44,7 @@ FROM python:3.11-slim
 ...
 ```
 
-Slim image strips out unnecessary packages. Just has Python runtime, not build tools.
+The slim image strips out packages we don't need at runtime. Just the Python interpreter, not the build toolchain.
 
 Image size: 600MB (down from 850MB)
 
@@ -56,7 +52,7 @@ Savings: 250MB (29%)
 
 ## Optimization 2: Multi-stage build
 
-Split build and runtime into separate stages:
+Split the build and runtime into separate stages:
 
 ```dockerfile
 # Build stage
@@ -82,7 +78,7 @@ ENV PATH=/root/.local/bin:$PATH
 CMD ["python", "app.py"]
 ```
 
-Builder stage has full Python image with gcc and build tools. Runtime stage only has slim image with the built packages.
+The builder stage has the full Python image with gcc and build tools. The runtime stage only has the slim image plus the built packages copied over.
 
 Image size: 420MB (down from 600MB)
 
@@ -120,7 +116,7 @@ ENV PATH=/root/.local/bin:$PATH
 CMD ["python", "app.py"]
 ```
 
-Alpine is a minimal Linux distribution. Base image is 5MB vs 120MB for Debian.
+Alpine is a minimal Linux distribution. The base image is 5MB vs 120MB for Debian. Big difference.
 
 Image size: 280MB (down from 420MB)
 
@@ -135,9 +131,9 @@ RUN apk add --no-cache libffi && \
     rm -rf /var/cache/apk/*
 ```
 
-Each RUN creates a layer. Fewer layers = smaller image.
+Each RUN creates a layer. Fewer layers means a smaller image.
 
-Also removed unnecessary files:
+I also cleaned up unnecessary files:
 
 ```dockerfile
 COPY . .
@@ -151,7 +147,7 @@ Savings: 40MB (14%)
 
 ## Optimization 5: .dockerignore
 
-Created `.dockerignore` to exclude unnecessary files:
+Created a `.dockerignore` to keep unnecessary files out of the build context:
 
 ```
 .git
@@ -171,7 +167,7 @@ tests/
 docs/
 ```
 
-This prevents copying test files, documentation, git history into the image.
+This prevents test files, documentation, and git history from being copied into the image.
 
 Image size: 180MB (down from 240MB)
 
@@ -232,58 +228,49 @@ Total savings: 670MB (79%)
 Before: 6 minutes
 After: 2 minutes
 
-Why faster:
-- Smaller base images download faster
-- Layer caching works better (requirements layer rarely changes)
-- Less data to process and compress
+Smaller base images download faster, layer caching works better when the requirements layer rarely changes, and there's just less data to process and compress.
 
 ## Pull time improvements
 
 Before: 3 minutes on fresh nodes
 After: 30 seconds
 
-Why faster:
-- 670MB less data to download
-- Image layers are smaller and compress better
+670MB less data to download. The image layers are smaller and compress better too.
 
 ## Registry storage savings
 
 We keep the last 10 image versions in our registry.
 
-Before: 10 × 850MB = 8.5GB per service
-After: 10 × 180MB = 1.8GB per service
+Before: 10 x 850MB = 8.5GB per service
+After: 10 x 180MB = 1.8GB per service
 
-Savings: 6.7GB per service × 8 services = 53GB total
+Savings: 6.7GB per service, times 8 services = 53GB total.
 
-Our registry storage is on Azure Container Registry. Storage costs about €0.10/GB/month.
-
-Savings: €5.30/month
-
-Not huge, but nice side benefit.
+Our registry is on Azure Container Registry. Storage is about 0.10 euro/GB/month, so we save about 5.30 euro/month. Not huge, but a nice side effect.
 
 ## Tradeoffs with Alpine
 
-Alpine uses musl libc instead of glibc. Some Python packages have issues with musl.
+Alpine uses musl libc instead of glibc. Some Python packages don't play well with musl.
 
-We hit problems with:
+We ran into problems with:
 - `cryptography` package needed extra build flags
-- `psycopg2` needed `postgresql-dev` at build time, `libpq` at runtime
+- `psycopg2` needed `postgresql-dev` at build time and `libpq` at runtime
 
-Had to debug these during migration. Took about 2 hours to get all dependencies working.
+Debugging these took about 2 hours. Not terrible, but worth knowing about upfront.
 
-Alternative: Use `python:3.11-slim-bullseye` (Debian-based). Not as small as Alpine but fewer compatibility issues.
+If you don't want to deal with Alpine compatibility issues, `python:3.11-slim-bullseye` (Debian-based) is a good middle ground. Not as small as Alpine, but fewer surprises.
 
-## When not to optimize
+## When not to bother
 
-If you deploy rarely and image size doesn't matter, don't bother optimizing.
+If you deploy rarely and image size doesn't affect anything, don't spend time on this.
 
-If your image is already small (< 200MB), marginal gains aren't worth the effort.
+If your image is already under 200MB, the effort probably isn't worth the marginal gains.
 
-If you use languages with larger runtimes (Java, .NET), there's a baseline size you can't avoid.
+If you're using Java or .NET, there's a baseline runtime size you can't really avoid. Focus optimization elsewhere.
 
 ## Monitoring image sizes
 
-Added to CI pipeline:
+I added a check to our CI pipeline:
 
 ```yaml
 check-image-size:
@@ -294,16 +281,14 @@ check-image-size:
     - if [ $SIZE -gt 250 ]; then echo "Image too large!" && exit 1; fi
 ```
 
-This fails the build if image exceeds 250MB. Prevents accidental bloat from being introduced.
+This fails the build if the image exceeds 250MB. Prevents accidental bloat from creeping back in.
 
 ## Lessons
 
-1. Use slim or Alpine base images
-2. Multi-stage builds separate build and runtime
-3. .dockerignore excludes unnecessary files
-4. Combine RUN commands to reduce layers
-5. Clean up caches and temp files
+1. Start with slim or Alpine base images
+2. Multi-stage builds keep build tools out of the final image
+3. .dockerignore is easy to forget but makes a real difference
+4. Combine RUN commands when you can
+5. Clean up caches and temp files in the same layer that creates them
 
-Image optimization took one day but saves time on every build and deployment going forward.
-
-Smaller images = faster builds, faster deploys, lower costs.
+This optimization took one day. Every build and deploy after that is faster. For us, that was a good trade.

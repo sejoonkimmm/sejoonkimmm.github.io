@@ -8,13 +8,13 @@ readTime: "6 min read"
 
 # Automating SSH Key Rotation on Hetzner Servers
 
-Security audit said we should rotate SSH keys regularly. Checked when we last rotated keys on our Hetzner servers. Answer: never. The same SSH key has been there for 18 months.
+Security audit said we should rotate SSH keys regularly. I checked when we last rotated keys on our Hetzner servers. Answer: never. Same key, 18 months. Not great.
 
-Wrote a script to automate key rotation. Now we can rotate all SSH keys across 8 servers in 5 minutes instead of manually SSH-ing into each one.
+So I wrote a script. Now we rotate all SSH keys across 8 servers in about 5 minutes instead of SSH-ing into each one by hand.
 
 ## The manual process
 
-Before automation, rotating keys meant:
+Before I automated it, rotating keys looked like this:
 
 1. Generate new SSH keypair locally
 2. SSH into each server using old key
@@ -24,11 +24,11 @@ Before automation, rotating keys meant:
 6. Update key in password manager
 7. Repeat for all 8 servers
 
-This takes about 2 hours and is error-prone. Easy to lock yourself out if you remove the old key before verifying the new one works.
+Takes about 2 hours. And it's easy to mess up. If you remove the old key before checking the new one works, you lock yourself out. I've seen it happen.
 
 ## The automated script
 
-Created `rotate-ssh-keys.sh`:
+I created `rotate-ssh-keys.sh`:
 
 ```bash
 #!/bin/bash
@@ -130,27 +130,22 @@ Adding new key to server2.example.com...
 Key rotation complete!
 ```
 
-Done in 5 minutes.
+Five minutes, done.
 
 ## Why ed25519 keys
 
-Used `ssh-keygen -t ed25519` instead of RSA.
+I used `ssh-keygen -t ed25519` instead of RSA. A few reasons:
 
-ed25519 advantages:
 - Shorter keys (68 characters vs 500+ for RSA)
 - Faster to generate and verify
-- More secure per bit than RSA
+- Better security per bit than RSA
 - Resistant to timing attacks
 
-RSA is still fine, but ed25519 is better for new keys.
+RSA still works fine, but for new keys there's no reason not to use ed25519.
 
 ## Storing keys in Azure Key Vault
 
-The script uploads keys to Azure Key Vault so they're:
-- Encrypted at rest
-- Accessible to team members with proper permissions
-- Backed up automatically
-- Audited (Azure logs who accessed the keys)
+The script uploads keys to Azure Key Vault. This means they're encrypted at rest, accessible to team members who have the right permissions, backed up automatically, and audited (Azure logs who accessed them and when).
 
 To retrieve a key from Key Vault:
 
@@ -165,7 +160,7 @@ chmod 600 ~/.ssh/hetzner-key
 
 ## Testing before removing old keys
 
-The script tests that the new key works before removing the old one. This prevents lockouts.
+This is the part I cared most about. The script tests that the new key actually works before it removes the old one. Without this, you're one bad key away from a lockout.
 
 ```bash
 ssh -i "$KEY_NAME" -o BatchMode=yes root@$server "echo 'New key works'" || {
@@ -176,27 +171,27 @@ ssh -i "$KEY_NAME" -o BatchMode=yes root@$server "echo 'New key works'" || {
 
 `-o BatchMode=yes` prevents interactive prompts. If the key doesn't work, SSH fails immediately instead of asking for a password.
 
-If the test fails, the script exits and keeps the old key in place.
+If the test fails, the script stops and the old key stays in place. Nothing breaks.
 
 ## Avoiding lockouts
 
-If something goes wrong during rotation, you can recover:
+If something does go wrong during rotation, recovery options exist:
 
-1. Hetzner provides KVM console access in their web panel
-2. Can log in via console and fix `authorized_keys`
-3. Also kept backups: `authorized_keys.backup`
+1. Hetzner has KVM console access in their web panel
+2. You can log in via console and fix `authorized_keys` manually
+3. The script also keeps backups: `authorized_keys.backup`
 
-Never had to use these, but good to know they exist.
+I've never had to use any of these. But I sleep better knowing they're there.
 
 ## Key rotation schedule
 
-Security best practice says rotate SSH keys every 90 days. We compromised on every 6 months.
+Security best practice says rotate every 90 days. We settled on every 6 months. Not perfect, but realistic.
 
-Added to calendar as recurring task. Script makes it painless enough that we actually do it.
+I added it as a recurring calendar event. The script makes it painless enough that we actually follow through instead of pushing it off.
 
 ## SSH config for multiple keys
 
-After rotation, updated `~/.ssh/config`:
+After rotation, I updated `~/.ssh/config`:
 
 ```
 Host *.example.com
@@ -205,11 +200,11 @@ Host *.example.com
   IdentitiesOnly yes
 ```
 
-`IdentitiesOnly yes` prevents SSH from trying all keys in `~/.ssh/`. Makes connection faster and cleaner.
+`IdentitiesOnly yes` stops SSH from trying every key in `~/.ssh/`. Makes connections faster and avoids confusing authentication errors.
 
 ## Alternative: Use Hetzner API
 
-Hetzner has an API for managing SSH keys. Could automate key rotation through their API:
+Hetzner has an API for managing SSH keys. You could automate rotation through it:
 
 ```python
 import requests
@@ -234,11 +229,11 @@ for key in old_keys:
                   headers=headers)
 ```
 
-But this only works for Hetzner Cloud. We use dedicated servers which don't support the API for SSH key management.
+This only works for Hetzner Cloud though. We use dedicated servers, which don't support the API for SSH key management. A bit annoying, but that's why I went with the shell script approach.
 
 ## Access control
 
-Only ops team has access to SSH private keys in Azure Key Vault. Added Azure AD group-based access:
+Only the ops team can access SSH private keys in Azure Key Vault. I set up Azure AD group-based access:
 
 ```bash
 az keyvault set-policy \
@@ -247,25 +242,20 @@ az keyvault set-policy \
   --secret-permissions get list
 ```
 
-Developers don't need SSH access to servers. If they need to debug, they use Kubernetes exec instead:
+Developers don't need SSH access to the servers. If they need to debug something, they use Kubernetes exec:
 
 ```bash
 kubectl exec -it pod-name -- /bin/bash
 ```
 
-This is better than SSH because:
-- Access is controlled by Kubernetes RBAC
-- Actions are logged in Kubernetes audit logs
-- No need to manage SSH keys for every developer
+This works better than SSH because access is controlled by Kubernetes RBAC, actions show up in audit logs, and we don't need to manage SSH keys for every developer on the team.
 
 ## Lessons
 
 1. Automate key rotation or it won't happen
 2. Test new keys before removing old ones
-3. Store keys centrally (Key Vault) not on individual machines
+3. Store keys in one central place (Key Vault), not on individual machines
 4. Use ed25519 for new keys
 5. Have a recovery plan (KVM console, backups)
 
-Key rotation went from "painful 2-hour manual process we avoid" to "5-minute automated script we run regularly."
-
-Automation removes the pain, which means you actually do the security best practice instead of putting it off.
+Key rotation went from a painful 2-hour manual process we kept avoiding to a 5-minute script we actually run on schedule. Sometimes the best security improvement is just making the right thing easy to do.

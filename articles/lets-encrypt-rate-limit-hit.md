@@ -10,7 +10,7 @@ readTime: "6 min read"
 
 Last week I broke TLS certificate issuance for our domain. While testing a new cert-manager configuration, I accidentally requested certificates from Let's Encrypt production instead of staging. Hit their rate limit and got blocked for a week.
 
-Nobody could issue new certificates for our domain until the rate limit reset. Thankfully existing certificates kept working, but we couldn't add new subdomains or renew test certificates.
+Nobody could issue new certificates for our domain until the rate limit reset. Existing certificates kept working, but we couldn't add new subdomains or renew test certificates.
 
 ## What happened
 
@@ -30,22 +30,15 @@ Rate limited. For 7 days.
 
 Let's Encrypt has rate limits to prevent abuse:
 
-**Certificates per Registered Domain**: 50 per week
-- Counts certificates issued for a domain and all its subdomains
-- Example: issuing certs for `app.example.com` and `api.example.com` counts as 2
+Certificates per Registered Domain: 50 per week. This counts certificates issued for a domain and all its subdomains. Issuing certs for `app.example.com` and `api.example.com` counts as 2.
 
-**Duplicate Certificate**: 5 per week
-- Exact same set of domain names
-- I had requested `test.example.com` 20 times
+Duplicate Certificate: 5 per week. Same exact set of domain names. I had requested `test.example.com` 20 times. Way over the limit.
 
-I hit the duplicate certificate limit hard. Once you hit it, you're locked out for a week.
+Once you hit it, you're locked out for a week. No exceptions.
 
-## Why this is dumb (my fault)
+## Why this happened (my fault)
 
-Let's Encrypt provides a **staging environment** specifically for testing. It has the same API as production, but:
-- Certificates aren't trusted by browsers (they're signed by a fake CA)
-- Rate limits are 1000x higher
-- Made for testing configurations
+Let's Encrypt provides a staging environment specifically for testing. Same API as production, but certificates aren't trusted by browsers (signed by a fake CA), and the rate limits are about 1000x higher. It's made for exactly this kind of testing.
 
 I should have used staging. I didn't because I wanted to see if the cert would actually work in a browser. Lazy shortcut that cost me a week.
 
@@ -124,28 +117,17 @@ issuerRef:
 
 ## Workaround during rate limit
 
-While rate limited, we couldn't issue new certificates for our domain. Existing certificates kept working, but we couldn't:
-- Add new subdomains
-- Test cert-manager changes
-- Renew certificates that were expiring (luckily none were)
+While rate limited, we couldn't issue new certificates for our domain. Existing certificates kept working, but we couldn't add new subdomains, test cert-manager changes, or renew certificates that were expiring (luckily none were).
 
-The workaround was using a different domain for testing. Registered a cheap throwaway domain (€2/year), pointed it at our cluster, and used that for cert-manager testing.
-
-Once the rate limit reset after 7 days, we went back to our main domain.
+The workaround: I registered a cheap throwaway domain (2 euros/year), pointed it at our cluster, and used that for cert-manager testing. Once the rate limit reset after 7 days, we went back to our main domain.
 
 ## DNS-01 vs HTTP-01 challenges
 
 Let's Encrypt uses challenges to verify you own the domain before issuing a certificate.
 
-**HTTP-01**: Let's Encrypt makes an HTTP request to `http://your-domain/.well-known/acme-challenge/token`
-- Easy to set up
-- Only works for single domains (no wildcards)
-- Requires port 80 to be accessible
+HTTP-01: Let's Encrypt makes an HTTP request to `http://your-domain/.well-known/acme-challenge/token`. Easy to set up, but only works for single domains (no wildcards) and requires port 80 to be accessible.
 
-**DNS-01**: Let's Encrypt checks for a TXT record in DNS
-- Can issue wildcard certificates (`*.example.com`)
-- Works even if services aren't publicly accessible
-- Requires DNS API access
+DNS-01: Let's Encrypt checks for a TXT record in DNS. Can issue wildcard certificates (`*.example.com`), works even if services aren't publicly accessible, but requires DNS API access.
 
 We use DNS-01 because we want wildcard certificates. cert-manager creates the TXT records in Azure DNS automatically during the challenge.
 
@@ -153,7 +135,7 @@ We use DNS-01 because we want wildcard certificates. cert-manager creates the TX
 
 This is what I was testing when I hit the rate limit. cert-manager needs permissions to create DNS records in Azure.
 
-Created a managed identity with DNS Zone Contributor role:
+I created a managed identity with DNS Zone Contributor role:
 
 ```bash
 az identity create --name cert-manager-identity --resource-group dns-rg
@@ -168,15 +150,15 @@ az role assignment create \
   --scope /subscriptions/<sub-id>/resourceGroups/dns-rg/providers/Microsoft.Network/dnszones/example.com
 ```
 
-Configured cert-manager to use this identity in the ClusterIssuer. Took me 20 tries to get the Azure permissions right, which is why I hit the rate limit.
+Then configured cert-manager to use this identity in the ClusterIssuer. Took me 20 tries to get the Azure permissions right, which is how I burned through the rate limit.
 
 ## Checking rate limit status
 
-Let's Encrypt doesn't provide an API to check your current rate limit status. You just have to wait and try again later.
+Let's Encrypt doesn't provide an API to check your current rate limit status. You just have to wait and try again.
 
-There are unofficial checker tools like `https://letsdebug.net` that might show rate limit errors, but they're not perfect.
+There are unofficial tools like `https://letsdebug.net` that might show rate limit errors, but they're not perfect.
 
-The official advice is: keep track of how many certificates you've issued, and don't go over the limits.
+The official advice: keep track of how many certificates you've issued, and don't go over the limits. Not very helpful when you're already locked out.
 
 ## Production certificate management
 
@@ -186,15 +168,13 @@ For production, we have:
 - Auto-renewal 30 days before expiry (cert-manager default)
 - Alerts if certificate issuance fails
 
-We rarely need to manually intervene. cert-manager handles renewals automatically.
-
-The rate limits aren't a problem in normal operation because renewals count toward the limit, but we only renew each certificate once per 60-90 days. Well within the 50 certificates per week limit.
+We rarely need to manually intervene. cert-manager handles renewals on its own. The rate limits aren't a problem in normal operation because we only renew each certificate once per 60-90 days. Well within the 50 certificates per week limit.
 
 ## Lessons
 
 1. Always test with staging environment first
 2. Rate limits are per exact certificate set, not per request
 3. Keep a throwaway domain for testing
-4. Don't be lazy and skip staging because you want to see it work in a real browser
+4. Don't skip staging because you want to see it work in a real browser
 
-The week-long rate limit was annoying but didn't cause real problems because existing certs kept working. If we'd been in the middle of adding a bunch of new services that needed certificates, it would have been worse.
+The week-long rate limit was annoying but didn't cause real problems because existing certs kept working. If we'd been in the middle of adding a bunch of new services that needed certificates, it would have been much worse.

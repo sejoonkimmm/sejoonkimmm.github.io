@@ -12,7 +12,7 @@ For an internal project at work, we'd been using Grafana Cloud for monitoring. I
 
 The whole setup felt kind of backwards. Metrics leave our cluster, travel to Grafana Cloud, then we query them from there. We were literally paying to make our monitoring slower.
 
-So I spent a day moving everything to our own cluster. Most of the work was just enabling metrics that were already there - our ArgoCD apps had Prometheus support built in, I just hadn't turned it on. The bill went from whatever we were paying to basically nothing, since we're just using cluster resources we already had.
+So I spent a day moving everything to our own cluster. Most of the work was just enabling metrics that were already there. Our ArgoCD apps had Prometheus support built in, I just hadn't turned it on. The bill went from whatever we were paying to basically nothing, since we're just using cluster resources we already had.
 
 *Part 1 is about metrics. Part 2 will be about logs.*
 
@@ -20,21 +20,21 @@ So I spent a day moving everything to our own cluster. Most of the work was just
 
 Look, Grafana Cloud isn't expensive. But we already had a Kubernetes cluster running with spare capacity, all our apps managed through ArgoCD, everything's already there.
 
-And the data flow was just dumb - metrics leave our cluster, go to Grafana Cloud servers, then we pull them back when we want to look at dashboards. Paying for that round trip felt wasteful.
+And the data flow was just dumb. Metrics leave our cluster, go to Grafana Cloud servers, then we pull them back when we want to look at dashboards. Paying for that round trip felt wasteful.
 
-I did some basic math. Running Prometheus and Grafana in our cluster would cost us basically just storage and a bit of CPU - resources we're already paying for. Versus the Grafana Cloud bill. Turns out we'd save like 90% by keeping everything local.
+I did some basic math. Running Prometheus and Grafana in our cluster would cost us basically just storage and a bit of CPU, resources we're already paying for. Versus the Grafana Cloud bill. Turns out we'd save like 90% by keeping everything local.
 
 ## What I installed
 
-I used `kube-prometheus-stack` - it's basically the standard monitoring setup for Kubernetes. It bundles Prometheus, Grafana, Alertmanager, and a bunch of exporters together. You install one Helm chart and get all of that.
+I used `kube-prometheus-stack`. It's basically the standard monitoring setup for Kubernetes. It bundles Prometheus, Grafana, Alertmanager, and a bunch of exporters together. You install one Helm chart and get all of that.
 
 I also added Blackbox Exporter. This is where whitebox vs blackbox monitoring matters.
 
-**Whitebox** = monitoring from inside the app. The app exposes a `/metrics` endpoint and tells you what's happening internally - request rates, errors, queue sizes, whatever. You see the internal state.
+Whitebox = monitoring from inside the app. The app exposes a `/metrics` endpoint and tells you what's happening internally. Request rates, errors, queue sizes, whatever. You see the internal state.
 
-**Blackbox** = monitoring from outside. Make actual HTTP requests or TCP connections like a user would. You don't see internal state, but you know if it actually works from the outside.
+Blackbox = monitoring from outside. Make actual HTTP requests or TCP connections like a user would. You don't see internal state, but you know if it actually works from the outside.
 
-You need both. Whitebox tells you *why* something's failing. Blackbox tells you *if* it's failing from a user's perspective. Your metrics might look perfect internally, but if your SSL cert expired, users can't connect - blackbox catches that.
+You need both. Whitebox tells you *why* something's failing. Blackbox tells you *if* it's failing from a user's perspective. Your metrics might look perfect internally, but if your SSL cert expired, users can't connect. Blackbox catches that.
 
 Blackbox Exporter probes external endpoints and checks SSL certs, DNS, HTTP availability, stuff like that.
 
@@ -68,7 +68,7 @@ spec:
 
 ## Turns out most apps were ready
 
-Applications like PostgreSQL, NGINX Ingress, Redis, cert-manager, external-secrets-operator - they all have metrics endpoints. You just need to find the right Helm value and flip it to `true`.
+Applications like PostgreSQL, NGINX Ingress, Redis, cert-manager, external-secrets-operator all have metrics endpoints. You just need to find the right Helm value and flip it to `true`.
 
 For example, with PostgreSQL using the Zalando operator:
 
@@ -82,9 +82,9 @@ serviceMonitor:
 
 Once I enabled this, the exporter started exposing metrics, and Prometheus automatically discovered it through the ServiceMonitor.
 
-Same pattern repeated for almost every application:
+Same pattern repeated for almost every application.
 
-**NGINX Ingress Controller:**
+NGINX Ingress Controller:
 ```yaml
 controller:
   metrics:
@@ -93,7 +93,7 @@ controller:
       enabled: true
 ```
 
-**cert-manager:**
+cert-manager:
 ```yaml
 prometheus:
   enabled: true
@@ -101,7 +101,7 @@ prometheus:
     enabled: true
 ```
 
-**External Secrets Operator:**
+External Secrets Operator:
 ```yaml
 serviceMonitor:
   enabled: true
@@ -110,31 +110,23 @@ serviceMonitor:
 
 I didn't need to write custom exporters or figure out complicated configurations. The work was already done by the chart maintainers. I just needed to enable it.
 
-## The Process
+## The process
 
 My approach was simple:
 
-1. **Deploy kube-prometheus-stack** - This gave me the base monitoring infrastructure
-2. **Go through each ArgoCD application** - Check the Helm chart values for anything related to `metrics`, `prometheus`, `serviceMonitor`, or `monitoring`
-3. **Enable the metrics** - Usually just changing `enabled: false` to `enabled: true`
-4. **Commit and push** - GitOps takes care of the rest
-5. **Check Prometheus targets** - Verify that Prometheus discovered the new metrics endpoints
+1. Deploy kube-prometheus-stack to get the base monitoring infrastructure
+2. Go through each ArgoCD application and check the Helm chart values for anything related to `metrics`, `prometheus`, `serviceMonitor`, or `monitoring`
+3. Enable the metrics, usually just changing `enabled: false` to `enabled: true`
+4. Commit and push. GitOps takes care of the rest.
+5. Check Prometheus targets to verify that Prometheus discovered the new metrics endpoints
 
-The whole migration took me about a day. Most of that time was spent going through documentation to find the right configuration keys for each application.
+The whole migration took me about a day. Most of that time was spent going through documentation to find the right configuration keys for each application. Not hard work, just tedious.
 
-## What I Learned
+## What I learned
 
-**ServiceMonitors are powerful**
+The `ServiceMonitor` custom resource is what connects your application to Prometheus. When you enable it in a Helm chart, it creates a ServiceMonitor object that tells Prometheus where to find your metrics endpoint, how often to scrape it, what labels to attach, and which namespace it's in.
 
-The `ServiceMonitor` custom resource is what connects your application to Prometheus. When you enable it in a Helm chart, it creates a ServiceMonitor object that tells Prometheus:
-- Where to find your metrics endpoint
-- How often to scrape it
-- What labels to attach
-- Which namespace it's in
-
-Prometheus Operator watches for ServiceMonitors and automatically updates Prometheus configuration. No manual editing of prometheus.yml files.
-
-**Most modern apps are metrics-ready**
+Prometheus Operator watches for ServiceMonitors and automatically updates Prometheus configuration. No manual editing of prometheus.yml files. This was the part that surprised me. I expected more manual wiring, but the operator handles almost everything.
 
 If an application is designed to run on Kubernetes and has an official Helm chart, it probably already supports Prometheus metrics. Check the values.yaml file for these keywords:
 - `metrics.enabled`
@@ -142,13 +134,11 @@ If an application is designed to run on Kubernetes and has an official Helm char
 - `prometheus.enabled`
 - `monitoring.enabled`
 
-**Understanding whitebox and blackbox monitoring**
-
-The combination of kube-prometheus-stack (whitebox) and Blackbox Exporter (blackbox) gives us complete visibility. We can see what's happening inside our applications and verify that they work correctly from the outside. This dual approach catches issues that either method alone would miss.
+The combination of kube-prometheus-stack (whitebox) and Blackbox Exporter (blackbox) gives us visibility into both what's happening inside our applications and whether they work correctly from the outside. Either approach alone misses things. Internal metrics can look fine while users can't connect. External probes can show failures without telling you why.
 
 ## How it worked out
 
-Better than expected honestly. The monitoring bill dropped to like 10% of what it was - we're just using cluster resources we already have. Metrics are faster since nothing leaves the cluster. And we can keep data as long as we want without paying per GB.
+Better than expected honestly. The monitoring bill dropped to like 10% of what it was. We're just using cluster resources we already have. Metrics are faster since nothing leaves the cluster. And we can keep data as long as we want without paying per GB.
 
 Everything's managed through ArgoCD now so it's all in Git. The whole migration took about a day, most of that was finding the right Helm chart keys. Once I got started it was pretty straightforward.
 

@@ -8,13 +8,13 @@ readTime: "9 min read"
 
 # Creating a Least-Privilege Monitoring User in Zalando Postgres Operator
 
-I was working on an internal project where we needed Prometheus monitoring for our PostgreSQL cluster. Sounds simple - create a monitoring user, hook it up to postgres-exporter, done.
+I was working on an internal project where we needed Prometheus monitoring for our PostgreSQL cluster. Should be simple: create a monitoring user, hook it up to postgres-exporter, done.
 
-Except we needed this user to have minimal permissions. Only read metrics, nothing else. The problem? Zalando Postgres Operator's normal user creation doesn't work like that.
+Except we needed this user to have minimal permissions. Read metrics only, nothing else. The problem? Zalando Postgres Operator's normal user creation doesn't support that.
 
-## The Problem
+## The problem
 
-The normal way to create users in Zalando Postgres Operator looks like this:
+The usual way to create users in Zalando Postgres Operator:
 
 ```yaml
 users:
@@ -23,33 +23,29 @@ users:
     - createdb
 ```
 
-This works fine for application users. But for monitoring, I needed something different. The user should only be able to read PostgreSQL's statistics - no writes, no schema changes, no access to actual data. Just metrics.
+Fine for application users. But for monitoring, I needed something different. The user should only read PostgreSQL's statistics. No writes, no schema changes, no access to actual data. Just metrics.
 
-Postgres has a built-in role for this called `pg_monitor`. But the operator's user creation doesn't let you create a user that ONLY has this role and nothing else.
+Postgres has a built-in role for this called `pg_monitor`. But the operator's user creation doesn't let you create a user that only has this role and nothing else.
 
-## Why I Cared About This
+## Why I cared about this
 
-Look, if someone gets hold of monitoring credentials, they shouldn't be able to do any damage. They shouldn't be able to:
-- Change data
-- Drop tables
-- Create databases
-- See customer information
+If someone gets hold of monitoring credentials, they shouldn't be able to do any damage. They shouldn't be able to change data, drop tables, create databases, or see customer information. They should only see metrics.
 
-They should only see metrics. That's the whole point of least privilege - limit the blast radius if something goes wrong.
+That's least privilege: limit the damage if something goes wrong.
 
-## Finding a Solution
+## Finding a solution
 
-I found something in the Zalando Postgres Operator docs called "infrastructure roles". It's not in the basic tutorials, but it does what I needed.
+I found something in the Zalando Postgres Operator docs called "infrastructure roles". It's buried past the basic tutorials, but it does exactly what I needed.
 
-The idea is: instead of defining users in the PostgreSQL resource, you use a combination of a Secret (for the password) and a ConfigMap (for the role definition). The operator reads both and creates the user with exactly those permissions.
+The idea: instead of defining users in the PostgreSQL resource, you use a Secret (for the password) and a ConfigMap (for the role definition). The operator reads both and creates the user with those exact permissions.
 
-## How It Actually Works
+## How it actually works
 
-Let me walk through what actually happens. This took me a while to figure out because the flow isn't obvious.
+This took me a while to figure out because the flow isn't obvious. Let me walk through it.
 
-### Step 1: Store the Password in Azure Key Vault
+### Step 1: Store the password in Azure Key Vault
 
-First, I manually created a password in Azure Key Vault with the key `postgresql-exporter-password`. This is just a random strong password - nothing special about it.
+First, I manually created a password in Azure Key Vault with the key `postgresql-exporter-password`. Just a random strong password.
 
 ### Step 2: Create an External Secret
 
@@ -76,11 +72,11 @@ spec:
         key: postgresql-exporter-password
 ```
 
-This creates a Kubernetes Secret named `postgres-infrastructure-roles` in the `postgres-operator` namespace with the password from Key Vault. The sync-wave `-880` means this happens before everything else.
+This creates a Kubernetes Secret named `postgres-infrastructure-roles` in the `postgres-operator` namespace with the password from Key Vault. The sync-wave `-880` means this deploys before everything else.
 
-### Step 3: Create the ConfigMap with Role Definition
+### Step 3: Create the ConfigMap with role definition
 
-Now I created a ConfigMap that defines what permissions this user should have:
+Now the ConfigMap that defines what permissions this user gets:
 
 ```yaml
 apiVersion: v1
@@ -100,13 +96,13 @@ data:
 ```
 
 Breaking this down:
-- `inrole: [pg_monitor]` - User gets permissions from PostgreSQL's built-in pg_monitor role
-- `user_flags: [login]` - User can log in, but nothing else
-- `log_statement: none` - Don't log this user's queries (they run every 30 seconds)
+- `inrole: [pg_monitor]` gives the user permissions from PostgreSQL's built-in pg_monitor role
+- `user_flags: [login]` means the user can log in, but that's it
+- `log_statement: none` skips logging this user's queries (they run every 30 seconds, would just be noise)
 
-### Step 4: Configure the Operator
+### Step 4: Configure the operator
 
-Next, I told the operator to look for infrastructure roles:
+Tell the operator to look for infrastructure roles:
 
 ```yaml
 configKubernetes:
@@ -115,23 +111,21 @@ configKubernetes:
 
 This goes in the postgres-operator Helm values.
 
-### Step 5: What Happens When Everything Deploys
+### Step 5: What happens when everything deploys
 
-Here's where I had to actually look at what the operator does:
+Here's where I had to actually dig into what the operator does:
 
 1. The ExternalSecret controller pulls the password from Key Vault and creates a Secret named `postgres-infrastructure-roles` (sync-wave -880)
-2. The operator starts up and reads BOTH the Secret and the ConfigMap with the same name `postgres-infrastructure-roles` (sync-wave -600)
+2. The operator starts up and reads both the Secret and the ConfigMap with the same name `postgres-infrastructure-roles` (sync-wave -600)
 3. The operator sees the `postgres_exporter` key in both:
    - From the Secret: gets the password
    - From the ConfigMap: gets the role definition (`inrole: [pg_monitor]`)
-4. When the PostgreSQL cluster starts (sync-wave -500), the operator creates the `postgres_exporter` user in PostgreSQL with:
-   - The password from the Secret
-   - The permissions defined in the ConfigMap
-5. The operator ALSO creates a second Secret with the credentials: `postgres-exporter.mps-postgres-cluster.credentials.postgresql.acid.zalan.do`
+4. When the PostgreSQL cluster starts (sync-wave -500), the operator creates the `postgres_exporter` user in PostgreSQL with the password from the Secret and the permissions from the ConfigMap
+5. The operator also creates a second Secret with the credentials: `postgres-exporter.mps-postgres-cluster.credentials.postgresql.acid.zalan.do`
 
-Both secrets live in the `postgres-operator` namespace and contain the same password. I spent way too long looking for these secrets in other namespaces before I realized they're both right there.
+Both secrets live in the `postgres-operator` namespace and contain the same password. I spent way too long looking for these secrets in other namespaces before realizing they were right there.
 
-### Step 6: Using the Credentials
+### Step 6: Using the credentials
 
 Now I can reference the operator-created secret in the postgres-exporter sidecar:
 
@@ -149,11 +143,11 @@ sidecars:
             key: password
 ```
 
-The exporter runs as a sidecar in the `postgres-operator` namespace, right next to the database pods. It connects to PostgreSQL using the `postgres_exporter` user and starts collecting metrics.
+The exporter runs as a sidecar in the `postgres-operator` namespace, next to the database pods. It connects to PostgreSQL using the `postgres_exporter` user and starts collecting metrics.
 
-### Step 7: Prometheus Scrapes the Metrics
+### Step 7: Prometheus scrapes the metrics
 
-The exporter exposes metrics on port 9187. I configured a ServiceMonitor so Prometheus (running in the `monitoring` namespace) would scrape it:
+The exporter exposes metrics on port 9187. I set up a ServiceMonitor so Prometheus scrapes it:
 
 ```yaml
 serviceMonitor:
@@ -163,12 +157,12 @@ serviceMonitor:
 ```
 
 Every 30 seconds, Prometheus pulls metrics from the exporter. The flow is:
-1. Prometheus (in `monitoring` namespace) → exporter sidecar (in `postgres-operator` namespace)
-2. Exporter uses `postgres_exporter` user → PostgreSQL
-3. User reads `pg_stat_*` views → exporter formats as Prometheus metrics
-4. Prometheus stores the metrics
+1. Prometheus (in `monitoring` namespace) hits the exporter sidecar (in `postgres-operator` namespace)
+2. Exporter uses `postgres_exporter` user to query PostgreSQL
+3. User reads `pg_stat_*` views, exporter formats them as Prometheus metrics
+4. Prometheus stores them
 
-## What pg_monitor Actually Allows
+## What pg_monitor actually allows
 
 The `pg_monitor` role gives read-only access to:
 - Database statistics (`pg_stat_*` views)
@@ -177,17 +171,11 @@ The `pg_monitor` role gives read-only access to:
 - Lock information
 - Background worker stats
 
-It does NOT allow:
-- Reading table data
-- Writing anything
-- Creating or dropping objects
-- Modifying permissions
+It does not allow reading table data, writing anything, creating or dropping objects, or changing permissions. Exactly what I wanted.
 
-Perfect for monitoring.
+## Why this order matters
 
-## Why This Order Matters
-
-The sync-wave numbers are critical:
+The sync-wave numbers are important:
 
 1. `-880`: ExternalSecret creates the password Secret
 2. `-700`: ConfigMap with role definition created
@@ -195,26 +183,26 @@ The sync-wave numbers are critical:
 4. `-500`: Postgres cluster created (operator creates the user)
 5. `-400`: Postgres exporter deployed (uses the credentials)
 
-If these run out of order, things break. The operator might start before the Secret exists, or it might create the user with wrong permissions.
+If these run out of order, things break. The operator might start before the Secret exists, or the cluster might come up before the role definition is ready.
 
-## Things That Confused Me
+## Things that confused me
 
 This took longer than it should have because:
 
-1. I didn't realize the operator reads BOTH a Secret and a ConfigMap with the same name. The docs mention "infrastructure_roles_secret_name" but you also need the ConfigMap.
-2. The operator creates a second Secret with the same password. I kept looking for where this password was coming from until I compared the base64 values and realized they're identical.
-3. Both secrets live in `postgres-operator` namespace. I spent time searching other namespaces thinking the exporter credentials would be somewhere else.
-4. The password comes from Key Vault, not generated by the operator. You have to manually create it in Key Vault first.
+1. I didn't realize the operator reads both a Secret and a ConfigMap with the same name. The docs mention "infrastructure_roles_secret_name" but you also need the ConfigMap. That's easy to miss.
+2. The operator creates a second Secret with the same password. I kept wondering where this extra password was coming from until I compared the base64 values and saw they were identical.
+3. Both secrets live in `postgres-operator` namespace. I wasted time searching other namespaces, thinking the exporter credentials would be somewhere else.
+4. The password comes from Key Vault, not generated by the operator. You have to create it in Key Vault first, manually.
 
-## Looking Back
+## Looking back
 
-I could have just created a superuser for monitoring. Would have been way faster. But doing it this way meant:
-- If the monitoring credentials leak, attackers can't modify data
-- The password is managed in Key Vault, not hardcoded anywhere
+I could have just created a superuser for monitoring. Would have been way faster. But doing it this way means:
+- If monitoring credentials leak, attackers can't modify data
+- The password is in Key Vault, not hardcoded anywhere
 - Everything is declared in Git
 - Reproducible across all environments
 
-Took longer but worth it.
+Took longer, but worth it.
 
 ---
 

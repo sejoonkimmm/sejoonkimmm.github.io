@@ -8,7 +8,7 @@ readTime: "8 min read"
 
 # Automating PostgreSQL Backups to Azure Blob Storage
 
-We run PostgreSQL in Kubernetes using the Zalando operator. It handles replication and failover, but backups are still our responsibility. Last week finally set up proper automated backups to Azure Blob Storage.
+We run PostgreSQL in Kubernetes using the Zalando operator. It handles replication and failover, but backups are still our responsibility. Last week I finally set up proper automated backups to Azure Blob Storage.
 
 Before this, our backup strategy was "Zalando operator has replicas, we'll be fine." Not great. If someone accidentally dropped a table or we had data corruption, we'd be screwed.
 
@@ -154,9 +154,7 @@ Azure lifecycle policies automatically delete or tier old backups:
 }
 ```
 
-This policy:
-- Moves backups to cool storage after 7 days (saves money)
-- Deletes backups older than 30 days
+This policy moves backups to cool storage after 7 days (saves money) and deletes backups older than 30 days.
 
 Applied via:
 
@@ -169,7 +167,7 @@ az storage account management-policy create \
 
 ## Managed identity authentication
 
-The CronJob needs permission to write to Azure Blob Storage. Used managed identity instead of storing access keys:
+The CronJob needs permission to write to Azure Blob Storage. I used managed identity instead of storing access keys.
 
 Created a managed identity:
 
@@ -292,32 +290,32 @@ This runs as a separate CronJob every morning and alerts if backups are stale.
 
 Azure Blob Storage costs for backups:
 
-- Storage (Hot tier): 2GB × 7 days × €0.0184/GB = €0.26
-- Storage (Cool tier): 2GB × 23 days × €0.0100/GB = €0.46
-- Write operations: 30 backups × €0.05/10,000 ops ≈ €0.00
-- Read operations (for monitoring): ~100/month ≈ €0.00
+- Storage (Hot tier): 2GB x 7 days x EUR 0.0184/GB = EUR 0.26
+- Storage (Cool tier): 2GB x 23 days x EUR 0.0100/GB = EUR 0.46
+- Write operations: 30 backups x EUR 0.05/10,000 ops = about EUR 0.00
+- Read operations (for monitoring): ~100/month = about EUR 0.00
 
-**Total: ~€0.72/month**
+Total: ~EUR 0.72/month
 
-Wait, that's way less than €8/month I said earlier. Let me recalculate...
+Wait, that's way less than the EUR 8/month I said earlier. Let me recalculate...
 
-Actually checked our Azure bill. We're paying about €7-8/month for the entire backups storage account, which includes:
-- PostgreSQL backups (€0.72)
-- Application state backups (€2.50)
-- Log archives (€3.80)
-- Kubernetes etcd snapshots (€1.00)
+Actually checked our Azure bill. We're paying about EUR 7-8/month for the entire backups storage account, which includes:
+- PostgreSQL backups (EUR 0.72)
+- Application state backups (EUR 2.50)
+- Log archives (EUR 3.80)
+- Kubernetes etcd snapshots (EUR 1.00)
 
-So PostgreSQL backups alone are under €1/month. Very affordable.
+So PostgreSQL backups alone are under EUR 1/month. Very affordable.
 
 ## Why Azure Blob instead of Hetzner Storage Box?
 
-Hetzner offers Storage Box at €3.81/month for 1TB. Way cheaper than Azure Blob if you need lots of storage.
+Hetzner offers Storage Box at EUR 3.81/month for 1TB. Way cheaper than Azure Blob if you need lots of storage.
 
 We use Azure because:
-1. **Geographic diversity**: Backups are outside Hetzner infrastructure
-2. **Integration**: Same cloud as our Key Vault and other Azure services
-3. **Durability**: Azure Blob has 11 nines durability guarantee
-4. **Automation**: Better API and tooling for lifecycle policies
+1. Geographic diversity: Backups are outside Hetzner infrastructure
+2. Integration: Same cloud as our Key Vault and other Azure services
+3. Durability: Azure Blob has 11 nines durability guarantee
+4. Automation: Better API and tooling for lifecycle policies
 
 For larger backups, Hetzner Storage Box makes more sense financially. For our small database, Azure Blob is fine.
 
@@ -343,18 +341,14 @@ Backups are only useful if you can actually restore from them. We test restores 
 3. Run application smoke tests against test database
 4. Verify data looks correct
 
-This ensures backups aren't corrupted and our restore procedure works.
-
-Documenting this because I've seen places that have backups but have never actually tried restoring. Don't be that place.
+I'm writing this down because I've seen places that have backups but have never actually tried restoring. Don't be that place.
 
 ## Improvements we could make
 
-**Incremental backups**: pg_dump creates full backups. For large databases, incremental backups using pgBackRest would be more efficient.
+Incremental backups would help for large databases. pg_dump creates full backups every time. For bigger databases, pgBackRest would be more efficient.
 
-**Backup verification**: Automatically test restore after each backup completes.
+We could also automatically test the restore after each backup completes, instead of doing it manually once a month.
 
-**Multiple regions**: Copy backups to a second Azure region for disaster recovery.
-
-**Encryption in transit**: Currently backups are uploaded over HTTPS (encrypted), but we could add application-level encryption before upload.
+Copying backups to a second Azure region would add another layer of disaster recovery. And while backups are already uploaded over HTTPS, we could add application-level encryption before upload for extra safety.
 
 For now, daily full backups to Azure with 30-day retention is good enough. It's simple, reliable, and cheap.

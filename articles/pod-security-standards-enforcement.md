@@ -16,11 +16,11 @@ Immediately broke 6 applications that couldn't start because they violated secur
 
 Kubernetes defines 3 security levels:
 
-**Privileged**: No restrictions. Containers can do anything.
+Privileged: No restrictions. Containers can do anything.
 
-**Baseline**: Minimal restrictions. Blocks the most dangerous stuff (privileged containers, host namespaces, etc.) but allows running as root.
+Baseline: Minimal restrictions. Blocks the most dangerous stuff (privileged containers, host namespaces, etc.) but allows running as root.
 
-**Restricted**: Strictest. Requires running as non-root, drops all capabilities, read-only root filesystem.
+Restricted: Strictest. Requires running as non-root, drops all capabilities, read-only root filesystem.
 
 We enabled Baseline for most namespaces and Restricted for applications.
 
@@ -92,9 +92,9 @@ logging.basicConfig(filename='/app/logs/app.log')
 logging.basicConfig(stream=sys.stdout)
 ```
 
-Logs now go to stdout where Kubernetes collects them. Better anyway - logs shouldn't be stored in containers.
+Logs now go to stdout where Kubernetes collects them. Better anyway. Logs shouldn't be stored in containers.
 
-For apps that needed to write temporary files, mounted an emptyDir:
+For apps that needed to write temporary files, I mounted an emptyDir:
 
 ```yaml
 volumes:
@@ -168,7 +168,7 @@ metadata:
     pod-security.kubernetes.io/enforce: privileged
 ```
 
-Some system components need more permissions. That's fine - just isolate them in their own namespace.
+Some system components need more permissions. That's fine, just isolate them in their own namespace.
 
 ## Violation 5: Unnecessary capabilities
 
@@ -181,9 +181,9 @@ securityContext:
     - ALL
 ```
 
-Someone added this because the app wasn't working, and giving it all capabilities "fixed" it. But this is a huge security hole.
+Someone added this because the app wasn't working, and giving it all capabilities "fixed" it. Classic. But this is a huge security hole.
 
-Debugged what capability was actually needed. Turned out the app needed to bind to port 80, which requires `NET_BIND_SERVICE`.
+I debugged what capability was actually needed. Turned out the app needed to bind to port 80, which requires `NET_BIND_SERVICE`.
 
 Fixed:
 
@@ -237,12 +237,12 @@ Clean, secure, PSS Restricted-compliant.
 
 ## Rolling out PSS
 
-Don't enable enforce mode immediately in production. We did:
+Don't enable enforce mode immediately in production. Here's how we did it:
 
-1. **Audit mode** (1 week): Log violations, don't block anything
-2. **Warn mode** (1 week): Show warnings during deployment
-3. **Fix violations** in dev/staging
-4. **Enforce mode** in production
+1. Audit mode for a week: Log violations, don't block anything
+2. Warn mode for another week: Show warnings during deployment
+3. Fix violations in dev/staging
+4. Enforce mode in production
 
 This gave us time to fix issues without breaking production.
 
@@ -250,7 +250,7 @@ This gave us time to fix issues without breaking production.
 
 PodSecurityPolicy (PSP) was more flexible but also more complex. You could define custom policies with granular controls.
 
-Pod Security Standards (PSS) is simpler - just 3 levels. Less flexible but easier to understand and configure.
+Pod Security Standards (PSS) is simpler. Just 3 levels. Less flexible but easier to understand and configure.
 
 If you need custom policies beyond the 3 levels, use OPA Gatekeeper or Kyverno for policy enforcement.
 
@@ -272,14 +272,18 @@ kube_pod_security_policy_violations_total
 
 Graph this in Grafana to see violation trends.
 
-## Lessons
+## What I learned
 
-1. Don't run containers as root - create a non-root user
-2. Read-only root filesystem forces better practices (no writing logs to disk)
-3. Drop all capabilities, add back only what's needed
-4. Test with warn/audit mode before enforcing
-5. Some system components need exemptions (ingress, monitoring)
+Don't run containers as root. Create a non-root user. It takes two lines in a Dockerfile.
+
+Read-only root filesystem forces better practices. Once you can't write logs to disk, you start sending them to stdout where they belong.
+
+Drop all capabilities, add back only what's needed. The "add ALL" shortcut is tempting but dangerous.
+
+Test with warn/audit mode before enforcing. We should have done this for longer than a week, honestly. Some violations only showed up under specific conditions.
+
+Some system components need exemptions, and that's okay. Ingress controllers and monitoring agents have legitimate reasons for elevated permissions. Just put them in their own namespaces.
 
 Pod Security Standards caught real security issues we didn't know we had. Applications running as root with all capabilities are way more dangerous than they need to be.
 
-The 2 days spent fixing violations was worth it for the security improvement.
+The 2 days spent fixing violations was worth it.

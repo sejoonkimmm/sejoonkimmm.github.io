@@ -8,13 +8,13 @@ readTime: "7 min read"
 
 # Downsizing Hetzner Servers We Don't Need
 
-We've been running the same Hetzner server configuration for about a year. Eight AX42 dedicated servers - 6 cores, 64GB RAM each, €45/month. Total cost: €360/month.
+We've been running the same Hetzner server configuration for about a year. Eight AX42 dedicated servers - 6 cores, 64GB RAM each, 45 euros a month. Total cost: 360 euros/month.
 
-I finally looked at actual resource usage. Turns out we're using about 40% of the CPU and 55% of the RAM on average. We're paying for capacity we don't need.
+I finally looked at actual resource usage. Turns out we're using about 40% of the CPU and 55% of the RAM on average. We were paying for capacity we didn't need.
 
 ## The audit
 
-Pulled Prometheus metrics for the past month and graphed CPU and memory usage across all nodes:
+I pulled Prometheus metrics for the past month and graphed CPU and memory usage across all nodes:
 
 ```promql
 # CPU usage per node
@@ -25,8 +25,8 @@ Pulled Prometheus metrics for the past month and graphed CPU and memory usage ac
 ```
 
 Results:
-- **CPU**: Peak usage 55%, average 38%
-- **Memory**: Peak usage 68%, average 52%
+- CPU: Peak usage 55%, average 38%
+- Memory: Peak usage 68%, average 52%
 
 Even at peak, we had plenty of headroom. We provisioned for growth that hasn't happened yet.
 
@@ -39,42 +39,42 @@ Even at peak, we had plenty of headroom. We provisioned for growth that hasn't h
 Each node: AX42 (6 cores, 64GB RAM, 512GB NVMe)
 
 Actual pod resource requests:
-- **Control plane pods**: ~2 CPU cores, ~8GB RAM per node
-- **Application pods**: ~12 CPU cores total across all worker nodes, ~40GB RAM total
+- Control plane pods: around 2 CPU cores, 8GB RAM per node
+- Application pods: about 12 CPU cores total across all worker nodes, 40GB RAM total
 
-We had way more capacity than our workloads actually requested.
+Way more capacity than our workloads actually needed.
 
 ## The problem with over-provisioning
 
 When we set up the cluster a year ago, we didn't know how much capacity we'd need. So we went big. The logic was "better too much than too little."
 
-But this means we're paying for servers that spend most of their time idle. Kubernetes can't consolidate workloads onto fewer nodes automatically - if you have 5 worker nodes, Kubernetes will spread pods across all 5.
+Fair enough. But a year later, it means we're paying for servers that spend most of their time idle. Kubernetes can't consolidate workloads onto fewer nodes on its own - if you have 5 worker nodes, it spreads pods across all 5.
 
-We're essentially paying €180/month (5 × €45 for worker nodes) for compute power we don't use.
+We were paying 180 euros/month (5 worker nodes at 45 euros each) for compute power we barely touched.
 
 ## The new configuration
 
-Switched from AX42 to cheaper options where it made sense:
+I switched from AX42 to cheaper options where it made sense.
 
-**Control plane nodes** (3 nodes):
-- Old: AX42 (6 cores, 64GB RAM) = €45/month each
-- New: AX41 (4 cores, 32GB RAM) = €35/month each
-- **Savings**: €10/month per node = €30/month total
+Control plane nodes (3 nodes):
+- Old: AX42 (6 cores, 64GB RAM) = 45 euros/month each
+- New: AX41 (4 cores, 32GB RAM) = 35 euros/month each
+- Savings: 10 euros/month per node = 30 euros/month total
 
-Control plane pods don't need much resources. etcd, api-server, controller-manager, scheduler use maybe 2-3 cores and 8GB RAM total. Dropping to 4 cores and 32GB RAM is still plenty.
+Control plane pods don't need much. etcd, api-server, controller-manager, scheduler - they use maybe 2-3 cores and 8GB RAM total. Dropping to 4 cores and 32GB RAM is still plenty.
 
-**Worker nodes** (5 nodes → 3 nodes):
+Worker nodes (5 nodes down to 3):
 - Kept 3 worker nodes as AX42 (6 cores, 64GB RAM)
-- Decommissioned 2 nodes we didn't need
-- **Savings**: €90/month
+- Decommissioned the 2 we didn't need
+- Savings: 90 euros/month
 
-With 3 worker nodes instead of 5, we have 18 total cores and 192GB RAM. Our workloads currently use 12 cores and 40GB RAM. Still plenty of room for growth.
+With 3 worker nodes instead of 5, we have 18 total cores and 192GB RAM. Our workloads use 12 cores and 40GB RAM. Still plenty of room for growth.
 
-**Total monthly savings: €120 (€1,440/year)**
+Total monthly savings: 120 euros (1,440 euros/year)
 
 ## The migration process
 
-Can't just turn off servers while they're running production workloads. Had to carefully drain and decommission.
+Can't just turn off servers while they're running production workloads. Had to carefully drain and decommission them.
 
 **Step 1: Add new control plane nodes**
 
@@ -112,7 +112,7 @@ Repeated for all 3 old control plane nodes. API server stayed available because 
 
 **Step 3: Consolidate worker nodes**
 
-We had 5 worker nodes but only needed 3. Picked 2 nodes with the least load and drained them:
+We had 5 worker nodes but only needed 3. I picked the 2 nodes with the least load and drained them:
 
 ```bash
 # Move all pods off these nodes
@@ -120,7 +120,7 @@ kubectl drain worker-5 --ignore-daemonsets --delete-emptydir-data
 kubectl drain worker-4 --ignore-daemonsets --delete-emptydir-data
 ```
 
-Pods rescheduled to the remaining 3 worker nodes. Checked CPU and memory usage - still had plenty of headroom.
+Pods rescheduled to the remaining 3 worker nodes. I checked CPU and memory usage - still had plenty of headroom.
 
 Removed the drained nodes from the cluster:
 
@@ -144,23 +144,23 @@ Total migration time: about 3 hours. No downtime for users.
 ## Updated capacity
 
 New setup:
-- **Control plane**: 3 × AX41 (4 cores, 32GB RAM) = €105/month
-- **Workers**: 3 × AX42 (6 cores, 64GB RAM) = €135/month
-- **Total**: €240/month (down from €360/month)
+- Control plane: 3 x AX41 (4 cores, 32GB RAM) = 105 euros/month
+- Workers: 3 x AX42 (6 cores, 64GB RAM) = 135 euros/month
+- Total: 240 euros/month (down from 360 euros/month)
 
 Current utilization after consolidation:
-- **CPU**: Peak 65%, average 48%
-- **Memory**: Peak 75%, average 60%
+- CPU: Peak 65%, average 48%
+- Memory: Peak 75%, average 60%
 
 Still have room for growth, but we're using capacity more efficiently.
 
 ## What about auto-scaling?
 
-Cloud providers have auto-scaling for worker nodes. If you need more capacity, nodes automatically get added. If load drops, nodes get removed.
+Cloud providers have auto-scaling for worker nodes. Need more capacity? Nodes get added automatically. Load drops? Nodes get removed.
 
-Hetzner doesn't have this. Dedicated servers have to be manually provisioned. Minimum commitment is 1 month.
+Hetzner doesn't have this. Dedicated servers have to be manually provisioned, and the minimum commitment is 1 month.
 
-This means we have to plan capacity manually. Can't rely on auto-scaling to handle spikes.
+So we plan capacity manually. It's not glamorous but it works.
 
 Our approach:
 - Monitor trends monthly
@@ -168,13 +168,13 @@ Our approach:
 - Add nodes when utilization consistently exceeds 70%
 - Remove nodes if utilization drops below 40% for 3+ months
 
-Not as elegant as auto-scaling, but it works and saves money.
+Not as elegant as auto-scaling, but it saves money.
 
 ## Risks with consolidation
 
-**Less redundancy**: With 3 worker nodes instead of 5, losing 1 node means losing 33% of capacity instead of 20%.
+With 3 worker nodes instead of 5, losing 1 node means losing 33% of capacity instead of 20%. That's a real concern.
 
-We mitigated this by ensuring critical pods have anti-affinity rules to spread across nodes:
+We mitigated this by making sure critical pods have anti-affinity rules to spread across nodes:
 
 ```yaml
 affinity:
@@ -186,21 +186,19 @@ affinity:
       topologyKey: kubernetes.io/hostname
 ```
 
-This ensures we don't have all replicas of critical services on one node.
+This prevents all replicas of a service from landing on the same node.
 
-**Less buffer for traffic spikes**: If we suddenly get 2x traffic, we might hit capacity limits.
-
-We monitor this closely and have a runbook for rapidly adding nodes if needed. Hetzner can provision new dedicated servers in about 24 hours.
+There's also less buffer for traffic spikes. If we suddenly get 2x traffic, we might hit capacity limits. We monitor this closely and have a runbook for rapidly adding nodes. Hetzner can provision new dedicated servers in about 24 hours.
 
 ## When not to optimize
 
 If you're growing fast, over-provisioning makes sense. Adding capacity takes time with dedicated servers.
 
-If your traffic is spiky, you need buffer capacity to handle bursts.
+If your traffic is spiky, you need buffer capacity.
 
-If you're running latency-sensitive workloads, having extra CPU headroom reduces noisy neighbor effects.
+If you're running latency-sensitive workloads, extra CPU headroom reduces noisy neighbor effects.
 
-But if you're in steady state and not hitting capacity limits, you're probably paying for servers you don't need.
+But if you're in steady state and not hitting capacity limits, you're probably paying for servers you don't need. We were.
 
 ## Monthly review process
 
@@ -208,17 +206,15 @@ Now we review capacity monthly:
 
 1. Pull Prometheus metrics for CPU and memory usage
 2. Check if utilization exceeds 70% regularly
-3. Look at growth trends (is usage increasing month-over-month?)
+3. Look at growth trends
 4. Decide if we need to add or remove nodes
 
-Takes about 30 minutes per month. For €1,440/year in savings, that's worth it.
+Takes about 30 minutes per month. For 1,440 euros a year in savings, that's worth it.
 
-## The lesson
+## The takeaway
 
 Don't set up infrastructure and forget about it. What made sense a year ago might not make sense now.
 
-We over-provisioned initially because we didn't know our usage patterns. After a year of data, we knew we could safely downsize.
-
-The flip side is also true - if we had under-provisioned initially, we would have hit capacity issues and needed to scale up.
+We over-provisioned initially because we didn't know our usage patterns. After a year of data, we knew we could safely downsize. The flip side is also true - if we'd under-provisioned, we would have hit capacity issues and needed to scale up.
 
 Starting with more capacity is fine. But eventually you should look at what you actually use and adjust.

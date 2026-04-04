@@ -9,15 +9,15 @@ slug: 'zero-downtime-nginx-upgrade-gitops'
 
 # Zero-Downtime Helm App Upgrade in Production
 
-While operating the CloudCops platform with active user traffic, we needed to upgrade our Helm application from version **4.12.1 to 4.13.1** in production. The challenge was that **simply changing the image tag would trigger ArgoCD to automatically deploy**, causing **service downtime** during the update.
+We were running the CloudCops platform with live user traffic and needed to upgrade our Helm application from version 4.12.1 to 4.13.1 in production. The problem: if I just changed the image tag, ArgoCD would pick it up and deploy immediately. The old pod would die, the new one would start, and users would hit errors in between.
 
-This article shares how to safely upgrade a Helm-managed application in a production environment with continuous user traffic.
+This is how I set up the upgrade to happen with zero downtime.
 
 ---
 
 ## The Problem
 
-Our CloudCops Helm application configuration was:
+Our CloudCops Helm config looked like this:
 
 ```yaml
 # values.yaml
@@ -28,21 +28,23 @@ image:
   tag: 4.12.1
 ```
 
-To upgrade from **4.12.1 to 4.13.1**:
+With only 1 replica, upgrading from 4.12.1 to 4.13.1 would go like this:
 
-1. Update the image tag in Git repository's `values.yaml`
-2. ArgoCD detects changes and automatically deploys
-3. **Existing Pod terminates → New Pod starts**
-4. **Service downtime occurs** during this process
-5. **Active user traffic is disrupted**
+1. Update the image tag in `values.yaml` and push to Git
+2. ArgoCD detects the change and starts deploying
+3. Old pod gets terminated, new pod starts
+4. During that gap, the service is down
+5. Users get errors
+
+One replica means zero overlap between old and new. That's the core issue.
 
 ---
 
 ## Solution: RollingUpdate Strategy
 
-Using Kubernetes **RollingUpdate** strategy enables zero-downtime deployments.
+Kubernetes has a RollingUpdate strategy that solves this. The idea is simple: start new pods before killing old ones.
 
-### 1. Update Helm Values
+### 1. Updated Helm Values
 
 ```yaml
 # values.yaml
@@ -66,20 +68,22 @@ readinessProbe:
   periodSeconds: 5
 ```
 
-### 2. Key Configuration
+### 2. What each setting does
 
-| Setting | Value | Purpose |
+| Setting | Value | What it means |
 |---------|-------|---------|
-| `replicaCount` | 2 | Minimum 2 Pods required for zero downtime |
-| `maxSurge` | 1 | Allows replicas + 1 Pods during update |
-| `maxUnavailable` | 0 | All Pods must remain available during update |
-| `readinessProbe` | - | New Pods receive traffic only when ready |
+| `replicaCount` | 2 | You need at least 2 pods for zero downtime |
+| `maxSurge` | 1 | Kubernetes can temporarily run replicas + 1 pods during the update |
+| `maxUnavailable` | 0 | Every pod must stay available during the update |
+| `readinessProbe` | - | New pods only get traffic after they pass the health check |
+
+The `maxUnavailable: 0` setting is the important one. It tells Kubernetes: don't take any existing pod down until the new one is ready to handle traffic.
 
 ---
 
 ## Deployment Process (GitOps)
 
-### Step 1: Update Git Repository
+### Step 1: Push the change
 
 ```bash
 # Update Helm values
@@ -91,24 +95,24 @@ git commit -m "feat: upgrade cloudcops app 4.12.1 → 4.13.1 with zero-downtime"
 git push origin main
 ```
 
-### Step 2: ArgoCD Auto-Deployment
+### Step 2: ArgoCD takes over
 
-When ArgoCD detects the Git repository change:
+Once ArgoCD sees the Git change, it:
 
-1. **Create new Pod** (version 4.13.1)
-2. Wait for readinessProbe to pass
-3. Route traffic to new Pod
-4. **Terminate old Pod** (version 4.12.1)
-5. **Create second new Pod**
-6. Terminate remaining old Pod
+1. Creates a new pod running 4.13.1
+2. Waits for the readiness probe to pass
+3. Starts routing traffic to the new pod
+4. Terminates one old 4.12.1 pod
+5. Creates the second new pod
+6. Terminates the last old pod
 
-→ **At least 2 Pods always running** → **Zero downtime for live user traffic**
+At every point in this process, at least 2 pods are running and accepting traffic. No gap. No errors.
 
 ---
 
-## Production Deployment Results
+## What the deployment looked like
 
-Applied to CloudCops platform with live user traffic:
+I watched it happen on the CloudCops platform with live traffic:
 
 ```bash
 # Monitor in ArgoCD
@@ -126,18 +130,17 @@ cloudcops-app-v4131-jkl     2/2     Running              # New Pod 2 ready
 cloudcops-app-v4121-def     2/2     Terminating          # Old Pod 2 terminating
 ```
 
-→ **Zero downtime upgrade from 4.12.1 to 4.13.1 in production!**  
-→ **No user traffic disruption during the entire process!**
+Upgrade from 4.12.1 to 4.13.1 with zero downtime. No users noticed.
 
 ---
 
 ## Key Takeaways
 
-1. **replicaCount ≥ 2**: Essential for zero-downtime deployments
-2. **maxUnavailable: 0**: Ensures all Pods remain available during updates
-3. **readinessProbe**: New Pods receive traffic only when fully ready
-4. **GitOps + Helm**: Git commit → ArgoCD auto-sync → Consistent deployment process
-5. **Production-Ready**: Successfully tested with live user traffic on CloudCops platform
+1. You need at least 2 replicas for zero-downtime deployments. With 1 replica, there's always a gap.
+2. `maxUnavailable: 0` is the setting that prevents downtime during updates.
+3. Readiness probes matter. Without them, Kubernetes might send traffic to a pod that isn't ready yet.
+4. GitOps makes this repeatable: push to Git, ArgoCD syncs, same process every time.
+5. We ran this on CloudCops with live traffic. It worked.
 
 ---
 
@@ -149,4 +152,4 @@ cloudcops-app-v4121-def     2/2     Terminating          # Old Pod 2 terminating
 
 ---
 
-With proper Kubernetes configuration and Helm chart settings, zero-downtime deployments are achievable even in production environments with active user traffic. This approach has been successfully validated on the CloudCops platform!
+With the right Kubernetes settings and Helm config, zero-downtime deployments in production aren't hard. Two replicas, `maxUnavailable: 0`, readiness probes, and you're there. We've been using this on CloudCops since, and it's been reliable.

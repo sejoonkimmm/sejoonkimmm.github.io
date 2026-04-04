@@ -8,15 +8,15 @@ readTime: "7 min read"
 
 # Adding Trivy Scans to Our CI Pipeline
 
-We build container images and deploy them to Kubernetes without scanning for vulnerabilities. Decided to fix that last week by adding Trivy to our CI pipeline.
+We were building container images and deploying them to Kubernetes without scanning for vulnerabilities. Last week I decided to fix that by adding Trivy to our CI pipeline.
 
-Trivy is a vulnerability scanner that checks container images for known CVEs. It's free, fast, and integrates easily with CI/CD.
+Trivy is a vulnerability scanner that checks container images for known CVEs. It's free, it's fast, and it plugs into CI/CD without much effort.
 
-Scanned our existing images. Found 47 high-severity vulnerabilities across 12 services. Most were in base images we hadn't updated in months.
+I scanned our existing images. Found 47 high-severity vulnerabilities across 12 services. Most came from base images we hadn't updated in months.
 
 ## Installing Trivy in GitLab CI
 
-Added a security scanning stage to `.gitlab-ci.yml`:
+I added a security scanning stage to `.gitlab-ci.yml`:
 
 ```yaml
 stages:
@@ -49,15 +49,11 @@ deploy:
     - main
 ```
 
-This pipeline:
-1. Builds the Docker image
-2. Scans it with Trivy
-3. Fails if HIGH or CRITICAL vulnerabilities found
-4. Only deploys if scan passes
+The pipeline builds the Docker image, scans it with Trivy, fails if HIGH or CRITICAL vulnerabilities show up, and only deploys if the scan passes.
 
 ## What Trivy found
 
-Ran the scan on our main API service. Output:
+I ran the scan on our main API service:
 
 ```
 Total: 47 (HIGH: 31, CRITICAL: 16)
@@ -69,11 +65,11 @@ Total: 47 (HIGH: 31, CRITICAL: 16)
 ...
 ```
 
-Most vulnerabilities were in system packages (openssl, curl, libssl) from the base image. Our application code was fine - the problems were in the OS layer.
+Most vulnerabilities were in system packages (openssl, curl, libssl) from the base image. Our application code was fine. The problems were in the OS layer underneath.
 
 ## Fixing vulnerabilities
 
-**Easy fixes - base image updates:**
+**Easy fixes - update the base image:**
 
 Our Dockerfile started with:
 
@@ -81,41 +77,41 @@ Our Dockerfile started with:
 FROM python:3.11-slim
 ```
 
-This pulled an image from 6 months ago. Updated to explicitly use the latest patch:
+This pulled an image from 6 months ago. I updated to a specific recent version:
 
 ```dockerfile
 FROM python:3.11.9-slim
 ```
 
-Rebuilt the image, re-scanned. Vulnerabilities dropped from 47 to 12.
+Rebuilt, re-scanned. Vulnerabilities dropped from 47 to 12.
 
-Lesson: Don't use floating tags like `python:3.11-slim`. Use specific versions like `python:3.11.9-slim` and update them regularly.
+Lesson: don't use floating tags like `python:3.11-slim`. Pin to specific versions like `python:3.11.9-slim` and update them on a schedule.
 
-**Medium fixes - package updates:**
+**Medium fixes - update dependencies:**
 
-Some vulnerabilities were in Python dependencies. Our `requirements.txt`:
+Some vulnerabilities were in Python packages. Our `requirements.txt`:
 
 ```
 requests==2.28.0
 flask==2.2.0
 ```
 
-Both had known CVEs. Updated to latest versions:
+Both had known CVEs. Updated to the latest versions:
 
 ```
 requests==2.31.0
 flask==3.0.0
 ```
 
-Ran tests to make sure nothing broke. Tests passed. Deployed.
+Ran tests, nothing broke. Deployed.
 
-**Can't fix - distro packages:**
+**Can't fix - no patch available:**
 
-After updates, we still had 3 HIGH vulnerabilities in system packages that didn't have patches yet. These were in:
-- `libgcrypt` - used by the OS, no patch available
+After all the updates, 3 HIGH vulnerabilities remained in system packages with no patches yet:
+- `libgcrypt` - used by the OS, no fix available
 - `systemd` - not actually used by our container but installed anyway
 
-For these, we documented them and added exceptions to Trivy:
+For these, I documented them and added exceptions:
 
 ```yaml
 # .trivyignore
@@ -123,7 +119,7 @@ CVE-2024-XXXX  # libgcrypt - no patch available, doesn't affect us
 CVE-2024-YYYY  # systemd - not used in container
 ```
 
-Not ideal, but sometimes you have to accept risk when there's no fix available.
+Not ideal. But sometimes you accept the risk when there's literally no fix.
 
 ## Trivy in different CI systems
 
@@ -157,11 +153,11 @@ trivy image myapp:local
 
 ## Scan frequency
 
-**During CI**: Every image build gets scanned before deployment. This catches new vulnerabilities introduced by code or dependency changes.
+**During CI**: every image build gets scanned before deployment. This catches new vulnerabilities from code or dependency changes.
 
-**Scheduled scans**: Weekly scan of all deployed images. Vulnerabilities get disclosed constantly - an image that was clean last week might have new CVEs today.
+**Scheduled scans**: weekly scan of all deployed images. Vulnerabilities get disclosed all the time. An image that was clean last week might have new CVEs today.
 
-Set up a CronJob in Kubernetes to scan running images:
+I set up a CronJob in Kubernetes to scan running images:
 
 ```yaml
 apiVersion: batch/v1
@@ -192,15 +188,15 @@ spec:
           restartPolicy: OnFailure
 ```
 
-This scans all images currently deployed and sends a report. If new CVEs are found, we get a notification.
+This scans everything currently deployed and sends a report. New CVEs trigger a notification.
 
 ## What to do about false positives
 
-Trivy sometimes reports vulnerabilities that don't actually affect your application.
+Trivy sometimes flags vulnerabilities that don't actually affect your application.
 
-Example: A CVE in `curl` command-line tool. If your application uses libcurl (the library) but doesn't call the curl binary, the CVE might not apply.
+Example: a CVE in the `curl` command-line tool. If your app uses libcurl (the library) but never calls the curl binary, the CVE might not apply.
 
-Or a CVE in PostgreSQL client libraries when you're not using PostgreSQL.
+Or a CVE in PostgreSQL client libraries when you don't use PostgreSQL.
 
 For these, use `.trivyignore`:
 
@@ -212,13 +208,13 @@ CVE-2024-12345
 CVE-2024-67890
 ```
 
-But be careful with ignores. Document why you're ignoring each CVE so future you (or your coworkers) understand the reasoning.
+Be careful with ignores though. Document why you're ignoring each CVE. Future you (or your coworkers) will want to know the reasoning.
 
 ## Failing builds vs warnings
 
-We set `--exit-code 1` which fails the build if vulnerabilities are found. This prevents deploying vulnerable images.
+We set `--exit-code 1` which fails the build on vulnerabilities. This blocks deploying vulnerable images.
 
-But this can be annoying during development. Sometimes you want to deploy quickly and fix vulnerabilities later.
+It can be annoying during development. Sometimes you just want to deploy to staging and deal with CVEs later.
 
 Alternative approach:
 
@@ -230,15 +226,15 @@ trivy-scan:
   allow_failure: true  # warn but don't block
 ```
 
-This runs the scan and shows results, but doesn't block deployment.
+This runs the scan and shows results but doesn't stop the deployment.
 
-We use strict mode (`--exit-code 1`, `allow_failure: false`) on main branch, but allow failures on feature branches. Developers can deploy to staging without fixing all CVEs, but production deployments require clean scans.
+We use strict mode (`--exit-code 1`, `allow_failure: false`) on the main branch, but allow failures on feature branches. Developers can deploy to staging without fixing every CVE, but production requires clean scans.
 
 ## Trivy cache
 
-Trivy downloads vulnerability databases on every run. This is slow and wasteful in CI.
+Trivy downloads vulnerability databases on every run. In CI, this is slow and wasteful.
 
-Use a cache to speed things up:
+Use a cache:
 
 ```yaml
 trivy-scan:
@@ -254,7 +250,7 @@ trivy-scan:
         $IMAGE
 ```
 
-First run takes 30 seconds to download databases. Subsequent runs take 5 seconds.
+First run takes about 30 seconds to download databases. After that, runs take about 5 seconds.
 
 ## Scanning during image build
 
@@ -280,30 +276,30 @@ COPY . /app
 CMD ["python", "app.py"]
 ```
 
-This scans the filesystem during build and fails if vulnerabilities are found. But it's slower than scanning the final image, so we don't use this approach.
+This scans the filesystem during build and fails on vulnerabilities. It's slower than scanning the final image though, so we don't use this approach.
 
 ## Results after 2 months
 
 Since adding Trivy:
-- Caught 8 new HIGH/CRITICAL CVEs before they reached production
+- Caught 8 new HIGH/CRITICAL CVEs before they hit production
 - Reduced vulnerabilities in deployed images by 85%
-- Forced us to update base images regularly
-- Development slowed slightly (builds fail more often)
+- Forced us to keep base images up to date
+- Development slowed down a little (builds fail more often)
 
-The security improvement is worth the extra friction. And developers got used to fixing CVEs before merging.
+The security improvement is worth the friction. Developers got used to fixing CVEs before merging, and it became just part of the workflow.
 
 ## Tools besides Trivy
 
-**Snyk**: Commercial tool with better vulnerability data and fix suggestions. Costs money.
+**Snyk**: commercial, better vulnerability data and fix suggestions. Costs money.
 
-**Grype**: From Anchore, similar to Trivy. We tried it but found Trivy faster.
+**Grype**: from Anchore, similar to Trivy. I tried it but Trivy was faster.
 
-**Clair**: Older scanner, more complex to set up. Trivy is simpler.
+**Clair**: older scanner, more complex to set up.
 
-Trivy is free, fast, and accurate enough for our needs. Unless you need enterprise features, it's the best choice.
+Trivy is free, fast, and accurate enough for what we need. Unless you need enterprise features, I'd start here.
 
 ## Bottom line
 
-Container scanning should be part of every CI pipeline. Trivy makes it easy. Add a 30-second scan step and catch vulnerabilities before they reach production.
+Container scanning should be part of every CI pipeline. Trivy makes it straightforward. Add a 30-second scan step and catch vulnerabilities before they reach production.
 
-Don't wait until you have a security incident to start scanning. Do it now.
+Don't wait for a security incident to start scanning. Just set it up.

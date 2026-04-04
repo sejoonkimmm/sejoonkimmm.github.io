@@ -8,7 +8,7 @@ readTime: "10 min read"
 
 # Upgrading a Self-Managed Kubernetes Cluster Without Managed Services
 
-We run Kubernetes on Hetzner dedicated servers. Not managed Kubernetes - actual bare metal servers with Kubernetes installed via kubeadm. This means when it's time to upgrade, there's no "click here to upgrade" button. You have to do it yourself.
+We run Kubernetes on Hetzner dedicated servers. Not managed Kubernetes, actual bare metal servers with Kubernetes installed via kubeadm. This means when it's time to upgrade, there's no "click here to upgrade" button. You have to do it yourself.
 
 Last week we went from 1.28.5 to 1.29.2. Took about 6 hours total, mostly waiting and watching. No downtime for users, but there were some tense moments.
 
@@ -24,7 +24,7 @@ With managed Kubernetes (AKS, EKS, GKE), the provider handles control plane upgr
 
 ## Pre-upgrade preparation
 
-**Take a full backup of etcd.** This is your "oh shit" recovery option if everything goes wrong:
+Take a full backup of etcd. This is your "oh shit" recovery option if everything goes wrong:
 
 ```bash
 ETCDCTL_API=3 etcdctl snapshot save backup.db \
@@ -36,7 +36,7 @@ ETCDCTL_API=3 etcdctl snapshot save backup.db \
 
 Copied the snapshot to Azure Blob Storage just in case the server itself dies.
 
-**Document current state:**
+Document the current state:
 ```bash
 kubectl version
 kubectl get nodes -o wide
@@ -45,7 +45,7 @@ kubectl get pods --all-namespaces | grep -v Running
 
 Saved all this output to a file. If things break, you want to know what "working" looked like.
 
-**Check deprecations:**
+Check for deprecations:
 ```bash
 kubectl-convert --help
 pluto detect-all-in-cluster
@@ -57,9 +57,7 @@ Used Pluto to scan for deprecated API versions. Found 2 Ingress resources still 
 
 We have 3 control plane nodes for high availability. Upgraded them one at a time so the API server stayed available.
 
-**First control plane node:**
-
-SSH into the first control plane node and upgrade kubeadm:
+On the first control plane node, SSH in and upgrade kubeadm:
 
 ```bash
 apt-mark unhold kubeadm
@@ -105,9 +103,7 @@ systemctl restart kubelet
 
 Node came back as Ready after about 20 seconds.
 
-**Second and third control plane nodes:**
-
-Repeated the same process on the other control plane nodes, but used `kubeadm upgrade node` instead of `kubeadm upgrade apply`:
+For the second and third control plane nodes, I repeated the same process but used `kubeadm upgrade node` instead of `kubeadm upgrade apply`:
 
 ```bash
 kubeadm upgrade node
@@ -128,7 +124,7 @@ We have 5 worker nodes. Upgraded them one by one to avoid disrupting services.
 
 For each worker node:
 
-**1. Drain the node:**
+1. Drain the node:
 
 ```bash
 kubectl drain worker-node-1 \
@@ -140,7 +136,7 @@ kubectl drain worker-node-1 \
 
 This safely evicts all pods from the node. Pods with PodDisruptionBudgets will only evict if the budget allows it. Took 2-5 minutes per node depending on how many pods were running.
 
-**2. SSH to the node and upgrade:**
+2. SSH to the node and upgrade:
 
 ```bash
 apt-mark unhold kubeadm kubelet kubectl
@@ -157,7 +153,7 @@ systemctl daemon-reload
 systemctl restart kubelet
 ```
 
-**3. Uncordon the node:**
+3. Uncordon the node:
 
 ```bash
 kubectl uncordon worker-node-1
@@ -165,7 +161,7 @@ kubectl uncordon worker-node-1
 
 Pods start scheduling back to the node immediately.
 
-**4. Verify:**
+4. Verify:
 
 ```bash
 kubectl get node worker-node-1
@@ -177,7 +173,7 @@ Repeated this for all 5 worker nodes. Took about 45 minutes total.
 
 ## Things that went wrong
 
-**Calico CNI compatibility:** After upgrading the first worker node, pods on that node couldn't reach the API server. They were getting connection timeouts.
+Calico CNI compatibility was the first surprise. After upgrading the first worker node, pods on that node couldn't reach the API server. They were getting connection timeouts.
 
 Turns out our Calico version (3.26) has known issues with Kubernetes 1.29. Had to upgrade Calico to 3.27 first:
 
@@ -185,9 +181,9 @@ Turns out our Calico version (3.26) has known issues with Kubernetes 1.29. Had t
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/manifests/calico.yaml
 ```
 
-After upgrading Calico, networking worked fine on the upgraded nodes.
+After upgrading Calico, networking worked fine on the upgraded nodes. I should have checked Calico's compatibility matrix before starting. Lesson learned.
 
-**Cert-manager webhook timing out:** After control plane upgrade, cert-manager started throwing errors about the webhook timing out. The cert-manager pods were still running but couldn't validate resources.
+Then cert-manager's webhook started timing out. After the control plane upgrade, cert-manager threw errors about the webhook being unreachable. The cert-manager pods were still running but couldn't validate resources.
 
 Fixed by restarting the cert-manager pods:
 
@@ -198,9 +194,9 @@ kubectl rollout restart deployment cert-manager-webhook -n cert-manager
 
 No idea why this was necessary, but it worked.
 
-**Prometheus scraping failures:** Prometheus temporarily lost some metrics during the worker node drains. When a node gets drained, pods move to other nodes and get new IP addresses. Prometheus service discovery took 30-60 seconds to update, so we had small gaps in metrics.
+Prometheus also had some scraping gaps during the worker node drains. When a node gets drained, pods move to other nodes and get new IP addresses. Prometheus service discovery took 30-60 seconds to update, so we had small gaps in metrics.
 
-Not a real problem - just cosmetic gaps in Grafana graphs. But good to know it happens.
+Not a real problem, just cosmetic gaps in Grafana graphs. But good to know it happens.
 
 ## Post-upgrade verification
 
@@ -231,23 +227,23 @@ Kubernetes doesn't officially support downgrades, but restoring etcd and downgra
 
 ## Why self-managed Kubernetes is annoying
 
-**Manual work:** Managed Kubernetes providers handle control plane upgrades for you. With self-managed, you have to upgrade kubeadm, kubelet, and kubectl on every single node.
+Manual work. Managed Kubernetes providers handle control plane upgrades for you. With self-managed, you have to upgrade kubeadm, kubelet, and kubectl on every single node.
 
-**More risk:** If you mess up the etcd upgrade or break something in the control plane, you're responsible for fixing it. No support ticket to file.
+More risk. If you mess up the etcd upgrade or break something in the control plane, you're responsible for fixing it. No support ticket to file.
 
-**Time consuming:** This upgrade took 6 hours including prep and verification. With managed Kubernetes, it would take maybe 2 hours (mostly watching worker nodes upgrade automatically).
+Time consuming. This upgrade took 6 hours including prep and verification. With managed Kubernetes, it would take maybe 2 hours (mostly watching worker nodes upgrade automatically).
 
-**Etcd management:** You have to backup and manage etcd yourself. If etcd gets corrupted, your cluster is gone unless you have backups.
+Etcd management. You have to backup and manage etcd yourself. If etcd gets corrupted, your cluster is gone unless you have backups.
 
 ## Why we still do it
 
-**Cost:** Managed Kubernetes on Azure would cost us about €1,000/month for equivalent resources. We pay €360/month for Hetzner servers. That's €640/month saved (€7,680/year).
+Cost. Managed Kubernetes on Azure would cost us about EUR 1,000/month for equivalent resources. We pay EUR 360/month for Hetzner servers. That's EUR 640/month saved (EUR 7,680/year).
 
-**Control:** We can configure the control plane however we want. Need custom admission controllers? Change API server flags? No problem.
+Control. We can configure the control plane however we want. Need custom admission controllers? Change API server flags? No problem.
 
-**Learning:** Running self-managed Kubernetes forces you to understand how it actually works. This knowledge is useful when debugging issues.
+Learning. Running self-managed Kubernetes forces you to understand how it actually works. This knowledge is useful when debugging issues.
 
-**Flexibility:** We're not locked into a specific cloud provider's implementation. If we want to migrate, we just point kubeadm at new servers.
+Flexibility. We're not locked into a specific cloud provider's implementation. If we want to migrate, we just point kubeadm at new servers.
 
 For our scale and budget, self-managed makes sense. If we were 10x bigger or handling critical data, we'd probably pay for managed services. But at our size, the cost savings justify the operational overhead.
 

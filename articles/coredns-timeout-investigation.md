@@ -14,15 +14,15 @@ Started seeing occasional DNS timeout errors in application logs:
 Error: Failed to resolve api.example.com: Temporary failure in name resolution
 ```
 
-Happened maybe 1% of DNS requests. Most lookups worked fine, but occasionally one would timeout after 5 seconds.
+Maybe 1% of DNS requests. Most lookups worked fine, but every now and then one would hang for 5 seconds and time out.
 
-Users didn't notice because our apps retry failed requests. But it was annoying and pointed to an underlying issue.
+Users didn't notice because our apps retry failed requests. But it was annoying, and it pointed to something wrong underneath.
 
-Took me 2 days to track down. Problem was conntrack table exhaustion, not CoreDNS.
+Took me 2 days to find the cause. It wasn't CoreDNS. It was conntrack table exhaustion.
 
 ## Checking CoreDNS
 
-First suspected CoreDNS (Kubernetes DNS server). Checked if pods were healthy:
+First thing I suspected was CoreDNS, the Kubernetes DNS server. Checked if pods were healthy:
 
 ```bash
 kubectl get pods -n kube-system -l k8s-app=kube-dns
@@ -38,19 +38,19 @@ kubectl logs -n kube-system -l k8s-app=kube-dns --tail=100
 
 No errors. Just normal DNS queries being handled.
 
-Checked CPU and memory:
+Checked resource usage:
 
 ```bash
 kubectl top pods -n kube-system -l k8s-app=kube-dns
 ```
 
-CPU at 5%, memory at 50MB. Plenty of headroom.
+CPU at 5%, memory at 50MB. Not even close to being stressed.
 
-So CoreDNS itself was fine. Problem must be elsewhere.
+So CoreDNS was fine. The problem was somewhere else.
 
 ## Testing DNS resolution
 
-Created a debug pod to test DNS:
+I created a debug pod to test DNS:
 
 ```bash
 kubectl run debug --image=busybox --rm -it -- sh
@@ -63,7 +63,7 @@ Inside the pod:
 nslookup api.example.com
 ```
 
-Most of the time it worked instantly. Occasionally it hung for 5 seconds then timed out.
+Most of the time it worked instantly. But occasionally it hung for 5 seconds, then timed out. Unpredictable.
 
 Tried querying CoreDNS directly:
 
@@ -73,25 +73,25 @@ nslookup api.example.com 10.96.0.10
 
 (10.96.0.10 is our CoreDNS service IP)
 
-Same issue - occasional timeouts.
+Same thing. Occasional timeouts.
 
 ## Checking network connectivity
 
-Maybe packets were getting dropped somewhere. Tested with tcpdump:
+Maybe packets were getting dropped. I ran tcpdump:
 
 ```bash
 kubectl exec -it coredns-pod -n kube-system -- tcpdump -i any port 53
 ```
 
-Saw DNS queries coming in, but for the timed-out requests, there was no response from CoreDNS. The query arrived but no answer was sent.
+I could see DNS queries coming in. But for the ones that timed out, CoreDNS never sent a response. The query arrived, but nothing came back.
 
-This was weird. CoreDNS received the query (it's in the tcpdump) but didn't respond.
+That was weird. CoreDNS received the query (I could see it in tcpdump) but didn't answer. This narrowed things down.
 
 ## Connection tracking (conntrack)
 
-Linux uses conntrack to track network connections. Kubernetes uses iptables rules that depend on conntrack.
+Linux uses conntrack to track network connections. Kubernetes relies on iptables rules that depend on conntrack.
 
-Checked conntrack table on worker nodes:
+I checked the conntrack table on worker nodes:
 
 ```bash
 ssh worker-node-1
@@ -106,27 +106,25 @@ net.netfilter.nf_conntrack_count = 65519
 net.netfilter.nf_conntrack_max = 65536
 ```
 
-The conntrack table was 99% full. When it fills up, new connections get dropped.
+The conntrack table was 99% full. When it fills up completely, new connections get dropped silently.
 
-This explained the DNS timeouts. When a pod tries to make a DNS query and the conntrack table is full, the connection can't be established and the query times out.
+That explained everything. When a pod tries to make a DNS query and the conntrack table is full, the connection can't be tracked, so it gets dropped. Query times out after 5 seconds.
 
-## Why was conntrack table full?
+## Why was the conntrack table full?
 
-Checked what was using conntrack entries:
+Looked at what was filling it up:
 
 ```bash
 conntrack -L | head -20
 ```
 
-Saw thousands of entries for old connections in TIME_WAIT state. These were connections that had closed but were still in conntrack waiting to be cleaned up.
+Thousands of entries sitting in TIME_WAIT state. These were connections that had already closed but were still taking up space in the table, waiting to be cleaned up.
 
-Our applications make a lot of short-lived HTTP requests. Each request creates a conntrack entry. The default timeout for TIME_WAIT is 120 seconds.
-
-With high request volume, conntrack entries accumulated faster than they expired.
+Our applications make a lot of short-lived HTTP requests. Each one creates a conntrack entry. The default timeout for TIME_WAIT is 120 seconds. With high request volume, entries piled up faster than they expired.
 
 ## The fix
 
-Increased conntrack table size:
+Increased the conntrack table size:
 
 ```bash
 # On each worker node
@@ -139,22 +137,22 @@ echo "net.netfilter.nf_conntrack_buckets=65536" >> /etc/sysctl.conf
 sysctl -p
 ```
 
-This quadrupled the conntrack table size. DNS timeouts stopped.
+This quadrupled the table size. DNS timeouts stopped immediately.
 
-Also reduced TIME_WAIT timeout:
+I also reduced the TIME_WAIT timeout:
 
 ```bash
 sysctl -w net.netfilter.nf_conntrack_tcp_timeout_time_wait=30
 echo "net.netfilter.nf_conntrack_tcp_timeout_time_wait=30" >> /etc/sysctl.conf
 ```
 
-This clears old conntrack entries faster.
+Old entries now get cleaned up in 30 seconds instead of 120.
 
-## Better solution: Connection pooling
+## The real fix: connection pooling
 
-The real issue is our apps were creating too many short-lived connections. Better to reuse connections via connection pooling.
+Increasing conntrack limits treats the symptom. The actual issue was our apps creating too many short-lived connections. Reusing connections via connection pooling is the proper fix.
 
-Updated HTTP client config in applications:
+Updated the HTTP client config in our applications:
 
 ```python
 # Before: New connection for every request
@@ -166,9 +164,9 @@ session = requests.Session()
 response = session.get('https://api.example.com/endpoint')
 ```
 
-Session reuses TCP connections. This reduces conntrack entries by 90%.
+Using a Session reuses TCP connections. This reduced conntrack entries by about 90%.
 
-Same fix in other languages:
+Same idea in other languages:
 
 ```go
 // Go
@@ -193,7 +191,7 @@ axios.get(url, { httpAgent: agent });
 
 ## Monitoring conntrack usage
 
-Added Prometheus metrics for conntrack:
+I added Prometheus alerts so this doesn't sneak up on us again:
 
 ```yaml
 # node-exporter collects these automatically
@@ -201,7 +199,7 @@ node_nf_conntrack_entries
 node_nf_conntrack_entries_limit
 ```
 
-Created alert:
+Alert rule:
 
 ```yaml
 - alert: ConntrackTableNearFull
@@ -211,11 +209,11 @@ Created alert:
     summary: "Conntrack table is {{ $value }}% full on {{ $labels.instance }}"
 ```
 
-Now we get alerted before conntrack fills up completely.
+Now we get alerted before it fills up.
 
-## CoreDNS configuration tweaks
+## CoreDNS config tweaks
 
-While investigating, also improved CoreDNS config:
+While I was investigating, I also made some improvements to the CoreDNS config:
 
 ```yaml
 apiVersion: v1
@@ -246,35 +244,28 @@ data:
     }
 ```
 
-Changes:
-- Increased `max_concurrent` to handle more parallel queries
-- Added `cache 30` to reduce upstream queries
+I increased `max_concurrent` to handle more parallel queries and added `cache 30` to reduce upstream lookups.
 
-## Why this was hard to debug
+## Why this was hard to find
 
-DNS timeouts are tricky because:
-- They're intermittent (only when conntrack is full)
-- CoreDNS looks healthy (it is healthy)
-- Error happens at network layer, not application layer
-- No obvious errors in logs
+DNS timeouts are tricky to debug because:
+- They're intermittent. Only happens when conntrack is full, which isn't constant.
+- CoreDNS looks healthy. Because it is healthy. The problem is below it.
+- The error happens at the network layer, not the application layer. No useful log messages.
 
-The clue was that queries were received but not answered. This pointed to connection tracking issues rather than DNS server issues.
+The key clue was that queries were received by CoreDNS but never answered. That pointed away from DNS and toward connection tracking.
 
-## Other DNS problems we've seen
+## Other DNS issues we've hit
 
-**External DNS resolution slow:**
-
-CoreDNS was fast for internal services but slow for external domains. Fixed by using Google/Cloudflare DNS instead of our ISP's DNS:
+Slow external DNS resolution: CoreDNS was fast for internal services but slow for external domains. Switching to Google/Cloudflare DNS fixed it:
 
 ```yaml
 forward . 8.8.8.8 1.1.1.1
 ```
 
-**ndots causing extra queries:**
+The ndots problem: Kubernetes sets `ndots:5` in resolv.conf by default. This means a query for `api.example.com` first tries `api.example.com.default.svc.cluster.local`, then `api.example.com.svc.cluster.local`, and so on. Five extra lookups before the real one.
 
-Kubernetes sets `ndots:5` in resolv.conf. This means queries for `api.example.com` first try `api.example.com.default.svc.cluster.local`, then `api.example.com.svc.cluster.local`, etc.
-
-Reduced ndots to 2 in pod DNS config:
+I reduced ndots to 2 in pod DNS config:
 
 ```yaml
 dnsConfig:
@@ -283,11 +274,9 @@ dnsConfig:
     value: "2"
 ```
 
-This reduced DNS query volume by 60%.
+This cut DNS query volume by 60%. A surprisingly big win.
 
-**CoreDNS pod count:**
-
-We had 2 CoreDNS pods. Increased to 3 for better distribution:
+CoreDNS pod count: We had 2 CoreDNS pods. Bumped it to 3 for better distribution:
 
 ```bash
 kubectl scale deployment coredns -n kube-system --replicas=3
@@ -296,9 +285,9 @@ kubectl scale deployment coredns -n kube-system --replicas=3
 ## Lessons
 
 1. DNS timeouts aren't always a DNS problem
-2. Conntrack table size matters for high-connection workloads
-3. Use connection pooling to reduce conntrack entries
-4. Monitor conntrack usage
-5. Intermittent issues require patient debugging
+2. Conntrack table size matters when you have lots of short-lived connections
+3. Connection pooling reduces conntrack entries dramatically
+4. Monitor conntrack usage before it becomes a problem
+5. Intermittent issues take patience
 
-After increasing conntrack limits and adding connection pooling, DNS timeouts dropped to zero. The issue wasn't CoreDNS at all - it was Linux connection tracking exhaustion.
+After bumping conntrack limits and adding connection pooling, DNS timeouts dropped to zero. The problem was never CoreDNS. It was Linux connection tracking running out of space.
