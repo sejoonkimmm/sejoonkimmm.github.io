@@ -41,16 +41,16 @@ export default function HomePage() {
 
           <div className={styles.stats}>
             <div className={styles.stat}>
+              <span className={styles.statNumber}>2+</span>
+              <span className={styles.statLabel}>Years DevOps</span>
+            </div>
+            <div className={styles.stat}>
+              <span className={styles.statNumber}>5+</span>
+              <span className={styles.statLabel}>Years IT & Security</span>
+            </div>
+            <div className={styles.stat}>
               <span className={styles.statNumber}>5+</span>
               <span className={styles.statLabel}>Certifications</span>
-            </div>
-            <div className={styles.stat}>
-              <span className={styles.statNumber}>2+</span>
-              <span className={styles.statLabel}>Years Experience</span>
-            </div>
-            <div className={styles.stat}>
-              <span className={styles.statNumber}>99.9%</span>
-              <span className={styles.statLabel}>Uptime Goal</span>
             </div>
           </div>
 
