@@ -1,18 +1,18 @@
 ---
-title: "Myperfectstay"
+title: "Travel agency platform in Dubai (B2B, B2C)"
 date: "March 2025 - Present"
 description: "GitOps-based Kubernetes infrastructure automation. Reduced configuration overhead by 53% through ArgoCD restructuring and achieved zero-downtime deployments with preview environments."
 tags: ["Kubernetes", "ArgoCD", "GitOps", "GitHub Actions", "Terraform", "Helm"]
 readTime: "6 min read"
 ---
 
-# Myperfectstay - GitOps Infrastructure Automation
+# Travel agency platform in Dubai - GitOps Infrastructure Automation
 
-Building scalable, reliable infrastructure for B2C vacation rental platform using modern GitOps practices.
+Building scalable, reliable infrastructure for a Dubai-based travel agency platform (B2B, B2C) using modern GitOps practices.
 
 ## Project Overview
 
-Myperfectstay is a B2C vacation rental platform requiring high availability, rapid deployment capabilities, and cost-effective infrastructure. As the DevOps Engineer on this project, I architected and implemented a comprehensive GitOps-based infrastructure automation system.
+The product is a Dubai-based travel agency platform serving both B2B and B2C customers, requiring high availability, rapid deployment capabilities, and cost-effective infrastructure. As the DevOps Engineer on this project, I architected and implemented a GitOps-based infrastructure automation system.
 
 ## Key Achievements
 
@@ -136,7 +136,7 @@ jobs:
       - name: Update ArgoCD Manifest
         run: |
           yq eval ".spec.template.spec.containers[0].image =
-            \"registry.azurecr.io/myperfectstay:${{ steps.release.outputs.release_id }}\""
+            \"registry.azurecr.io/travel-app:${{ steps.release.outputs.release_id }}\""
             -i argocd/overlays/${{ github.ref_name }}/kustomization.yaml
 ```
 
@@ -158,7 +158,7 @@ jobs:
           PREVIEW_NAME="pr-${{ github.event.pull_request.number }}"
           helm upgrade --install $PREVIEW_NAME ./helm-charts \
             --set image.tag=${{ github.sha }} \
-            --set ingress.host="$PREVIEW_NAME.preview.myperfectstay.com" \
+            --set ingress.host="$PREVIEW_NAME.preview.travel-platform.example" \
             --namespace previews
 
       - name: Comment PR with Preview URL
@@ -170,7 +170,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: '🚀 Preview environment deployed:
-                     https://pr-${{ github.event.pull_request.number }}.preview.myperfectstay.com'
+                     https://pr-${{ github.event.pull_request.number }}.preview.travel-platform.example'
             })
 ```
 
@@ -210,7 +210,7 @@ data:
   TIMEZONE: "Europe/Berlin"
   API_TIMEOUT: "30s"
   CACHE_TTL: "3600"
-  FEATURE_FLAG_ENDPOINT: "https://flags.myperfectstay.com"
+  FEATURE_FLAG_ENDPOINT: "https://flags.travel-platform.example"
 ```
 
 **Environment-Specific Overrides** (`overlays/production/kustomization.yaml`):
@@ -225,8 +225,8 @@ bases:
 configMapGenerator:
   - name: env-specific-config
     literals:
-      - DATABASE_URL=postgresql://prod.myperfectstay.com
-      - REDIS_URL=redis://prod-cache.myperfectstay.com
+      - DATABASE_URL=postgresql://prod.travel-platform.example
+      - REDIS_URL=redis://prod-cache.travel-platform.example
       - LOG_LEVEL=warn
 
 resources:

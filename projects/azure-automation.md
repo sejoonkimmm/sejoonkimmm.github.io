@@ -250,7 +250,7 @@ spec:
 # values/production.yaml
 appName: client-app
 environment: production
-client: raiffeisen
+client: client-a
 project: client-projects
 
 repoURL: https://git.example.com/client-app

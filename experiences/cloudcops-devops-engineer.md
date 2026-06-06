@@ -4,248 +4,91 @@ organization: "CloudCops GmbH"
 role: "DevOps Engineer"
 period: "March 2025 - Present"
 location: "Bielefeld, Germany"
-description: "Building reliable, cost-effective infrastructure for B2C services. Achieved 90% cost reduction in monitoring, 98% CVE reduction, and 53% configuration overhead reduction through GitOps automation."
+description: "DevOps and backend engineering across CloudCops' product portfolio on Kubernetes. Cut infrastructure cost 82% with a cloud migration, active CVEs 98% through security automation, and monitoring cost 90% by self-hosting observability."
 logo: "/logos/cloudcops.svg"
-tags: ["Kubernetes", "ArgoCD", "Cost Optimization", "Security", "GitOps"]
+tags: ["Kubernetes", "ArgoCD", "GitOps", "Security", "Cost Optimization", "Python"]
 ---
 
 # Sejoon Kim as a DevOps Engineer - CloudCops GmbH
 
-Building reliable, cost-effective infrastructure that teams can trust.
+Building infrastructure that teams can trust, and since 2026, the backend features that run on it.
 
 ## About CloudCops
 
-CloudCops GmbH is a DevOps consulting company specializing in cloud infrastructure, Kubernetes orchestration, and GitOps practices. Working with enterprise clients across various industries, CloudCops delivers scalable, secure, and cost-effective solutions.
+CloudCops GmbH is a German DevOps company that operates its own product portfolio alongside client work: a travel platform, a fintech platform for a banking-sector client, and several smaller products. Small team, real production traffic, no separation between "the person who builds it" and "the person who gets paged for it".
 
 ## Role Overview
 
-As a DevOps Engineer at CloudCops from March 2025 to present, I work on multiple client projects, implementing modern DevOps practices, automating infrastructure, and optimizing cloud costs while maintaining high reliability and security standards.
+I joined in March 2025 as a DevOps Engineer working across the portfolio: Kubernetes platforms, GitOps deployment, observability, and security automation. Since early 2026 I additionally own backend feature work on the travel platform (Python / Django), which means I now ship features onto infrastructure I also operate.
 
 ## Key Projects
 
-### Myperfectstay - GitOps Infrastructure
-**Client**: CloudCops GmbH | **Timeline**: March 2025 - Present
+### Travel agency platform in Dubai (B2B, B2C)
 
-#### Achievements
-- **53% Configuration Overhead Reduction**: Restructured ArgoCD repositories with shared ConfigMaps and environment-specific consolidation
-- **Zero-Downtime Migrations**: Implemented auto_release_id system maintaining CI/CD integrity during major architectural changes
-- **Unified CI/CD**: Consolidated frontend and backend pipelines from separate repositories into centralized GitHub Actions
-- **Preview Environments**: Established mobile and frontend preview environments accelerating development feedback loops
+**Context**: CloudCops product | **Timeline**: March 2025 - Present
 
-#### Technologies
-- **Orchestration**: Kubernetes, ArgoCD, Helm
-- **CI/CD**: GitHub Actions, Docker
-- **Infrastructure**: Azure, Terraform
-- **Monitoring**: Prometheus, Grafana, Loki
+The platform's biggest infrastructure decision was leaving managed cloud. I led the migration from Azure AKS to self-managed Kubernetes on Hetzner Cloud: kubeadm HA control plane, Cilium CNI, MetalLB with the Hetzner Cloud Controller Manager. Azure-managed primitives had to be replaced one by one (AAD pod identity with cert-manager plus Vault, managed PostgreSQL with self-hosted PostgreSQL with WAL archiving and point-in-time recovery, Velero for PVC backup and restore).
 
-### app.immonow.at - DevSecOps Platform
-**Client**: Raiffeisen Immobilien | **Timeline**: August 2025 - Present
+- **82% monthly cost reduction** in post-migration steady state
+- Database cutover via PostgreSQL streaming replication with lag validation, holding write unavailability to roughly 5-10 minutes instead of a full-stack outage
 
-#### Achievements
-- **98% CVE Reduction**: Automated vulnerability detection and patching via Trivy Operator
-- **90% Cost Savings**: Migrated from Grafana SaaS to self-hosted solution with Prometheus integration ($500/month → $50/month)
-- **Automated Security Reporting**: Built Grafana dashboards with Slack integration for daily vulnerability tracking
-- **Secure Testing Environments**: Designed staging environments enabling safe penetration testing and vulnerability management
+Other work on this platform:
 
-#### Technologies
-- **Security**: Trivy Operator, Kubernetes Security Policies
-- **Monitoring**: Self-hosted Grafana, Prometheus, Alertmanager
-- **Infrastructure**: Kubernetes, Helm Charts
-- **Automation**: GitHub Actions, Slack API
+- **Ingress migration**: nginx-ingress to Traefik v3 on Kubernetes Gateway API across three k3s clusters, executed as a 4-phase zero-downtime rollout (deploy, dual-stack, DNS cutover with pre-lowered TTL, nginx removal), triggered by CVE-2025-1974
+- **P1 incident and the fix**: PostgreSQL, RabbitMQ, and Typesense had co-scheduled onto one node, which went NotReady under memory pressure and spiked error rates ~400x. I split the cluster into system / workload / data / monitoring nodepools with workload taints, PodAntiAffinity, and zone-aware TopologySpreadConstraints so the failure mode is now blocked at the scheduler level
+- **Per-PR preview environments**: ArgoCD ApplicationSet listening to GitHub pull request events, PII-sanitized staging snapshots, per-PR subdomain ingress, namespace resource quotas, 7-day auto-teardown
+- **Cluster lifecycle**: soak-gated Kubernetes 1.33 to 1.35 upgrades across dev, stage, and prod
+- **Security**: CrowdSec WAF on ingress with scenario tuning to avoid CGNAT false positives
+- **Observability**: Tempo distributed tracing with object-storage backend, Traefik request dashboards in Grafana
+
+### Backend feature work on the travel platform (2026)
+
+- **Passport-scanning booking feature, end-to-end**: evaluated 7 OCR options (on-device, cloud, and specialized vendors) with a working demo, selected Azure Document Intelligence, and built the Python / Django OCR backend API
+- **GDPR compliance layer for passport data**: field-level encryption at rest, admin-access audit logging, participant consent records, and 30-day retention auto-cleanup via Celery beat, designed from a cross-jurisdiction compliance document I authored
+- **Reliability fix**: moved blocking 30-second OCR calls off gunicorn sync workers (which were starving the worker pool under load) onto dedicated Celery async workers with a Redis-backed task contract
+
+### Fintech platform (B2C)
+
+**Context**: banking-sector client | **Timeline**: March 2025 - Present
+
+- **98% CVE reduction**: Trivy adoption end-to-end. Trivy Operator for runtime scanning, a CI gate where Critical findings block merge and High warns, and Renovate-driven base image updates
+- **90% monitoring cost reduction**: migrated from Grafana SaaS to self-hosted kube-prometheus-stack (Prometheus, Grafana, Alertmanager, Loki) with full observability retained
+- **P2 incident, resolved in 1h35m**: a single expired Azure Service Principal simultaneously broke ArgoCD OIDC, Grafana OIDC, Alertmanager OAuth2-Proxy, and External Secrets Operator. I authored a 4-module Terragrunt recovery runbook, then eliminated the failure class with a daily GitHub Actions workflow alerting on credentials expiring within 30/14/7 days
+- **Secure staging environments** for penetration testing and vulnerability management
+- **Dual CI ecosystems**: the client stack runs GitLab and GitLab CI on Azure AKS, so my daily work spans GitLab CI here and GitHub Actions on CloudCops products
+- **Pattern reuse**: replicated the Gateway API ingress migration from the travel platform cluster, the first concrete proof that our platform layer works across unrelated tenants
 
 ### Azure Infrastructure Automation
-**Client**: CloudCops GmbH | **Timeline**: March 2025 - Present
 
-#### Achievements
-- **85% Time Reduction**: Automated Azure App Registration from manual 4-step workflow to single-push deployment
-- **Modernized IaC**: Reworked script-based Terraform ArgoCD modules to Helm-based architecture with version control
-- **Enhanced Project Management**: Migrated from Notion/GitHub Issues to integrated Jira workflows with autolink functionality
-- **Standardized Deployments**: Enabled better rollback capabilities and standardized deployment patterns
+**Context**: CloudCops internal | **Timeline**: March 2025 - December 2025
 
-#### Technologies
-- **Cloud**: Azure (App Registrations, RBAC, Resource Management)
-- **IaC**: Terraform, Helm, ArgoCD
-- **Project Management**: Jira API, GitHub Actions
-- **Automation**: Python, Bash scripting
+- **85% time reduction**: automated Azure App Registration from a manual 4-step workflow into single-push deployment, eliminating manual errors in permission configuration
+- **IaC modernization**: reworked script-based Terraform ArgoCD modules into a Helm-based architecture with Gateway API support, version control, and rollback
 
 ## Impact & Metrics
 
-### Cost Optimization
-| Metric | Before | After | Savings |
-|--------|--------|-------|---------|
-| Monitoring Costs | $500/month | $50/month | 90% reduction |
-| Deployment Time | 4 manual steps | 1-click deploy | 85% faster |
-| Configuration Files | 100+ configs | 47 configs | 53% reduction |
-
-### Security & Reliability
-- **Vulnerability Management**: 98% active CVE reduction through automation
-- **Zero-Downtime Deployments**: 100% uptime during major infrastructure migrations
-- **Preview Environments**: 3-5x faster development feedback loops
-- **Automated Testing**: Secure staging environments for penetration testing
+| Metric | Result |
+|--------|--------|
+| Infrastructure cost (travel platform) | 82% reduction via AKS to self-managed migration |
+| Active CVEs (fintech client) | 98% reduction |
+| Monitoring cost (fintech client) | 90% reduction |
+| Azure App Registration time | 85% reduction |
+| P2 identity-cascade incident | Recovered in 1h35m, failure class eliminated |
 
 ## Technologies & Tools
 
-### Container Orchestration
-- Kubernetes (1.28+)
-- ArgoCD for GitOps
-- Helm for package management
-- Docker for containerization
-
-### CI/CD & Automation
-- GitHub Actions
-- Terraform for Infrastructure as Code
-- Bash/Python for automation scripts
-- Jira API integration
-
-### Security & Monitoring
-- Trivy Operator for vulnerability scanning
-- Prometheus for metrics collection
-- Grafana for visualization and dashboards
-- Loki for log aggregation
-- Alertmanager for alerting
-- Slack integration for notifications
-
-### Cloud Platforms
-- Microsoft Azure (Primary)
-  - Azure App Registrations
-  - Azure RBAC
-  - Azure Resource Management
-- AWS (Secondary)
-
-## Key Learnings & Growth
-
-### DevOps Philosophy
-- **Cost-Conscious Engineering**: Every optimization funds the next feature
-- **Security by Default**: Automated vulnerability management prevents issues at scale
-- **GitOps Excellence**: Infrastructure as code enables reproducibility and rollback
-- **Observability First**: Comprehensive monitoring prevents outages before they happen
-
-### Technical Depth
-- **Kubernetes Mastery**: Deep understanding of ConfigMaps, Secrets, RBAC, and networking
-- **ArgoCD Patterns**: Advanced repository structuring and release management strategies
-- **Security Automation**: Implementing shift-left security with Trivy and policy enforcement
-- **Cost Optimization**: Balancing performance, reliability, and cloud spend
-
-### Enterprise Client Work
-- **Multi-Client Management**: Juggling Myperfectstay and Raiffeisen Immobilien simultaneously
-- **Stakeholder Communication**: Translating technical improvements into business value
-- **Risk Management**: Making critical infrastructure changes without downtime
-- **Documentation Excellence**: Creating clear runbooks and architectural diagrams
-
-## Challenges & Solutions
-
-### Challenge: 90% Cost Reduction Without Sacrificing Observability
-**Problem**: Grafana SaaS costs scaling unsustainably with usage
-
-**Solution**:
-- Deployed self-hosted Grafana on Kubernetes cluster
-- Integrated Prometheus for metrics collection
-- Configured Loki for log aggregation
-- Maintained all dashboards and alerting capabilities
-- **Result**: $500/month → $50/month while improving customization
-
-### Challenge: Zero-Downtime ArgoCD Repository Restructuring
-**Problem**: Major repository restructuring risked breaking existing deployments
-
-**Solution**:
-- Implemented auto_release_id identification system
-- Created migration strategy with phased rollout
-- Maintained backward compatibility during transition
-- **Result**: 53% configuration reduction with 100% uptime
-
-### Challenge: 98% CVE Reduction Across Multiple Clusters
-**Problem**: Manual vulnerability patching couldn't keep pace with discoveries
-
-**Solution**:
-- Deployed Trivy Operator across all Kubernetes clusters
-- Automated image scanning in CI/CD pipelines
-- Created Grafana dashboard for CVE tracking
-- Integrated Slack notifications for critical vulnerabilities
-- **Result**: Active CVEs reduced from 150+ to <5
-
-### Challenge: Azure App Registration Manual Bottleneck
-**Problem**: 4-step manual process causing delays and errors
-
-**Solution**:
-- Analyzed existing workflow and permission requirements
-- Built automation using Azure CLI and Terraform
-- Created GitHub Actions workflow for single-push deployment
-- Eliminated human errors in permission configuration
-- **Result**: 85% time reduction per request
-
-## Skills Developed
-
-### Infrastructure as Code
-- Advanced Terraform module design
-- Helm chart development and customization
-- ArgoCD Application and ApplicationSet patterns
-- GitOps workflow optimization
-
-### Kubernetes Expertise
-- Multi-cluster management
-- ConfigMap and Secret management strategies
-- RBAC policy design
-- Network policy implementation
-- Resource optimization and cost management
-
-### Security & Compliance
-- Vulnerability scanning automation
-- Container security best practices
-- RBAC and access control
-- Secure secret management
-- Compliance reporting
-
-### CI/CD Architecture
-- GitHub Actions workflow design
-- Multi-stage pipeline optimization
-- Container registry management
-- Release automation strategies
-
-### Observability
-- Prometheus metric design
-- Grafana dashboard development
-- Log aggregation with Loki
-- Alert rule configuration
-- Incident response workflows
-
-## Professional Growth
-
-### Leadership & Communication
-- **Client Management**: Regular stakeholder updates and technical presentations
-- **Cross-Team Collaboration**: Coordinating with frontend, backend, and product teams
-- **Knowledge Sharing**: Creating documentation and conducting internal training
-- **Incident Response**: Leading post-mortem analysis and improvement initiatives
-
-### Business Impact
-- **Cost Optimization**: Delivering measurable savings while improving capabilities
-- **Risk Mitigation**: Reducing security vulnerabilities and deployment risks
-- **Efficiency Gains**: Automating manual processes and reducing operational overhead
-- **Scalability**: Building infrastructure that grows with business needs
-
-## Industry Insights
-
-Working at CloudCops provided valuable insights into:
-- The critical importance of cost optimization in cloud infrastructure
-- How security automation enables scaling without sacrificing safety
-- The power of GitOps for infrastructure reliability and reproducibility
-- Balancing innovation velocity with operational stability
-- The value of comprehensive observability in preventing incidents
+- **Kubernetes**: k3s, kubeadm, Helm, ArgoCD and ApplicationSet, Cilium, MetalLB, Gateway API, Traefik, cert-manager, Velero
+- **IaC & CI/CD**: Terraform, Terragrunt, GitHub Actions, Renovate, Docker
+- **Observability**: Prometheus, Grafana, Alertmanager, Loki, Tempo, Sentry
+- **Security**: Trivy, CrowdSec, OAuth2-Proxy, Vault, External Secrets Operator
+- **Data**: PostgreSQL, MongoDB, RabbitMQ, Redis, Typesense
+- **Backend**: Python, Django, Celery
+- **Cloud**: Microsoft Azure, Hetzner Cloud
 
 ## Reflection
 
-This experience reinforced my belief that:
-- **The best DevOps work is invisible** - until something needs to scale, recover, or deploy
-- **Automation compounds** - every automated process saves time repeatedly
-- **Observability prevents incidents** - comprehensive monitoring stops problems before users notice
-- **Cost consciousness matters** - every optimization funds future capabilities
-- **Documentation is infrastructure** - clear runbooks and diagrams are as important as code
+Three things this job keeps teaching me:
 
-These principles guide my approach to building reliable, cost-effective, and secure infrastructure that teams can trust.
-
-## What's Next
-
-Currently focused on:
-- **Multi-Cluster GitOps**: Scaling ArgoCD patterns across multiple environments
-- **FinOps Practices**: Implementing cost allocation and optimization strategies
-- **Zero-Trust Security**: Advancing security posture with network policies and service mesh
-- **Platform Engineering**: Building internal developer platforms for improved productivity
+1. **Incidents are tuition.** The P1 taught us scheduler-level isolation, the P2 taught us credential lifecycle automation. Both failure classes are now structurally blocked, not just patched.
+2. **Platform patterns should be built for reuse.** The Gateway API migration was designed once and applied to two unrelated clusters. That is the difference between doing ops and building a platform.
+3. **Operating what you build changes how you build.** Owning backend features on infrastructure I also run made me write more boring, more observable code. The pager is an excellent code reviewer.

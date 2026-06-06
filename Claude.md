@@ -23,11 +23,22 @@ This is a VS Code-themed DevOps Engineer portfolio website built with Next.js 15
 - Experience descriptions (`/experiences/*.md`)
 - Certification descriptions (`/certifications/*.md`)
 
-**English Level: B2 Maximum (Upper-Intermediate)**
-- Use clear, direct language
-- Avoid complex vocabulary or academic jargon
+**English Level: B1.5 (confirmed by sejoon, 2026-06-06 — overrides the old "B2 maximum")**
+- Target halfway between B1 and B2. When unsure between two words, pick the simpler one
+- Short sentences. One idea per sentence where possible
+- Use clear, direct language; no academic jargon
 - Write naturally, not formally
-- Keep sentences straightforward
+
+**Humanizer pass is MANDATORY (sejoon, 2026-06-06):**
+- Run the `humanizer` skill on every new or edited article/content body BEFORE committing
+- Apply its fixes (no em dashes, no -ing result clauses, no rule-of-three, no AI vocabulary)
+
+**Scannable at a glance (sejoon, 2026-06-06):**
+- A reader skimming for 30 seconds must get the story: problem, decision, result
+- Short paragraphs (max 3-4 lines rendered)
+- Descriptive H2/H3 headings every few paragraphs
+- Tables for comparisons and phase plans, lists for enumerations, code blocks for configs
+- Key numbers in **bold** where they carry the point
 
 ### 2. Technical Writing Style
 
@@ -303,8 +314,11 @@ docker run -p 3000:3000 portfolio
 
 Before committing any content changes:
 
-- [ ] Written in English (B2 level maximum)
+- [ ] Written in English (B1.5 level)
+- [ ] Humanizer skill pass done and fixes applied
+- [ ] Scannable: skimming the headings + bold numbers tells the story
 - [ ] Technical explanations understandable by first-year students
+- [ ] No internal project or client names (use "a travel platform", "a fintech client")
 - [ ] NO emojis, exclamation marks spam, or LinkedIn-style hype
 - [ ] Images use responsive sizing
 - [ ] All images have descriptive alt text

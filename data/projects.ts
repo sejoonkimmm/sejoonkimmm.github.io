@@ -10,24 +10,24 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    title: 'Myperfectstay',
+    title: 'Travel agency platform in Dubai (B2B, B2C)',
     description:
-      'GitOps-based Kubernetes infrastructure automation. Reduced configuration overhead by 53% through ArgoCD restructuring and achieved zero-downtime deployments with preview environments.',
+      'GitOps-based Kubernetes infrastructure for a Dubai-based travel platform. Migrated from Azure AKS to self-managed Kubernetes cutting monthly cost 82%, with zero-downtime deployments and per-PR preview environments.',
     logo: '/logos/cloudcops.svg',
-    link: '/projects/myperfectstay',
-    slug: 'myperfectstay',
+    link: '/projects/travel-platform',
+    slug: 'travel-platform',
     role: 'DevOps Engineer',
     organization: 'CloudCops GmbH',
   },
   {
-    title: 'app.immonow.at',
+    title: 'Fintech platform (B2C)',
     description:
-      'Secure DevSecOps infrastructure with automated vulnerability management. Achieved 98% CVE reduction and 90% cost savings on monitoring through Prometheus and Grafana self-hosting.',
-    logo: '/logos/raiffeisen.svg',
-    link: '/projects/immonow',
-    slug: 'immonow',
+      'Secure DevSecOps infrastructure for a banking-sector client with automated vulnerability management. Achieved 98% CVE reduction and 90% cost savings on monitoring through Prometheus and Grafana self-hosting.',
+    logo: '/logos/cloudcops.svg',
+    link: '/projects/fintech-platform',
+    slug: 'fintech-platform',
     role: 'DevSecOps Engineer',
-    organization: 'Raiffeisen Immobilien',
+    organization: 'CloudCops GmbH',
   },
   {
     title: 'Azure Infrastructure Automation',

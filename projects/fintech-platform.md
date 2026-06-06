@@ -1,18 +1,18 @@
 ---
-title: "app.immonow.at"
+title: "Fintech platform (B2C)"
 date: "August 2025 - Present"
 description: "Secure DevSecOps infrastructure with automated vulnerability management. Achieved 98% CVE reduction and 90% cost savings on monitoring through Prometheus and Grafana self-hosting."
 tags: ["DevSecOps", "Kubernetes", "Trivy", "Grafana", "Prometheus", "Security", "GitLab", "ArgoCD"]
 readTime: "6 min read"
 ---
 
-# app.immonow.at - DevSecOps Platform
+# Fintech platform (B2C) - DevSecOps Platform
 
-Building secure, observable infrastructure for Raiffeisen Immobilien's real estate platform with automated vulnerability management and cost-effective monitoring.
+Building secure, observable infrastructure for a European fintech platform with automated vulnerability management and cost-effective monitoring.
 
 ## Project Overview
 
-app.immonow.at is Raiffeisen Immobilien's real estate platform serving users across Austria. As the DevSecOps Engineer on this project, I implemented comprehensive security automation using Trivy Operator, cost-optimized monitoring infrastructure, and secure testing environments.
+The product is a European B2C fintech platform operated for a banking-sector client. As the DevSecOps Engineer on this project, I implemented security automation using Trivy Operator, cost-optimized monitoring infrastructure, and secure testing environments.
 
 ## Key Achievements
 
