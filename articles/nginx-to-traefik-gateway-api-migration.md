@@ -1,6 +1,6 @@
 ---
 title: "Migrating Production Ingress from nginx to Traefik Gateway API"
-date: "06.06.2026"
+date: "20.05.2026"
 description: "CVE-2025-1974 started it. Four months later, three clusters ran Traefik v3 on Gateway API with zero downtime. The honest version: what broke in stage, the certificate deadlock, and the nine days we deliberately did nothing."
 tags: ["Kubernetes", "Traefik", "Gateway API", "ArgoCD", "cert-manager", "Networking"]
 readTime: "10 min read"
