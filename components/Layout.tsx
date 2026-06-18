@@ -7,6 +7,7 @@ import {
   VscEdit,
   VscVerified,
   VscAccount,
+  VscSettings,
 } from 'react-icons/vsc';
 
 import Titlebar from '@/components/Titlebar';
@@ -23,6 +24,7 @@ const mobileNavItems = [
   { Icon: VscEdit, path: '/articles', label: 'Articles' },
   { Icon: VscVerified, path: '/certifications', label: 'Certifications' },
   { Icon: VscAccount, path: '/about', label: 'About' },
+  { Icon: VscSettings, path: '/settings', label: 'Settings' },
 ];
 
 interface LayoutProps {
@@ -57,12 +59,12 @@ const Layout = ({ children }: LayoutProps) => {
   }, [router]);
 
   return (
-    <>
+    <div className={styles.app}>
       <Titlebar />
       <div className={styles.main}>
         <Sidebar />
         <Explorer />
-        <div style={{ width: '100%' }}>
+        <div className={styles.editorColumn}>
           <Tabsbar />
           <main id="main-editor" className={`${styles.content} ${transitioning ? styles.transitioning : ''}`}>
             {children}
@@ -76,13 +78,14 @@ const Layout = ({ children }: LayoutProps) => {
             key={path}
             href={path}
             aria-label={label}
+            title={label}
             className={router.pathname === path ? styles.mobileNavActive : styles.mobileNavItem}
           >
             <Icon />
           </Link>
         ))}
       </nav>
-    </>
+    </div>
   );
 };
 

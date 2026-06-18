@@ -1,7 +1,27 @@
+/* Full-height app shell. Titlebar + main + bottombar stack vertically and
+   fill the viewport exactly, so the chrome no longer overflows past 100vh. */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+}
+
 .main {
   display: flex;
+  flex: 1;
+  min-height: 0;
   background: var(--main-bg);
   overflow-x: hidden;
+}
+
+/* Tabsbar + editor content column, fills the space next to the sidebars. */
+.editorColumn {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
 }
 
 .content {
@@ -9,7 +29,7 @@
   color: var(--text-color);
   font-family: var(--font-mono);
   flex: 1;
-  height: calc(100vh - 60px);
+  min-height: 0;
   overflow-y: auto;
   scroll-behavior: smooth;
   overflow-x: hidden;

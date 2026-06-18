@@ -161,7 +161,7 @@
 .verifyButton {
   display: inline-block;
   background: var(--accent-color);
-  color: white;
+  color: var(--main-bg);
   padding: 0.5rem 1rem;
   border-radius: 8px;
   text-decoration: none;

@@ -51,4 +51,14 @@
   --card-radius: var(--radius-lg);
   --card-padding: var(--space-6);
   --card-hover-border: var(--accent-color);
+
+  /* ---- Back-compat aliases ----
+     Older modules still reference these names. They were never defined,
+     so they fell back to transparent / currentColor and rendered wrong.
+     Map them to the real theme tokens. Resolved per theme at use site. */
+  --background-color: var(--surface-secondary);
+  --background-secondary: var(--surface-elevated);
+  --border-color: var(--border-default);
+  --accent-hover: var(--accent-secondary);
+  --bg-color: var(--main-bg);
 }

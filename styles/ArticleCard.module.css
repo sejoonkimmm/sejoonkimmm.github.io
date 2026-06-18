@@ -9,7 +9,6 @@
   transition: all var(--transition-base);
   height: 100%;
   position: relative;
-  backdrop-filter: blur(10px);
   border: 1px solid var(--border-subtle);
   border-left: 3px solid transparent;
   font-family: var(--font-body);

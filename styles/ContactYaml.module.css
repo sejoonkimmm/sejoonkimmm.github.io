@@ -33,12 +33,12 @@
 }
 
 .comment {
-  color: #6a737d;
+  color: var(--syntax-comment);
   font-style: italic;
 }
 
 .key {
-  color: #005cc5;
+  color: var(--syntax-keyword);
   font-weight: 600;
 }
 
@@ -48,12 +48,12 @@
 }
 
 .string {
-  color: #032f62;
+  color: var(--syntax-string);
   font-weight: 500;
 }
 
 .link {
-  color: #0366d6;
+  color: var(--accent-secondary);
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s ease;
@@ -67,12 +67,12 @@
 
 .link:before {
   content: '"';
-  color: #032f62;
+  color: var(--syntax-string);
 }
 
 .link:after {
   content: '"';
-  color: #032f62;
+  color: var(--syntax-string);
 }
 
 .indent {
@@ -83,34 +83,6 @@
 .comma {
   color: var(--text-primary);
   margin-left: 0.1rem;
-}
-
-/* Dark mode adjustments */
-@media (prefers-color-scheme: dark) {
-  .comment {
-    color: #8b949e;
-  }
-  
-  .key {
-    color: #79c0ff;
-  }
-  
-  .string {
-    color: #a5d6ff;
-  }
-  
-  .link {
-    color: #58a6ff;
-  }
-  
-  .link:hover {
-    color: var(--accent-color);
-  }
-  
-  .link:before,
-  .link:after {
-    color: #a5d6ff;
-  }
 }
 
 /* Responsive design */

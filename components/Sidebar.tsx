@@ -34,6 +34,7 @@ const Sidebar = () => {
         {sidebarTopItems.map(({ Icon, path, label }) => (
           <Link href={path} key={path} aria-label={label}>
             <div
+              title={label}
               className={`${styles.iconContainer} ${
                 router.pathname === path && styles.active
               }`}
@@ -53,7 +54,7 @@ const Sidebar = () => {
       </div>
       <div className={styles.sidebarBottom}>
         {sidebarBottomItems.map(({ Icon, path, label }) => (
-          <div className={styles.iconContainer} key={path}>
+          <div className={styles.iconContainer} key={path} title={label}>
             <Link href={path} aria-label={label}>
               <Icon
                 fill={
