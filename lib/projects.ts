@@ -100,6 +100,7 @@ export function getAllProjects(): ProjectMetadata[] {
       const project = getProjectBySlug(slug);
       if (!project) return null;
       
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { content, ...metadata } = project;
       return metadata;
     })

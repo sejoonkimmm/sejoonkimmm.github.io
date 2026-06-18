@@ -371,3 +371,43 @@
     border-right: none;
   }
 }
+
+/* Prev / next article navigation */
+.articleNav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-default);
+}
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  max-width: 48%;
+  text-decoration: none;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.navItemRight {
+  text-align: right;
+  margin-left: auto;
+}
+
+.navItem:hover {
+  color: var(--accent-color);
+}
+
+.navLabel {
+  font-size: 0.8rem;
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.navTitle {
+  font-size: 0.95rem;
+  line-height: 1.4;
+}

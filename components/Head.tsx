@@ -1,35 +1,47 @@
 import Head from 'next/head';
 
+import { SITE_URL, SITE_NAME, DEFAULT_DESCRIPTION, DEFAULT_OG_IMAGE } from '@/lib/site';
+
 interface CustomHeadProps {
-  title: string;
+  title?: string;
+  description?: string;
+  image?: string;
+  url?: string;
+  type?: string;
 }
 
-const CustomHead = ({ title }: CustomHeadProps) => {
+const CustomHead = ({
+  title = SITE_NAME,
+  description = DEFAULT_DESCRIPTION,
+  image = DEFAULT_OG_IMAGE,
+  url = SITE_URL,
+  type = 'website',
+}: CustomHeadProps) => {
   return (
     <Head>
       <title>{title}</title>
-      <meta
-        name="description"
-        content="Sejoon Kim is an experienced DevOps engineer building infrastructure and applications you'd love to use"
+      <meta name="description" content={description} />
+      <link rel="canonical" href={url} />
+      <link
+        rel="alternate"
+        type="application/rss+xml"
+        title={`${SITE_NAME} — Blog`}
+        href={`${SITE_URL}/feed.xml`}
       />
-      <meta
-        name="keywords"
-        content="sejoon kim, sejoon, kim, devops engineer portfolio, sejoon devops engineer, sejoon engineer, aws, kubernetes, sejoon kim portfolio, vscode-portfolio"
-      />
-      <meta property="og:title" content="Sejoon Kim's Blog" />
-      <meta
-        property="og:description"
-        content="A DevOps engineer building infrastructure and applications that you'd like to use."
-      />
-      <meta property="og:image" content="https://imgur.com/4zi5KkQ.png" />
-      <meta property="og:url" content="https://vscode-portfolio.vercel.app" />
+
+      <meta property="og:type" content={type} />
+      <meta property="og:site_name" content={SITE_NAME} />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:url" content={url} />
+      <meta property="og:image" content={image} />
+
       <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={image} />
     </Head>
   );
 };
 
 export default CustomHead;
-
-CustomHead.defaultProps = {
-  title: 'Sejoon Kim',
-};

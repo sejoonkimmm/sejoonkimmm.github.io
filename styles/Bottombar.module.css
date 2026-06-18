@@ -31,7 +31,7 @@
   height: 24px;
   align-items: center;
   padding: 0 0.2rem;
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: var(--font-body);
 }
 
 .section:hover {

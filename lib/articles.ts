@@ -44,7 +44,12 @@ export function getArticleBySlug(slug: string): Article & { content: string } {
   const fullPath = path.join(articlesDirectory, `${slug}.md`);
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   const { data, content } = matter(fileContents);
-  
+
+  // The page renders the title as the page's single <h1>. Article bodies also
+  // start with "# Title", which duplicated it. Strip that leading H1 so each
+  // page has exactly one H1.
+  const body = content.replace(/^\s*#\s+.*\r?\n+/, '');
+
   return {
     id: slug,
     slug,
@@ -53,7 +58,7 @@ export function getArticleBySlug(slug: string): Article & { content: string } {
     date: data.date,
     readTime: data.readTime,
     tags: data.tags || [],
-    content,
+    content: body,
   };
 }
 

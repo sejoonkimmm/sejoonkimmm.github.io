@@ -16,7 +16,7 @@
 
 .yamlContent {
   padding: 1.5rem;
-  font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+  font-family: var(--font-mono);
   font-size: 0.9rem;
   line-height: 1.6;
   color: var(--text-primary);

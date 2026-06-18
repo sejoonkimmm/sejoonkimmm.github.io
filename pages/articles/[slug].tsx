@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
+import Link from 'next/link';
 import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { getArticleBySlug, getAllArticleSlugs } from '@/lib/articles';
+import { getArticleBySlug, getAllArticleSlugs, getAllArticles } from '@/lib/articles';
 import { Article } from '@/types';
 
 import styles from '@/styles/ArticlePage.module.css';
 
+type ArticleLink = { slug: string; title: string };
+
 interface ArticlePageProps {
   article: Article & { content: string };
+  older: ArticleLink | null;
+  newer: ArticleLink | null;
 }
 
-const ArticlePage = ({ article }: ArticlePageProps) => {
+const ArticlePage = ({ article, older, newer }: ArticlePageProps) => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -70,63 +75,51 @@ const ArticlePage = ({ article }: ArticlePageProps) => {
           </div>
         </header>
 
-
-
         <div className={styles.content}>
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
-              code: (props: any) => {
-                const { inline, children, ...rest } = props;
-                return (
-                  <code
-                    className={inline ? styles.inlineCode : styles.codeBlock}
-                    {...rest}
-                  >
-                    {children}
-                  </code>
-                );
-              },
-              pre: (props: any) => {
-                return <pre className={styles.pre}>{props.children}</pre>;
-              },
-              h1: (props: any) => {
-                return <h1 className={styles.h1}>{props.children}</h1>;
-              },
-              h2: (props: any) => {
-                return <h2 className={styles.h2}>{props.children}</h2>;
-              },
-              h3: (props: any) => {
-                return <h3 className={styles.h3}>{props.children}</h3>;
-              },
-              blockquote: (props: any) => {
-                return <blockquote className={styles.blockquote}>{props.children}</blockquote>;
-              },
-              ul: (props: any) => {
-                return <ul className={styles.ul}>{props.children}</ul>;
-              },
-              ol: (props: any) => {
-                return <ol className={styles.ol}>{props.children}</ol>;
-              },
-              li: (props: any) => {
-                return <li className={styles.li}>{props.children}</li>;
-              },
-              a: (props: any) => {
-                return (
-                  <a href={props.href} className={styles.link} target="_blank" rel="noopener noreferrer">
-                    {props.children}
-                  </a>
-                );
-              },
-              img: (props: any) => {
-                if (!props.src) {
+              code: ({ inline, children }: { inline?: boolean; children?: React.ReactNode }) => (
+                <code className={inline ? styles.inlineCode : styles.codeBlock}>{children}</code>
+              ),
+              pre: ({ children }: { children?: React.ReactNode }) => (
+                <pre className={styles.pre}>{children}</pre>
+              ),
+              h1: ({ children }: { children?: React.ReactNode }) => (
+                <h2 className={styles.h2}>{children}</h2>
+              ),
+              h2: ({ children }: { children?: React.ReactNode }) => (
+                <h2 className={styles.h2}>{children}</h2>
+              ),
+              h3: ({ children }: { children?: React.ReactNode }) => (
+                <h3 className={styles.h3}>{children}</h3>
+              ),
+              blockquote: ({ children }: { children?: React.ReactNode }) => (
+                <blockquote className={styles.blockquote}>{children}</blockquote>
+              ),
+              ul: ({ children }: { children?: React.ReactNode }) => (
+                <ul className={styles.ul}>{children}</ul>
+              ),
+              ol: ({ children }: { children?: React.ReactNode }) => (
+                <ol className={styles.ol}>{children}</ol>
+              ),
+              li: ({ children }: { children?: React.ReactNode }) => (
+                <li className={styles.li}>{children}</li>
+              ),
+              a: ({ href, children }: { href?: string; children?: React.ReactNode }) => (
+                <a href={href} className={styles.link} target="_blank" rel="noopener noreferrer">
+                  {children}
+                </a>
+              ),
+              img: ({ src, alt }: { src?: string; alt?: string }) => {
+                if (!src) {
                   return null;
                 }
                 return (
                   <span className={styles.imageWrapper}>
                     <Image
-                      src={props.src}
-                      alt={props.alt || ''}
+                      src={src}
+                      alt={alt || ''}
                       width={800}
                       height={600}
                       style={{ width: '100%', height: 'auto' }}
@@ -141,13 +134,34 @@ const ArticlePage = ({ article }: ArticlePageProps) => {
           </ReactMarkdown>
         </div>
       </article>
+
+      {(older || newer) && (
+        <nav className={styles.articleNav} aria-label="More articles">
+          {older ? (
+            <Link href={`/articles/${older.slug}`} className={styles.navItem}>
+              <span className={styles.navLabel}>← Older</span>
+              <span className={styles.navTitle}>{older.title}</span>
+            </Link>
+          ) : (
+            <span />
+          )}
+          {newer ? (
+            <Link href={`/articles/${newer.slug}`} className={`${styles.navItem} ${styles.navItemRight}`}>
+              <span className={styles.navLabel}>Newer →</span>
+              <span className={styles.navTitle}>{newer.title}</span>
+            </Link>
+          ) : (
+            <span />
+          )}
+        </nav>
+      )}
     </div>
   );
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const paths = getAllArticleSlugs();
-  
+
   return {
     paths,
     fallback: false,
@@ -163,10 +177,23 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const article = getArticleBySlug(params.slug);
 
+  // Articles are sorted newest-first. Neighbours give prev/next navigation.
+  const all = getAllArticles();
+  const index = all.findIndex((a) => a.slug === params.slug);
+  const newer = index > 0 ? { slug: all[index - 1].slug, title: all[index - 1].title } : null;
+  const older =
+    index >= 0 && index < all.length - 1
+      ? { slug: all[index + 1].slug, title: all[index + 1].title }
+      : null;
+
   return {
     props: {
       title: article.title,
+      description: article.description,
+      ogType: 'article',
       article,
+      older,
+      newer,
     },
   };
 };

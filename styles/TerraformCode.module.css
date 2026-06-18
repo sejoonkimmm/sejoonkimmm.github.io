@@ -6,7 +6,7 @@
   overflow: hidden;
   width: 100%;
   max-width: 600px;
-  font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+  font-family: var(--font-mono);
 }
 
 .editorHeader {

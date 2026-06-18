@@ -1,3 +1,5 @@
+import { VscCloudDownload } from 'react-icons/vsc';
+
 import TypeWriter from '@/components/TypeWriter';
 import ExperienceCard from '@/components/ExperienceCard';
 import { experiences } from '@/data/experiences';
@@ -21,6 +23,15 @@ const AboutPage = () => {
             pauseDuration={2000}
           />
         </div>
+
+        <a
+          href="/resume/sejoon-kim-devops-cv.pdf"
+          className={styles.resumeLink}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <VscCloudDownload /> Download CV (PDF)
+        </a>
 
         <div className={styles.aboutContent}>
           <section className={styles.section}>

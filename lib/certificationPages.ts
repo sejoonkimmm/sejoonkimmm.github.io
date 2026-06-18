@@ -95,6 +95,7 @@ export function getAllCertificationsFromMarkdown(): CertificationMetadata[] {
       const certification = getCertificationBySlug(slug);
       if (!certification) return null;
       
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { content, ...metadata } = certification;
       // Ensure undefined values are converted to null for proper typing
       const processedMetadata: CertificationMetadata = {

@@ -2,7 +2,7 @@
   background: var(--explorer-bg);
   width: 18vw;
   color: var(--text-primary);
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: var(--font-body);
   border-right: 1px solid var(--explorer-border);
 }
 

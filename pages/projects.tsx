@@ -9,7 +9,7 @@ const ProjectsPage = () => {
       <div className={styles.header}>
         <h1 className={styles.title}>My Projects</h1>
         <p className={styles.subtitle}>
-          Here's a collection of my recent infrastructure and DevOps projects. These showcase
+          Here&apos;s a collection of my recent infrastructure and DevOps projects. These showcase
           my skills in cloud automation, Kubernetes, and modern DevOps practices.
         </p>
       </div>
