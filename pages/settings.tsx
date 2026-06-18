@@ -13,6 +13,12 @@ const SettingsPage = () => {
           theme="github-dark"
         />
         <ThemeInfo
+          name="GitHub Light"
+          icon="/themes/github-dark.png"
+          publisher="GitHub"
+          theme="light"
+        />
+        <ThemeInfo
           name="Dracula"
           icon="/themes/dracula.png"
           publisher="Dracula Theme"

@@ -275,3 +275,49 @@
   --syntax-number: #f78c6c;
   --syntax-operator: #c792ea;
 }
+
+/* GitHub Light */
+[data-theme='light'] {
+  --main-bg: #ffffff;
+  --bg-text: rgba(208, 215, 222, 0.4);
+  --text-color: #1f2328;
+  --accent-color: #0969da;
+  --accent-color-rgb: 9, 105, 218;
+  --accent-secondary: #8250df;
+  --titlebar-bg: #f6f8fa;
+  --sidebar-bg: #f6f8fa;
+  --sidebar-hover-bg: #eaeef2;
+  --explorer-bg: #f6f8fa;
+  --explorer-hover-bg: #eaeef2;
+  --explorer-border: #d0d7de;
+  --tabs-bg: #f6f8fa;
+  --tab-bg: #f6f8fa;
+  --tab-active-bg: #ffffff;
+  --tab-border: #d0d7de;
+  --bottombar-bg: #f6f8fa;
+  --bottombar-border: #d0d7de;
+  --button-bg: #1f883d;
+  --button-text: #ffffff;
+  --bottombar-hover-bg: #eaeef2;
+  --scrollbar-track-bg: #ffffff;
+  --scrollbar-thumb-bg: #d0d7de;
+  --article-bg: #f6f8fa;
+
+  --text-primary: #1f2328;
+  --text-secondary: rgba(31, 35, 40, 0.7);
+  --text-muted: rgba(31, 35, 40, 0.5);
+  --surface-primary: #ffffff;
+  --surface-secondary: #f6f8fa;
+  --surface-elevated: #eaeef2;
+  --border-subtle: rgba(31, 35, 40, 0.1);
+  --border-default: rgba(31, 35, 40, 0.2);
+
+  --syntax-keyword: #cf222e;
+  --syntax-string: #0a3069;
+  --syntax-comment: #6e7781;
+  --syntax-function: #8250df;
+  --syntax-variable: #953800;
+  --syntax-type: #0550ae;
+  --syntax-number: #0550ae;
+  --syntax-operator: #cf222e;
+}

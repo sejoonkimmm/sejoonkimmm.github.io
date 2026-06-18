@@ -57,14 +57,14 @@
 }
 
 .logoWrapper {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface-elevated);
   width: 48px;
   height: 48px;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-subtle);
   margin-bottom: 1.25rem;
 }
 
@@ -91,12 +91,12 @@
 }
 
 .role {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-primary);
   font-weight: 500;
 }
 
 .separator {
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-muted);
 }
 
 .organization {
@@ -158,7 +158,7 @@
   font-size: 0.9rem;
   letter-spacing: 0;
   cursor: pointer;
-  color: white;
+  color: var(--text-primary);
   text-decoration: none;
   background-image: linear-gradient(
     120deg,

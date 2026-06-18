@@ -8,6 +8,7 @@ import {
   VscVerified,
   VscAccount,
   VscSettings,
+  VscMail,
 } from 'react-icons/vsc';
 
 import Titlebar from '@/components/Titlebar';
@@ -23,6 +24,7 @@ const mobileNavItems = [
   { Icon: VscCode, path: '/projects', label: 'Projects' },
   { Icon: VscEdit, path: '/articles', label: 'Articles' },
   { Icon: VscVerified, path: '/certifications', label: 'Certifications' },
+  { Icon: VscMail, path: '/contact', label: 'Contact' },
   { Icon: VscAccount, path: '/about', label: 'About' },
   { Icon: VscSettings, path: '/settings', label: 'Settings' },
 ];

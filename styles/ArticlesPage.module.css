@@ -55,7 +55,7 @@
 
 .underline {
   cursor: pointer;
-  color: white;
+  color: var(--text-primary);
   text-decoration: none;
   background-image: linear-gradient(
     120deg,

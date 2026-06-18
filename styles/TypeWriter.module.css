@@ -1,12 +1,12 @@
 .typewriter {
   font-family: 'JetBrains Mono', monospace;
-  color: #ffffff;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
 .cursor {
   animation: blink 1s infinite;
-  color: #ffffff;
+  color: var(--accent-color);
   font-weight: normal;
   margin-left: 2px;
 }

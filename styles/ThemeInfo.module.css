@@ -42,7 +42,7 @@
 .info h5 {
   font-size: 0.75rem;
   margin: 0 0 0.75rem 0;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-secondary);
   font-weight: 400;
 }
 

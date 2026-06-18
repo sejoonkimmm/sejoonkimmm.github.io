@@ -6,7 +6,7 @@
   border-radius: 8px;
   padding: 1.25rem;
   height: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-subtle);
   position: relative;
   overflow: hidden;
 }
@@ -26,10 +26,10 @@
   align-items: center;
   gap: 0.3rem;
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--surface-elevated);
   white-space: nowrap;
 }
 
@@ -74,7 +74,7 @@
   align-items: center;
   margin-top: auto;
   padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--border-subtle);
   flex-wrap: wrap;
   gap: 0.5rem;
 }
@@ -94,7 +94,7 @@
   display: flex;
   align-items: center;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   white-space: nowrap;
 }
 
